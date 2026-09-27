@@ -1,0 +1,40 @@
+[
+  {
+    "slug": "cloud-practitioner-bootcamp-2026",
+    "title": "AWS Cloud Practitioner Bootcamp",
+    "date": "2026-10-17T10:00:00+05:30",
+    "endDate": "2026-10-18T17:00:00+05:30",
+    "mode": "offline",
+    "venue": "Seminar Hall, Block A, GCET",
+    "description": "A two-day, exam-focused bootcamp covering the four domains of the AWS Certified Cloud Practitioner exam: cloud concepts, security and compliance, core services, and billing. Day two ends with a timed mock exam and a walkthrough of every answer.",
+    "registrationUrl": "https://forms.gle/awsbcgcet-ccp-bootcamp",
+    "coverImage": "/events/cloud-practitioner-bootcamp.jpg"
+  },
+  {
+    "slug": "serverless-day-lambda-api-gateway",
+    "title": "Serverless Day: Build a REST API with Lambda and API Gateway",
+    "date": "2026-11-07T14:00:00+05:30",
+    "endDate": "2026-11-07T18:00:00+05:30",
+    "mode": "hybrid",
+    "venue": "Computer Lab 3, Block B, GCET and live on YouTube",
+    "description": "Hands-on workshop where you build and deploy a to-do API using AWS Lambda, Amazon API Gateway and DynamoDB, all inside the AWS Free Tier. Bring a laptop with Node.js 20+ installed and an AWS account ready.",
+    "registrationUrl": "https://forms.gle/awsbcgcet-serverless-day"
+  },
+  {
+    "slug": "deploy-your-first-website-on-s3",
+    "title": "Intro to Cloud: Deploy Your First Website on Amazon S3",
+    "date": "2026-08-23T11:00:00+05:30",
+    "endDate": "2026-08-23T14:00:00+05:30",
+    "mode": "offline",
+    "venue": "Auditorium, GCET",
+    "description": "Our orientation session for first-years. Attendees created an AWS account, set up billing alarms, and published a static portfolio site on Amazon S3 with CloudFront in front of it.",
+    "registrationUrl": "https://forms.gle/awsbcgcet-intro-to-cloud",
+    "coverImage": "/events/intro-to-cloud.jpg",
+    "attendees": 184,
+    "gallery": [
+      "/events/intro-to-cloud-1.jpg",
+      "/events/intro-to-cloud-2.jpg",
+      "/events/intro-to-cloud-3.jpg"
+    ]
+  }
+]

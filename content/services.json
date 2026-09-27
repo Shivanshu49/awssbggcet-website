@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Amazon EC2",
+    "icon": "/icons/amazon-ec2.svg",
+    "tagline": "Resizable virtual servers in the cloud",
+    "useCase": "Host a full-stack project or a game server on a t3.micro instance and learn SSH, security groups and Linux administration along the way.",
+    "docsUrl": "https://docs.aws.amazon.com/ec2/"
+  },
+  {
+    "name": "AWS Lambda",
+    "icon": "/icons/aws-lambda.svg",
+    "tagline": "Run code without managing servers",
+    "useCase": "Back a hackathon project's API or a Discord bot with functions that cost nothing when idle and scale automatically when traffic spikes.",
+    "docsUrl": "https://docs.aws.amazon.com/lambda/"
+  },
+  {
+    "name": "Amazon S3",
+    "icon": "/icons/amazon-s3.svg",
+    "tagline": "Object storage built to hold anything",
+    "useCase": "Store datasets for ML coursework, host a static portfolio site, or keep backups of your project assets with versioning turned on.",
+    "docsUrl": "https://docs.aws.amazon.com/s3/"
+  }
+]

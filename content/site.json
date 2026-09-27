@@ -1,0 +1,19 @@
+{
+  "clubName": "AWS Builder Center GCET",
+  "tagline": "A student community at GCET that learns, builds and ships on AWS together.",
+  "email": "awsbuildercenter.gcet@gmail.com",
+  "joinFormUrl": "https://forms.gle/awsbcgcet-join",
+  "socials": {
+    "linkedin": "https://www.linkedin.com/company/awsbuildercenter-gcet",
+    "instagram": "https://www.instagram.com/awsbuildercenter.gcet",
+    "x": "https://x.com/awsbc_gcet",
+    "github": "https://github.com/awsbuildercenter-gcet",
+    "discord": "https://discord.gg/awsbcgcet"
+  },
+  "stats": {
+    "members": 420,
+    "eventsHosted": 18,
+    "handsOnLabs": 32,
+    "certifiedMembers": 27
+  }
+}

@@ -1,0 +1,44 @@
+[
+  {
+    "track": "Cloud Foundations",
+    "title": "From zero to AWS Certified Cloud Practitioner",
+    "steps": [
+      {
+        "title": "Create a Free Tier account and set up a billing alarm",
+        "url": "https://aws.amazon.com/free/",
+        "type": "guide"
+      },
+      {
+        "title": "AWS Cloud Practitioner Essentials",
+        "url": "https://skillbuilder.aws/",
+        "type": "course"
+      },
+      {
+        "title": "Review the official exam guide",
+        "url": "https://aws.amazon.com/certification/certified-cloud-practitioner/",
+        "type": "docs"
+      }
+    ]
+  },
+  {
+    "track": "Serverless",
+    "title": "Build and ship your first serverless API",
+    "steps": [
+      {
+        "title": "Getting started with AWS Lambda",
+        "url": "https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html",
+        "type": "docs"
+      },
+      {
+        "title": "Hands-on tutorials from AWS",
+        "url": "https://aws.amazon.com/getting-started/hands-on/",
+        "type": "lab"
+      },
+      {
+        "title": "Serverless Land patterns and workshops",
+        "url": "https://serverlessland.com/",
+        "type": "lab"
+      }
+    ]
+  }
+]

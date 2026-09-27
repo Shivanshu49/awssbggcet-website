@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Ananya Verma",
+    "role": "Club Lead",
+    "group": "lead",
+    "image": "/team/ananya-verma.jpg",
+    "bio": "Final-year CSE student and AWS Certified Solutions Architect – Associate. Runs the club roadmap and our partnerships with the AWS community."
+  },
+  {
+    "name": "Rohan Mehta",
+    "role": "Technical Lead",
+    "group": "core",
+    "image": "/team/rohan-mehta.jpg",
+    "bio": "Third-year IT student who builds the hands-on labs for every workshop. Spends most weekends breaking and fixing Terraform."
+  },
+  {
+    "name": "Dr. Kavita Rao",
+    "role": "Faculty Mentor",
+    "group": "mentor",
+    "image": "/team/kavita-rao.jpg",
+    "bio": "Associate Professor, Department of Computer Science. Guides the club on curriculum and helps members find research and internship opportunities in cloud computing."
+  }
+]
