@@ -4,40 +4,118 @@
     "title": "From zero to AWS Certified Cloud Practitioner",
     "steps": [
       {
-        "title": "Create a Free Tier account and set up a billing alarm",
+        "title": "Create an AWS Free Tier account & configure budget alerts",
         "url": "https://aws.amazon.com/free/",
         "type": "guide"
       },
       {
-        "title": "AWS Cloud Practitioner Essentials",
+        "title": "AWS Cloud Practitioner Essentials (Free 6-hour course)",
         "url": "https://skillbuilder.aws/",
         "type": "course"
       },
       {
-        "title": "Review the official exam guide",
+        "title": "AWS Educate: Cloud Computing 101 with sandbox labs",
+        "url": "https://aws.amazon.com/education/awseducate/",
+        "type": "lab"
+      },
+      {
+        "title": "Review official CLF-C02 exam blueprint & sample questions",
         "url": "https://aws.amazon.com/certification/certified-cloud-practitioner/",
         "type": "docs"
       }
     ]
   },
   {
-    "track": "Serverless",
-    "title": "Build and ship your first serverless API",
+    "track": "Core Compute & Storage",
+    "title": "Host virtual machines, static web, and databases",
     "steps": [
       {
-        "title": "Getting started with AWS Lambda",
+        "title": "Launch your first Linux EC2 instance & configure SSH/Security Groups",
+        "url": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html",
+        "type": "docs"
+      },
+      {
+        "title": "Host a static website and manage assets with Amazon S3",
+        "url": "https://docs.aws.amazon.com/s3/",
+        "type": "guide"
+      },
+      {
+        "title": "Connect a cloud database using Amazon RDS (PostgreSQL/MySQL)",
+        "url": "https://docs.aws.amazon.com/rds/",
+        "type": "lab"
+      },
+      {
+        "title": "AWS Compute Ramp-Up guide & architecture whitepapers",
+        "url": "https://aws.amazon.com/training/ramp-up-guides/",
+        "type": "guide"
+      }
+    ]
+  },
+  {
+    "track": "Serverless & Full-Stack",
+    "title": "Build and ship event-driven APIs without managing servers",
+    "steps": [
+      {
+        "title": "Getting started with AWS Lambda and function handlers",
         "url": "https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html",
         "type": "docs"
       },
       {
-        "title": "Hands-on tutorials from AWS",
+        "title": "Deploy modern web apps instantly using AWS Amplify",
+        "url": "https://aws.amazon.com/amplify/",
+        "type": "guide"
+      },
+      {
+        "title": "Hands-on serverless labs and tutorials from AWS",
         "url": "https://aws.amazon.com/getting-started/hands-on/",
         "type": "lab"
       },
       {
-        "title": "Serverless Land patterns and workshops",
+        "title": "Serverless Land patterns, snippets, and step-by-step workshops",
         "url": "https://serverlessland.com/",
         "type": "lab"
+      }
+    ]
+  },
+  {
+    "track": "Networking & Security",
+    "title": "Isolate workloads and enforce least-privilege access",
+    "steps": [
+      {
+        "title": "Build a custom Virtual Private Cloud (VPC) with subnets and routing",
+        "url": "https://docs.aws.amazon.com/vpc/",
+        "type": "docs"
+      },
+      {
+        "title": "Master IAM policies, roles, and credential management",
+        "url": "https://docs.aws.amazon.com/iam/",
+        "type": "guide"
+      },
+      {
+        "title": "Accelerate global web delivery using Amazon CloudFront CDN",
+        "url": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html",
+        "type": "docs"
+      }
+    ]
+  },
+  {
+    "track": "Solutions Architecture",
+    "title": "Design resilient, scalable production cloud architectures",
+    "steps": [
+      {
+        "title": "AWS Well-Architected Framework: The 6 core design pillars",
+        "url": "https://aws.amazon.com/architecture/well-architected/",
+        "type": "docs"
+      },
+      {
+        "title": "AWS Solutions Architect – Associate (SAA-C03) official exam guide",
+        "url": "https://aws.amazon.com/certification/certified-solutions-architect-associate/",
+        "type": "docs"
+      },
+      {
+        "title": "AWS Architecture Center: Reference diagrams and implementation guides",
+        "url": "https://aws.amazon.com/architecture/",
+        "type": "guide"
       }
     ]
   }
