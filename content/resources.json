@@ -1,122 +1,153 @@
-[
-  {
-    "track": "Cloud Foundations",
-    "title": "From zero to AWS Certified Cloud Practitioner",
-    "steps": [
-      {
-        "title": "Create an AWS Free Tier account & configure budget alerts",
-        "url": "https://aws.amazon.com/free/",
-        "type": "guide"
-      },
-      {
-        "title": "AWS Cloud Practitioner Essentials (Free 6-hour course)",
-        "url": "https://skillbuilder.aws/",
-        "type": "course"
-      },
-      {
-        "title": "AWS Educate: Cloud Computing 101 with sandbox labs",
-        "url": "https://aws.amazon.com/education/awseducate/",
-        "type": "lab"
-      },
-      {
-        "title": "Review official CLF-C02 exam blueprint & sample questions",
-        "url": "https://aws.amazon.com/certification/certified-cloud-practitioner/",
-        "type": "docs"
-      }
-    ]
-  },
-  {
-    "track": "Core Compute & Storage",
-    "title": "Host virtual machines, static web, and databases",
-    "steps": [
-      {
-        "title": "Launch your first Linux EC2 instance & configure SSH/Security Groups",
-        "url": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html",
-        "type": "docs"
-      },
-      {
-        "title": "Host a static website and manage assets with Amazon S3",
-        "url": "https://docs.aws.amazon.com/s3/",
-        "type": "guide"
-      },
-      {
-        "title": "Connect a cloud database using Amazon RDS (PostgreSQL/MySQL)",
-        "url": "https://docs.aws.amazon.com/rds/",
-        "type": "lab"
-      },
-      {
-        "title": "AWS Compute Ramp-Up guide & architecture whitepapers",
-        "url": "https://aws.amazon.com/training/ramp-up-guides/",
-        "type": "guide"
-      }
-    ]
-  },
-  {
-    "track": "Serverless & Full-Stack",
-    "title": "Build and ship event-driven APIs without managing servers",
-    "steps": [
-      {
-        "title": "Getting started with AWS Lambda and function handlers",
-        "url": "https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html",
-        "type": "docs"
-      },
-      {
-        "title": "Deploy modern web apps instantly using AWS Amplify",
-        "url": "https://aws.amazon.com/amplify/",
-        "type": "guide"
-      },
-      {
-        "title": "Hands-on serverless labs and tutorials from AWS",
-        "url": "https://aws.amazon.com/getting-started/hands-on/",
-        "type": "lab"
-      },
-      {
-        "title": "Serverless Land patterns, snippets, and step-by-step workshops",
-        "url": "https://serverlessland.com/",
-        "type": "lab"
-      }
-    ]
-  },
-  {
-    "track": "Networking & Security",
-    "title": "Isolate workloads and enforce least-privilege access",
-    "steps": [
-      {
-        "title": "Build a custom Virtual Private Cloud (VPC) with subnets and routing",
-        "url": "https://docs.aws.amazon.com/vpc/",
-        "type": "docs"
-      },
-      {
-        "title": "Master IAM policies, roles, and credential management",
-        "url": "https://docs.aws.amazon.com/iam/",
-        "type": "guide"
-      },
-      {
-        "title": "Accelerate global web delivery using Amazon CloudFront CDN",
-        "url": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html",
-        "type": "docs"
-      }
-    ]
-  },
-  {
-    "track": "Solutions Architecture",
-    "title": "Design resilient, scalable production cloud architectures",
-    "steps": [
-      {
-        "title": "AWS Well-Architected Framework: The 6 core design pillars",
-        "url": "https://aws.amazon.com/architecture/well-architected/",
-        "type": "docs"
-      },
-      {
-        "title": "AWS Solutions Architect – Associate (SAA-C03) official exam guide",
-        "url": "https://aws.amazon.com/certification/certified-solutions-architect-associate/",
-        "type": "docs"
-      },
-      {
-        "title": "AWS Architecture Center: Reference diagrams and implementation guides",
-        "url": "https://aws.amazon.com/architecture/",
-        "type": "guide"
-      }
-    ]
-  }
-]
+{
+  "sectionTitle": "Curated Developer Resources",
+  "sectionEyebrow": "LEARN & EXPERIMENT",
+  "intro": "Hand-crafted guides, architecture boilerplates, workshop code repositories, and cheat sheets built by GCET student builders for our community.",
+  "learningPaths": [
+    {
+      "id": "path-fundamentals",
+      "title": "Cloud Foundations & Free Tier Mastery",
+      "duration": "4 Weeks",
+      "level": "Beginner",
+      "description": "Zero to confident on AWS. Master IAM user boundaries, budget alerts, EC2 instance launch, and S3 static hosting without incurring accidental charges.",
+      "modules": [
+        "Setting up IAM with MFA & zero root key exposure",
+        "Configuring AWS Budgets & CloudWatch billing alarms ($0 threshold)",
+        "SSH into Ubuntu EC2 with Security Groups & Elastic IPs",
+        "Deploying your first static portfolio site on S3 + CloudFront"
+      ],
+      "recommendedFor": "1st & 2nd Year Students"
+    },
+    {
+      "id": "path-fullstack",
+      "title": "Modern Full-Stack on AWS Amplify Gen 2",
+      "duration": "3 Weeks",
+      "level": "Intermediate",
+      "description": "Build production React / Next.js 15 applications with code-first AWS backend definitions in TypeScript.",
+      "modules": [
+        "Amplify Gen 2 architecture & file-based backend configuration",
+        "Cognito Auth: Sign-up, social logins & JWT claims",
+        "DynamoDB data modeling & GraphQL / REST endpoints",
+        "CI/CD deployment pipelines on Amplify hosting"
+      ],
+      "recommendedFor": "Web Developers & Hackathon Participants"
+    },
+    {
+      "id": "path-serverless",
+      "title": "Serverless Microservices & Event Architecture",
+      "duration": "5 Weeks",
+      "level": "Intermediate to Advanced",
+      "description": "Build high-throughput, low-latency microservices that scale to zero when idle using Lambda, API Gateway, and DynamoDB.",
+      "modules": [
+        "AWS Lambda lifecycle, layers & cold start optimizations",
+        "Amazon EventBridge for asynchronous decoupled event routing",
+        "DynamoDB Single-Table Design & Global Secondary Indexes (GSIs)",
+        "Infrastructure as Code using AWS CDK with TypeScript"
+      ],
+      "recommendedFor": "Backend & Cloud Engineers"
+    },
+    {
+      "id": "path-genai",
+      "title": "Generative AI Systems with Amazon Bedrock",
+      "duration": "4 Weeks",
+      "level": "Intermediate",
+      "description": "Construct enterprise-grade Retrieval Augmented Generation (RAG) applications using Claude, Llama 3, and vector embeddings.",
+      "modules": [
+        "Bedrock Converse API and prompt engineering guardrails",
+        "Chunking documents & generating vectors with Amazon Titan",
+        "Vector indexing in OpenSearch Serverless and pgvector on RDS",
+        "Building full-stack AI streaming chat UIs with Next.js"
+      ],
+      "recommendedFor": "AI/ML Enthusiasts & Final Year Project Teams"
+    }
+  ],
+  "items": [
+    {
+      "id": "res-1",
+      "title": "AWS Free Tier Survival & Budget Safety Guide",
+      "category": "AWS Fundamentals",
+      "type": "Guide / PDF",
+      "difficulty": "Beginner",
+      "description": "Step-by-step checklist to avoid surprise bills: setting up $1 billing alerts, CloudWatch alarms, and auto-terminating test instances.",
+      "link": "https://github.com/awsbc-gcet/aws-free-tier-safety-checklist",
+      "tags": ["IAM", "Budgets", "Billing", "Free Tier"],
+      "updatedAt": "Oct 2026"
+    },
+    {
+      "id": "res-2",
+      "title": "Next.js 15 + AWS Amplify Gen 2 Production Starter",
+      "category": "Projects",
+      "type": "Code Repository",
+      "difficulty": "Intermediate",
+      "description": "A pre-configured boilerplate with TypeScript, Tailwind CSS, Cognito auth wrappers, and DynamoDB CRUD hooks ready to clone.",
+      "link": "https://github.com/awsbc-gcet/nextjs15-amplify-starter",
+      "tags": ["Next.js", "Amplify", "Cognito", "TypeScript"],
+      "updatedAt": "Sep 2026"
+    },
+    {
+      "id": "res-3",
+      "title": "Building RAG on Bedrock: Complete Workshop Repo",
+      "category": "AI/ML",
+      "type": "Workshop Materials",
+      "difficulty": "Intermediate",
+      "description": "Full workshop source code containing document ingestion pipelines, OpenSearch vector index scripts, and streaming Lambda handlers.",
+      "link": "https://github.com/awsbc-gcet/bedrock-rag-workshop",
+      "tags": ["Amazon Bedrock", "RAG", "OpenSearch", "Python"],
+      "updatedAt": "Oct 2026"
+    },
+    {
+      "id": "res-4",
+      "title": "Dockerizing & Deploying Node.js to AWS ECS Fargate",
+      "category": "DevOps",
+      "type": "Tutorial",
+      "difficulty": "Intermediate",
+      "description": "Multi-stage Dockerfile patterns, ECR push commands, task definition JSON templates, and ALB target group routing configurations.",
+      "link": "https://github.com/awsbc-gcet/ecs-fargate-hands-on",
+      "tags": ["Docker", "ECS", "Fargate", "ALB"],
+      "updatedAt": "Aug 2026"
+    },
+    {
+      "id": "res-5",
+      "title": "AWS Certified Solutions Architect Associate (SAA-C03) Study Sheet",
+      "category": "Interview Preparation",
+      "type": "Cheatsheet",
+      "difficulty": "Advanced",
+      "description": "High-yield architectural comparison tables: S3 storage classes, EBS vs EFS, RDS Multi-AZ vs Read Replicas, and VPC Peering vs Transit Gateway.",
+      "link": "https://github.com/awsbc-gcet/saa-c03-architecture-cheatsheet",
+      "tags": ["SAA-C03", "Certifications", "Architecture"],
+      "updatedAt": "Sep 2026"
+    },
+    {
+      "id": "res-6",
+      "title": "Debugging 10 Common AWS Deployment Errors",
+      "category": "Problem Solving",
+      "type": "Troubleshooting Guide",
+      "difficulty": "Beginner to Intermediate",
+      "description": "Fixes for S3 403 Access Denied, CORS failures on API Gateway, Lambda VPC timeout bugs, and RDS connection security group misconfigurations.",
+      "link": "https://github.com/awsbc-gcet/aws-troubleshooting-handbook",
+      "tags": ["CORS", "Security Groups", "IAM Policies", "VPC"],
+      "updatedAt": "Oct 2026"
+    },
+    {
+      "id": "res-7",
+      "title": "Cloud System Design Interview Question Bank",
+      "category": "Interview Preparation",
+      "type": "Problem Solving",
+      "difficulty": "Advanced",
+      "description": "Real systems design prompts solved with AWS architectures: URL shortener with DynamoDB, photo upload pipeline with S3 & SQS, and rate limiter with ElastiCache.",
+      "link": "https://github.com/awsbc-gcet/cloud-system-design-primer",
+      "tags": ["System Design", "Interviews", "DynamoDB", "SQS"],
+      "updatedAt": "Jul 2026"
+    },
+    {
+      "id": "res-8",
+      "title": "Infrastructure as Code with AWS CDK in TypeScript",
+      "category": "DevOps",
+      "type": "Tutorial",
+      "difficulty": "Intermediate",
+      "description": "Learn to define VPCs, Lambda functions, and DynamoDB tables in pure TypeScript with type checking and reusable construct libraries.",
+      "link": "https://github.com/awsbc-gcet/aws-cdk-typescript-guide",
+      "tags": ["AWS CDK", "TypeScript", "IaC"],
+      "updatedAt": "Sep 2026"
+    }
+  ]
+}
