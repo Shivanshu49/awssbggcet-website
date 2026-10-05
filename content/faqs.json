@@ -1,14 +1,22 @@
 [
   {
-    "question": "Do I need prior cloud experience to join?",
-    "answer": "No. Most members start with zero AWS experience. Our first sessions each semester cover the basics, from creating an account safely to deploying your first project."
+    "question": "What is the AWS Builder Center at GCET?",
+    "answer": "AWS Builder Center GCET is a student-led cloud computing community affiliated with AWS. We run hands-on workshops, cloud study jams, certification cohorts, and hackathons to help students build real-world cloud applications."
   },
   {
-    "question": "Is membership free, and who can join?",
-    "answer": "Membership is free and open to every GCET student, from any branch or year. Fill in the join form and you'll be added to our announcements channel."
+    "question": "Do I need prior cloud experience or a paid AWS account to join?",
+    "answer": "No prior experience or paid accounts are required. Our sessions start from foundational concepts, and workshops use AWS Educate and free-tier sandboxes without requiring a personal credit card."
   },
   {
-    "question": "Will I get AWS credits or certification vouchers?",
-    "answer": "When AWS offers credits, voucher discounts or challenge programs to student communities, we share them with active members first. They depend on AWS availability and aren't guaranteed every semester."
+    "question": "How can I prepare for AWS certifications through the club?",
+    "answer": "We run dedicated study cohorts for AWS Certified Cloud Practitioner (CLF-C02) and Solutions Architect – Associate (SAA-C03), offering structured roadmaps, official practice tests, and peer mentorship."
+  },
+  {
+    "question": "Who can attend the club events and workshops?",
+    "answer": "All GCET students across any branch and year with an interest in software engineering, DevOps, cloud infrastructure, or AI/ML are welcome to register and participate."
+  },
+  {
+    "question": "How do I become a core team member or volunteer?",
+    "answer": "Core team recruitments open at the beginning of each academic semester. Active participants in workshops and study jams are given priority consideration during selection."
   }
 ]
