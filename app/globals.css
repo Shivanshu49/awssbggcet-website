@@ -18,6 +18,8 @@
   --color-surface-alt: #f7f8fa;
   --color-ink: #16191f;
   --color-ink-muted: #5f6b7a;
+  /* Provisional status color for the UI owner to override. White text on it passes AA. */
+  --color-success: #0f7b55;
 }
 
 @theme inline {

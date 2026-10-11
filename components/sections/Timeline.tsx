@@ -19,7 +19,7 @@ export const Timeline: React.FC<TimelineProps> = ({ events }) => {
 
           return (
             <div
-              key={event.id}
+              key={event.slug}
               className="relative flex flex-col sm:flex-row items-center"
             >
               {/* Timeline Card Slot */}

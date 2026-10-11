@@ -1,5 +1,5 @@
 import React from "react";
-import { Container } from "@/components/ui/container";
+import { Container } from "@/components/shared/Container";
 import { ResourcesView } from "@/components/resources/resources-view";
 import { getResourcesData } from "@/lib/content";
 
@@ -14,7 +14,7 @@ export default function ResourcesPage() {
 
   return (
     <div className="py-12 sm:py-16">
-      <Container size="wide">
+      <Container>
         {/* Page Header */}
         <div className="max-w-3xl mb-12">
           <div className="inline-flex items-center gap-2 mb-3">

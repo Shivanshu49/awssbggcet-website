@@ -3,19 +3,15 @@ import Image from 'next/image';
 import { MapPin, ExternalLink } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import type { Event } from '@/lib/events';
 
-export interface EventItem {
-  id: string;
-  title: string;
-  date: string;
-  category: string;
-  description: string;
-  location: string;
+// isPast and dateLabel are computed by the page. featured is a UI-only flag
+// nothing sets yet.
+export type EventItem = Event & {
   featured?: boolean;
-  registrationUrl?: string;
-  imageUrl?: string;
   isPast?: boolean;
-}
+  dateLabel: string;
+};
 
 interface EventCardProps {
   event: EventItem;
@@ -34,10 +30,10 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-amber-300 via-purple-400 to-amber-300" />
       )}
 
-      {event.imageUrl && (
+      {event.coverImage && (
         <div className="relative w-full h-44 overflow-hidden bg-[#171020]">
           <Image
-            src={event.imageUrl}
+            src={event.coverImage}
             alt={event.title}
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
@@ -57,10 +53,10 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
                   : 'bg-purple-950/40 text-purple-300 border-purple-500/30'
               }`}
             >
-              {event.date}
+              {event.dateLabel}
             </span>
             <span className="text-[11px] font-mono text-[#A89DB5] tracking-wide">
-              {event.category}
+              {event.mode}
             </span>
           </div>
 
@@ -76,7 +72,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         <div>
           <div className="flex items-center text-xs text-purple-300/80 mb-5 gap-1.5">
             <MapPin className="w-3.5 h-3.5 text-amber-300 shrink-0" />
-            <span className="truncate">{event.location}</span>
+            <span className="truncate">{event.venue}</span>
           </div>
 
           {event.isPast ? (
