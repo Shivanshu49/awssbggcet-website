@@ -1,11 +1,13 @@
 [
   {
-    "slug": "orientation-seminar-sep14",
+    "slug": "aws-orientation-seminar-sep14",
     "title": "AWS Cloud Foundations & Orientation Seminar",
-    "date": "14 Sep 2026",
+    "date": "2026-09-14T11:00:00+05:30",
+    "mode": "offline",
     "venue": "Seminar Hall, Block D, GCET",
     "description": "Club inauguration and orientation introducing GCET students to the AWS Student Builder Group, cloud learning tracks, and student cohorts.",
-    "image": "/events/seminar-hands-on-demo.webp",
+    "registrationUrl": "",
+    "coverImage": "/events/seminar-hands-on-demo.webp",
     "gallery": [
       "/events/seminar-stage-banner.webp",
       "/events/seminar-hall-audience.webp",
