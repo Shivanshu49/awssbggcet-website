@@ -3,6 +3,7 @@ import { VisionSection } from '@/components/sections/VisionSection';
 import { TeamSection } from '@/components/sections/TeamSection';
 import { TeamMember } from '@/components/cards/TeamCard';
 import { MentorsRow, MentorItem } from '@/components/sections/MentorsRow';
+import team from '@/content/team.json';
 
 export const metadata = {
   title: 'About | AWS Student Builder Group GCET',
@@ -10,11 +11,11 @@ export const metadata = {
 };
 
 export default function AboutPage() {
-  const teamMembers: TeamMember[] = [];
+  const teamMembers: TeamMember[] = team;
   const mentors: MentorItem[] = [];
 
   return (
-    <main className="min-h-screen bg-[#08060D] text-[#F8FAFC] py-20 px-4 sm:px-6">
+    <div className="min-h-screen bg-[#08060D] text-[#F8FAFC] py-20 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto space-y-20">
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto">
@@ -58,6 +59,6 @@ export default function AboutPage() {
           <MentorsRow mentors={mentors} />
         </div>
       </div>
-    </main>
+    </div>
   );
 }

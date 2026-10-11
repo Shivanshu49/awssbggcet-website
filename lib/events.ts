@@ -26,6 +26,20 @@ function endsAt(event: Event) {
   return new Date(event.endDate ?? event.date).getTime();
 }
 
+// Server-only: pages pass the result down as a string, so client components
+// never import values from this module. Locale and timeZone are pinned so the
+// label doesn't depend on the build machine's settings.
+const eventDateFormat = new Intl.DateTimeFormat("en-IN", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  timeZone: "Asia/Kolkata",
+});
+
+export function formatEventDate(date: string) {
+  return eventDateFormat.format(new Date(date));
+}
+
 export function getUpcoming(now = new Date()): Event[] {
   return events
     .filter((event) => endsAt(event) >= now.getTime())

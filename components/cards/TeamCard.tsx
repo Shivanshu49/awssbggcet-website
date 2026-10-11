@@ -2,15 +2,15 @@ import React from 'react';
 import Image from 'next/image';
 import { Card } from '@/components/ui/card';
 
+// Mirrors content/team.json. bio and portfolioUrl aren't in the data yet.
 export interface TeamMember {
-  id: string;
   name: string;
   role: string;
-  category?: string;
-  photoUrl?: string;
+  group: string;
+  image: string;
+  linkedin: string;
+  github: string;
   bio?: string;
-  linkedinUrl?: string;
-  githubUrl?: string;
   portfolioUrl?: string;
 }
 
@@ -19,9 +19,9 @@ export const TeamCard: React.FC<{ member: TeamMember }> = ({ member }) => {
     <Card className="group relative rounded-2xl bg-[#100B18] border border-[#4C2A66]/50 p-5 transition-all duration-300 hover:border-amber-300/50 hover:bg-[#171020] flex flex-col justify-between">
       <div>
         <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-[#171020] border border-purple-900/30 mb-4">
-          {member.photoUrl ? (
+          {member.image ? (
             <Image
-              src={member.photoUrl}
+              src={member.image}
               alt={member.name}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
@@ -50,9 +50,9 @@ export const TeamCard: React.FC<{ member: TeamMember }> = ({ member }) => {
       </div>
 
       <div className="flex items-center space-x-3 pt-3 border-t border-[#4C2A66]/40 text-[#A89DB5]">
-        {member.linkedinUrl && (
+        {member.linkedin && (
           <a
-            href={member.linkedinUrl}
+            href={member.linkedin}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`${member.name} LinkedIn Profile`}
@@ -63,9 +63,9 @@ export const TeamCard: React.FC<{ member: TeamMember }> = ({ member }) => {
             </svg>
           </a>
         )}
-        {member.githubUrl && (
+        {member.github && (
           <a
-            href={member.githubUrl}
+            href={member.github}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`${member.name} GitHub Profile`}
