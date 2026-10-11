@@ -19,5 +19,26 @@
     "tagline": "Object storage built to hold anything",
     "useCase": "Store datasets for ML coursework, host a static portfolio site, or keep backups of your project assets with versioning turned on.",
     "docsUrl": "https://docs.aws.amazon.com/s3/"
+  },
+  {
+    "name": "Amazon RDS",
+    "icon": "/icons/amazon-rds.svg",
+    "tagline": "Managed relational database engine",
+    "useCase": "Deploy production-grade PostgreSQL or MySQL databases for your web apps with automated backups, multi-AZ failover, and zero maintenance overhead.",
+    "docsUrl": "https://docs.aws.amazon.com/rds/"
+  },
+  {
+    "name": "Amazon DynamoDB",
+    "icon": "/icons/amazon-dynamodb.svg",
+    "tagline": "Fast, flexible NoSQL database service",
+    "useCase": "Power real-time leaderboards, session tracking, and serverless applications with single-digit millisecond latency at any scale.",
+    "docsUrl": "https://docs.aws.amazon.com/dynamodb/"
+  },
+  {
+    "name": "Amazon Bedrock",
+    "icon": "/icons/amazon-bedrock.svg",
+    "tagline": "Build Generative AI applications with foundation models",
+    "useCase": "Integrate cutting-edge AI models (Claude, Llama) with RAG architectures into your student projects without managing GPUs or model hosting infrastructure.",
+    "docsUrl": "https://docs.aws.amazon.com/bedrock/"
   }
 ]
