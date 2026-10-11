@@ -8,6 +8,10 @@
     "answer": "No prior experience or paid accounts are required. Our sessions start from foundational concepts, and workshops use AWS Educate and free-tier sandboxes without requiring a personal credit card."
   },
   {
+    "question": "Will I get AWS credits or certification vouchers?",
+    "answer": "Receiving AWS credits or certification vouchers depends on your active performance and participation in the club, including engagement in workshops, challenges, and extras like quizzes."
+  },
+  {
     "question": "How can I prepare for AWS certifications through the club?",
     "answer": "We run dedicated study cohorts for AWS Certified Cloud Practitioner (CLF-C02) and Solutions Architect – Associate (SAA-C03), offering structured roadmaps, official practice tests, and peer mentorship."
   },
