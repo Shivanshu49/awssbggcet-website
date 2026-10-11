@@ -1,14 +1,17 @@
 [
   {
-    "name": "GCET Training & Placement Cell",
-    "logo": "/sponsors/gcet-tnp.svg",
-    "url": "https://forms.gle/awsbcgcet-sponsor-tnp",
-    "tier": "institutional"
+    "name": "AWS Cloud Clubs",
+    "category": "Community Partner",
+    "website": "https://aws.amazon.com/developer/community/students/"
   },
   {
-    "name": "CloudNest Labs",
-    "logo": "/sponsors/cloudnest-labs.svg",
-    "url": "https://forms.gle/awsbcgcet-sponsor-cloudnest",
-    "tier": "gold"
+    "name": "Galgotias College of Engineering & Technology",
+    "category": "Institution",
+    "website": "https://galgotiacollege.edu/"
+  },
+  {
+    "name": "AWS Educate",
+    "category": "Learning Platform",
+    "website": "https://aws.amazon.com/education/awseducate/"
   }
 ]
