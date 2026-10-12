@@ -1,47 +1,46 @@
+'use client';
+
 import React from 'react';
-import { EventItem, EventCard } from '@/components/cards/EventCard';
+import { EventCard, EventItem } from '@/components/cards/EventCard';
 
 interface TimelineProps {
   events: EventItem[];
 }
 
 export const Timeline: React.FC<TimelineProps> = ({ events }) => {
-  if (!events || events.length === 0) return null;
-
   return (
-    <div className="relative max-w-5xl mx-auto py-8">
-      {/* Central Illuminated Spine */}
-      <div className="absolute left-4 md:left-1/2 top-4 bottom-4 w-[2px] -translate-x-1/2 bg-gradient-to-b from-amber-400 via-purple-500 to-purple-900/40 shadow-[0_0_10px_rgba(168,85,247,0.3)] hidden sm:block" />
+    <div className="relative max-w-5xl mx-auto px-4 sm:px-6">
+      {/* Responsive spine: left-aligned on mobile, centered on desktop */}
+      <div
+        className="absolute top-0 bottom-0 w-0.5 bg-[#3B1F54] left-4 md:left-1/2 -translate-x-1/2"
+        aria-hidden="true"
+      />
 
-      <div className="space-y-10">
+      <div className="space-y-10 md:space-y-12">
         {events.map((event, index) => {
           const isEven = index % 2 === 0;
 
           return (
             <div
-              key={event.id}
-              className="relative flex flex-col sm:flex-row items-center"
+              key={event.id || index}
+              className={`relative flex flex-col md:flex-row items-start md:items-center ${
+                isEven ? 'md:flex-row-reverse' : ''
+              }`}
             >
-              {/* Timeline Card Slot */}
-              <div
-                className={`w-full sm:w-1/2 pl-8 sm:pl-0 ${
-                  isEven ? 'sm:pr-12' : 'sm:order-2 sm:pl-12'
-                }`}
-              >
+              {/* Event Card Container */}
+              <div className="w-full pl-8 md:pl-0 md:w-[calc(50%-2rem)]">
                 <EventCard event={event} />
               </div>
 
-              {/* Central Glowing Node Marker */}
-              <div className="absolute left-4 sm:left-1/2 top-8 -translate-x-1/2 w-5 h-5 rounded-full bg-[#08060D] border-2 border-amber-300 shadow-[0_0_10px_#FDE68A] hidden sm:flex items-center justify-center z-10">
-                <div className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+              {/* Responsive Node Indicator */}
+              <div className="absolute left-4 md:left-1/2 -translate-x-1/2 top-6 md:top-auto flex items-center justify-center pointer-events-none z-10">
+                <div className="w-5 h-5 rounded-full bg-[#100B18] border-2 border-amber-400 flex items-center justify-center shadow-[0_0_10px_rgba(251,191,36,0.35)]">
+                  <div className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+                </div>
               </div>
 
-              {/* Counterbalance Spacer */}
-              <div
-                className={`hidden sm:block w-1/2 ${
-                  isEven ? 'order-2' : 'order-1'
-                }`}
-              />
+              {/* Spacer balancing desktop alternation */}
+              <div className="hidden md:block md:w-[calc(50%-2rem)]" />
             </div>
           );
         })}
@@ -49,3 +48,5 @@ export const Timeline: React.FC<TimelineProps> = ({ events }) => {
     </div>
   );
 };
+
+export default Timeline;
