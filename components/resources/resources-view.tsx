@@ -4,10 +4,18 @@ import React, { useState } from "react";
 import { ResourceItem, ResourceCard } from "@/components/resources/resource-card";
 import { LearningPaths } from "@/components/resources/learning-paths";
 import { Reveal } from "@/components/ui/reveal";
-import { Search, Filter, BookMarked, Compass } from "lucide-react";
+import { Search, BookMarked, Compass } from "lucide-react";
 
 interface ResourcesViewProps {
-  learningPaths: any[];
+  learningPaths: Array<{
+    id: string;
+    title: string;
+    duration: string;
+    level: string;
+    description: string;
+    modules: string[];
+    recommendedFor: string;
+  }>;
   resources: ResourceItem[];
 }
 
@@ -138,7 +146,7 @@ export function ResourcesView({
                 No resources matched your search query.
               </p>
               <p className="text-xs text-slate-400">
-                Try clearing your search query or selecting "All" categories.
+                Try clearing your search query or selecting &quot;All&quot; categories.
               </p>
             </div>
           )}
