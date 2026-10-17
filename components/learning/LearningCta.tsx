@@ -29,9 +29,10 @@ export function LearningCta() {
         </h2>
 
         <p className="mt-4 text-base leading-relaxed text-surface/85 sm:text-lg">
-          Join thousands of student builders and cloud engineers mastering AWS.
-          Explore official architectural patterns, earn certifications, and ship
-          real-world cloud applications.
+          Whether it&apos;s your first IAM user or a production-grade serverless
+          system, learn with official AWS architecture patterns, prepare for
+          certifications, and ship real cloud applications alongside the GCET
+          community.
         </p>
 
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row sm:items-center">

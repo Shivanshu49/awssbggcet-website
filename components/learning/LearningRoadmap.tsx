@@ -41,7 +41,7 @@ export function LearningRoadmap() {
                   Stage {stage.stage}
                 </span>
                 <span className="text-xs font-medium text-ink-muted">
-                  Milestone {stage.stage} of 6
+                  Milestone {stage.stage} of {ROADMAP_STAGES.length}
                 </span>
               </div>
 

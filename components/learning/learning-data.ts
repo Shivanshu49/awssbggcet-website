@@ -337,3 +337,91 @@ export const PROJECT_IDEAS: ProjectIdea[] = [
       "https://developer.hashicorp.com/terraform/tutorials/aws-get-started",
   },
 ];
+
+/**
+ * Verified external hands-on workshops and tutorials. Every URL was checked
+ * live before inclusion; level and duration are only listed where the source
+ * states them (no invented metadata).
+ */
+export interface HandsOnWorkshop {
+  id: string;
+  title: string;
+  description: string;
+  topic: string;
+  /** Skill level exactly as stated by the source, or "All levels". */
+  level: string;
+  /** Estimated time, only when the source states one. */
+  duration: string | null;
+  /** Where the workshop is published. */
+  source: string;
+  url: string;
+}
+
+export const HANDS_ON_WORKSHOPS: HandsOnWorkshop[] = [
+  {
+    id: "ws-catalog",
+    title: "AWS Workshops catalog",
+    description:
+      "Hands-on workshops crafted by AWS experts. Filter 200+ workshops by level (100 Foundational to 300 Advanced), category, AWS service, and duration.",
+    topic: "All topics",
+    level: "All levels",
+    duration: null,
+    source: "AWS Builder Center",
+    url: "https://workshops.aws/",
+  },
+  {
+    id: "ws-tutorials-hub",
+    title: "AWS Hands-on Tutorials hub",
+    description:
+      "Step-by-step guided tutorials from AWS — including building a full-stack React application with Amplify and extracting documents with Bedrock and Textract.",
+    topic: "All topics",
+    level: "All levels",
+    duration: null,
+    source: "AWS Getting Started",
+    url: "https://aws.amazon.com/getting-started/hands-on/",
+  },
+  {
+    id: "ws-genai-app",
+    title: "Build a serverless web app with generative AI",
+    description:
+      "Build a React app with AWS Amplify that calls Amazon Bedrock's Claude model — covers hosting, Cognito auth, a Lambda-backed API, and cost-capped cleanup.",
+    topic: "Generative AI",
+    level: "Beginner",
+    duration: "35 minutes",
+    source: "AWS Getting Started",
+    url: "https://aws.amazon.com/getting-started/hands-on/build-serverless-web-app-lambda-apigateway-s3-dynamodb-cognito/",
+  },
+  {
+    id: "ws-builders-library",
+    title: "AWS Builders Library",
+    description:
+      "A collection of articles describing how Amazon develops, architects, releases, and operates technology — patterns for systems that are reliable, available, and secure.",
+    topic: "Cloud Architecture",
+    level: "Intermediate to Advanced",
+    duration: null,
+    source: "AWS Builder Center",
+    url: "https://aws.amazon.com/builders-library/",
+  },
+  {
+    id: "ws-ecs-fargate",
+    title: "Run containers on Amazon ECS and Fargate",
+    description:
+      "Create a cluster, task definition, and service, then run a containerized sample app on serverless Fargate infrastructure — including the cleanup steps.",
+    topic: "Containers",
+    level: "Intermediate",
+    duration: null,
+    source: "AWS Documentation",
+    url: "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-fargate.html",
+  },
+  {
+    id: "ws-s3-hosting",
+    title: "Host a static website on Amazon S3",
+    description:
+      "Enable website hosting, configure index documents and bucket permissions, and learn when to front the bucket with CloudFront or Amplify Hosting.",
+    topic: "AWS Fundamentals",
+    level: "Beginner",
+    duration: null,
+    source: "AWS Documentation",
+    url: "https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html",
+  },
+];

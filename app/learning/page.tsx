@@ -2,9 +2,13 @@ import type { Metadata } from "next";
 import { Container } from "@/components/shared/Container";
 import {
   LearningHero,
+  FeaturedPaths,
+  PathExplorer,
   LearningCategories,
   OfficialResources,
   LearningRoadmap,
+  WorkshopsSection,
+  RelatedResources,
   ProjectIdeas,
   LearningCta,
 } from "@/components/learning";
@@ -23,26 +27,38 @@ export const metadata: Metadata = {
 
 export default function LearningPage() {
   return (
-    <main id="main-content" className="bg-surface-alt py-10 sm:py-14 md:py-16">
+    <div className="bg-surface-alt py-10 sm:py-14 md:py-16">
       <Container className="space-y-16 sm:space-y-20 md:space-y-24">
-        {/* A. Hero Section */}
+        {/* Hero */}
         <LearningHero />
 
-        {/* B. Learning Categories */}
+        {/* Featured spotlight tracks */}
+        <FeaturedPaths />
+
+        {/* Topic navigation + learning-path catalog */}
+        <PathExplorer />
+
+        {/* Learning domains */}
         <LearningCategories />
 
-        {/* C. Official AWS Learning Resources */}
+        {/* Official AWS learning platforms */}
         <OfficialResources />
 
-        {/* D. Recommended Learning Roadmap */}
+        {/* Recommended learning roadmap */}
         <LearningRoadmap />
 
-        {/* E. Hands-on Project Ideas */}
+        {/* Hands-on workshops & guided tutorials */}
+        <WorkshopsSection />
+
+        {/* Supporting materials from the resource library */}
+        <RelatedResources />
+
+        {/* Hands-on project ideas */}
         <ProjectIdeas />
 
-        {/* F. Learning Call to Action */}
+        {/* Call to action */}
         <LearningCta />
       </Container>
-    </main>
+    </div>
   );
 }

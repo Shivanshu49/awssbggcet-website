@@ -80,6 +80,12 @@
   html {
     @apply font-sans;
   }
+  /* Smooth in-page anchor navigation, skipped for reduced-motion users. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
   body {
     @apply bg-background text-foreground;
   }
@@ -88,5 +94,13 @@
   h3,
   h4 {
     @apply font-heading;
+  }
+  /* Keyboard focus for plain links. currentColor keeps the indicator visible on
+     both light surfaces and the dark navy sections. Buttons keep their ring
+     style, so anchors rendered through Button (data-slot="button") are skipped. */
+  a:not([data-slot="button"]):focus-visible {
+    border-radius: 2px;
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
   }
 }
