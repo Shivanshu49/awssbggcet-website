@@ -696,7 +696,7 @@ export default function HomePage() {
                 <Calendar className="w-4 h-4 stroke-[2.2]" />
               </Link>
 
-              <div className="relative group">
+<div className="relative group">
                 <span className="absolute -top-1 -left-1 w-2.5 h-2.5 border-t-2 border-l-2 border-[#C084FC] pointer-events-none transition-transform group-hover:-translate-x-0.5 group-hover:-translate-y-0.5" />
                 <span className="absolute -bottom-1 -right-1 w-2.5 h-2.5 border-b-2 border-r-2 border-[#FBBF24] pointer-events-none transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5" />
 
