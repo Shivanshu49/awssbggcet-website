@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="10" fill="#ED7100" />
+  <!-- Official AWS Serverless Lambda Emblem -->
+  <path d="M22 47 L29.5 17 H34.5 L42 47 H36.8 L32 28.5 L27.2 47 Z" fill="#FFFFFF" />
+  <path d="M26.5 35 H37.5 V39 H26.5 Z" fill="#FFFFFF" />
+  <text x="32" y="58" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, &#39;Segoe UI&#39;, Roboto, sans-serif" font-size="8" font-weight="800" text-anchor="middle" letter-spacing="1">LAMBDA</text>
+</svg>
