@@ -22,7 +22,7 @@ export const Timeline: React.FC<TimelineProps> = ({ events }) => {
 
           return (
             <div
-              key={event.id || index}
+              key={event.slug}
               className={`relative flex flex-col md:flex-row items-start md:items-center ${
                 isEven ? 'md:flex-row-reverse' : ''
               }`}

@@ -137,6 +137,49 @@ const parseHex = (hex = '#ffffff'): [number, number, number] => {
   return [((num >> 16) & 255) / 255, ((num >> 8) & 255) / 255, (num & 255) / 255];
 };
 
+// Calls onChange(true) while el is on screen in a visible tab, onChange(false) otherwise.
+const watchVisibility = (el: Element, onChange: (visible: boolean) => void) => {
+  let onScreen = false;
+  const update = () => onChange(onScreen && !document.hidden);
+  const io = new IntersectionObserver(([entry]) => {
+    onScreen = entry.isIntersecting;
+    update();
+  });
+  io.observe(el);
+  document.addEventListener('visibilitychange', update);
+  return () => {
+    io.disconnect();
+    document.removeEventListener('visibilitychange', update);
+  };
+};
+
+const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+interface CursorGridProps {
+  cellSize?: number;
+  color?: string;
+  gridColor?: string;
+  radius?: number;
+  falloff?: string;
+  holdTime?: number;
+  fadeDuration?: number;
+  lineWidth?: number;
+  maxOpacity?: number;
+  fillOpacity?: number;
+  gridOpacity?: number;
+  gridStyle?: string;
+  cellRadius?: number;
+  cellGap?: number;
+  spotlight?: number;
+  ambient?: number;
+  edgeFade?: number;
+  intro?: boolean;
+  dpr?: number;
+  children?: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+}
+
 function CursorGrid({
   cellSize = 58,
   color = '#FAF8F5',
@@ -160,7 +203,7 @@ function CursorGrid({
   children,
   className = '',
   style,
-}: Record<string, any>) {
+}: CursorGridProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -193,10 +236,13 @@ function CursorGrid({
     let targets = new Float32Array(0);
     let touched = new Float32Array(0);
     let pixels = new Uint8Array(0);
+    const reduced = prefersReducedMotion();
     let presence = 0;
     let clock = 0;
-    let introClock = intro ? 0 : 1;
+    let introClock = intro && !reduced ? 0 : 1;
     let raf = 0;
+    let wake = 0;
+    let visible = false;
     let last = 0;
     let dirty = true;
 
@@ -291,6 +337,12 @@ function CursorGrid({
       mouse.y += (pointer.y - mouse.y) * follow;
       const goal = pointer.inside ? 1 : 0;
       presence += (goal - presence) * (1 - Math.exp(-dt / 0.25));
+      // Snap once the remaining motion is invisible so the idle check below can fire.
+      if (Math.abs(goal - presence) < 1e-3) presence = goal;
+      if (Math.abs(pointer.x - mouse.x) + Math.abs(pointer.y - mouse.y) < 0.01) {
+        mouse.x = pointer.x;
+        mouse.y = pointer.y;
+      }
 
       if (ambient > 0 && levels.length) {
         const chance = ambient * dt * levels.length * 0.03;
@@ -302,6 +354,7 @@ function CursorGrid({
       const holdSec = holdTime / 1000;
       const fadeStep = dt / (fadeDuration / 1000);
       const attack = 1 - Math.exp(-dt / 0.045);
+      let lit = 0;
       for (let i = 0; i < levels.length; i++) {
         let t = targets[i];
         if (t <= 0 && levels[i] <= 0) continue;
@@ -311,33 +364,77 @@ function CursorGrid({
         const n = t > b ? b + (t - b) * attack : t;
         levels[i] = n < 0.002 ? 0 : n;
         if (levels[i] !== b) dirty = true;
+        if (t > 0 || levels[i] > 0) lit++;
       }
       draw();
+      // Nothing left to animate: stop until the pointer moves or the next ambient flicker is due.
+      if (!lit && presence === goal && introClock >= 1 && mouse.x === pointer.x && mouse.y === pointer.y) {
+        if (ambient > 0 && levels.length) {
+          // Same Poisson rate as the per-frame ambient chance above, so idle twinkles look identical.
+          const rate = ambient * levels.length * 0.03;
+          wake = window.setTimeout(flicker, (-Math.log(1 - Math.random()) / rate) * 1000);
+        }
+        return;
+      }
       raf = requestAnimationFrame(frame);
+    };
+
+    const start = () => {
+      if (raf || !visible) return;
+      clearTimeout(wake);
+      last = 0;
+      raf = requestAnimationFrame(frame);
+    };
+
+    const stop = () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(wake);
+      raf = 0;
+    };
+
+    const flicker = () => {
+      light(Math.floor(Math.random() * levels.length), 0.25 + Math.random() * 0.35);
+      start();
     };
 
     const onMove = (e: PointerEvent) => {
       const rect = container.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
+      const wasInside = pointer.inside;
       pointer.inside = x >= 0 && y >= 0 && x <= rect.width && y <= rect.height;
       if (pointer.inside) {
         pointer.x = x;
         pointer.y = y;
         energize(x, y);
       }
+      if (pointer.inside || wasInside) start();
+    };
+
+    const onResize = () => {
+      rebuild();
+      draw();
     };
 
     rebuild();
     draw();
-    raf = requestAnimationFrame(frame);
-    window.addEventListener('pointermove', onMove, { passive: true });
-    window.addEventListener('resize', rebuild);
+    window.addEventListener('resize', onResize);
+    // Reduced motion: keep the static frame above and never start the loop.
+    let unwatch = () => {};
+    if (!reduced) {
+      window.addEventListener('pointermove', onMove, { passive: true });
+      unwatch = watchVisibility(container, (v) => {
+        visible = v;
+        if (v) start();
+        else stop();
+      });
+    }
 
     return () => {
-      cancelAnimationFrame(raf);
+      stop();
+      unwatch();
       window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('resize', rebuild);
+      window.removeEventListener('resize', onResize);
     };
   }, []);
 
@@ -370,7 +467,7 @@ export default function HomePage() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    let animationFrameId: number;
+    let animationFrameId = 0;
     let time = 0;
 
     const handleResize = () => {
@@ -383,7 +480,6 @@ export default function HomePage() {
     };
 
     handleResize();
-    window.addEventListener('resize', handleResize);
 
     const getWaveY = (
       normX: number,
@@ -482,7 +578,6 @@ export default function HomePage() {
       const width = canvas.clientWidth;
       const height = canvas.clientHeight;
       ctx.clearRect(0, 0, width, height);
-      time += 1;
 
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
@@ -579,14 +674,33 @@ export default function HomePage() {
       });
 
       ctx.restore();
-      animationFrameId = requestAnimationFrame(render);
+    };
+
+    const tick = () => {
+      time += 1;
+      render();
+      animationFrameId = requestAnimationFrame(tick);
+    };
+
+    const onResize = () => {
+      handleResize();
+      render();
     };
 
     render();
+    window.addEventListener('resize', onResize);
+    // Reduced motion: keep the static frame above and never start the loop.
+    const unwatch = prefersReducedMotion()
+      ? () => {}
+      : watchVisibility(canvas, (visible) => {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = visible ? requestAnimationFrame(tick) : 0;
+        });
 
     return () => {
       cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('resize', handleResize);
+      unwatch();
+      window.removeEventListener('resize', onResize);
     };
   }, []);
 
@@ -632,7 +746,6 @@ export default function HomePage() {
         gridColor="#EFECE6"
         radius={145}
         falloff="smooth"
-        highlight="area"
         holdTime={380}
         fadeDuration={800}
         lineWidth={1}
@@ -641,8 +754,6 @@ export default function HomePage() {
         gridOpacity={0.095}
         gridStyle="lines"
         spotlight={0.52}
-        clickPulse={true}
-        pulseSpeed={650}
         ambient={0.08}
         edgeFade={0.18}
         intro={true}

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import Image from 'next/image';
 import { Sparkles, X, MapPin } from 'lucide-react';
 import styles from './DomeGallery.module.css';
 
@@ -11,69 +12,6 @@ export interface GalleryPhoto {
   desc?: string;
   location?: string;
 }
-
-const DEFAULT_POOL: GalleryPhoto[] = [
-  {
-    src: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80',
-    title: 'Cloud DevOps Workshop',
-    desc: 'Hands-on AWS architecture session in Lab 304, GCET.',
-    location: 'Lab 304, GCET',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=800&q=80',
-    title: 'AWS Innovation Hackathon',
-    desc: '24-hour student builder sprint building GenAI solutions.',
-    location: 'Auditorium Block C',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80',
-    title: 'Serverless Masterclass',
-    desc: 'Deep dive into AWS Lambda, API Gateway, and DynamoDB.',
-    location: 'Seminar Hall 2',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80',
-    title: 'Tech Speaker Series',
-    desc: 'AWS Solutions Architects mentoring GCET undergraduates.',
-    location: 'Virtual Conference',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80',
-    title: 'Campus Community Meet',
-    desc: 'Building cloud literacy across all engineering years.',
-    location: 'GCET Central Amphitheatre',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&w=800&q=80',
-    title: 'Builder Showcase',
-    desc: 'Students presenting production cloud deployments.',
-    location: 'Innovation Lab',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=800&q=80',
-    title: 'Hands-on Lab Session',
-    desc: 'Setting up compute instances and security configurations.',
-    location: 'CC Lab 1',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80',
-    title: 'Idea Pitch Battle',
-    desc: 'Students presenting architectural prototypes to panel mentors.',
-    location: 'Seminar Hall 3',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1531538606174-0f90ff5dce83?auto=format&fit=crop&w=800&q=80',
-    title: 'AWS Career Pathway Panel',
-    desc: 'GCET Alumni and guest speakers on landing AWS roles.',
-    location: 'Main Auditorium',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80',
-    title: 'Inaugural Launch Meet',
-    desc: 'Inauguration and charter reveal of GCET student chapter.',
-    location: 'Multipurpose Hall',
-  },
-];
 
 const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max);
 const wrapAngle = (deg: number) => (((deg + 180) % 360) + 360) % 360 - 180;
@@ -94,11 +32,7 @@ function buildReactBitsItems(pool: GalleryPhoto[], segments: number) {
   }));
 }
 
-export const PhotoGrid: React.FC<{ photos?: GalleryPhoto[] }> = ({ photos }) => {
-  const pool = useMemo(() => {
-    return photos && photos.length > 0 ? photos : DEFAULT_POOL;
-  }, [photos]);
-
+export const PhotoGrid: React.FC<{ photos: GalleryPhoto[] }> = ({ photos }) => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -110,7 +44,7 @@ export const PhotoGrid: React.FC<{ photos?: GalleryPhoto[] }> = ({ photos }) => 
 
   const segments = 24;
   const radius = isMobile ? 310 : 650;
-  const items = useMemo(() => buildReactBitsItems(pool, segments), [pool, segments]);
+  const items = useMemo(() => buildReactBitsItems(photos, segments), [photos, segments]);
 
   const [rotation, setRotation] = useState({ x: -4, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -156,6 +90,8 @@ export const PhotoGrid: React.FC<{ photos?: GalleryPhoto[] }> = ({ photos }) => 
   };
 
   const handleEnd = () => setIsDragging(false);
+
+  if (photos.length === 0) return null;
 
   return (
     <div className="select-none my-6">
@@ -208,7 +144,12 @@ export const PhotoGrid: React.FC<{ photos?: GalleryPhoto[] }> = ({ photos }) => 
                         setSelectedPhoto(it.photo);
                       }}
                     >
-                      <img src={it.photo.src} alt={it.photo.title || 'Dome Tile'} />
+                      <Image
+                        src={it.photo.src}
+                        alt={it.photo.title || 'Dome Tile'}
+                        fill
+                        sizes="(max-width: 640px) 99px, 143px"
+                      />
                     </div>
                   </div>
                 );
@@ -239,9 +180,12 @@ export const PhotoGrid: React.FC<{ photos?: GalleryPhoto[] }> = ({ photos }) => 
             </button>
 
             <div className="w-full h-56 sm:h-64 rounded-xl overflow-hidden bg-black">
-              <img
+              <Image
                 src={selectedPhoto.src}
                 alt={selectedPhoto.title || 'Selected photo'}
+                width={464}
+                height={256}
+                sizes="(max-width: 640px) 100vw, 464px"
                 className="w-full h-full object-cover"
               />
             </div>

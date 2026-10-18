@@ -2,56 +2,27 @@
 
 import React from 'react';
 import { Card } from '@/components/ui/card';
+import type { Event } from '@/lib/events';
 
-export interface EventItem {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  location?: string;
-  registrationUrl?: string;
-  category?: string;
-  status?: 'upcoming' | 'past';
-  tags?: string[];
-}
-
-function formatEventDate(dateString: string): string {
-  try {
-    const d = new Date(dateString);
-    if (isNaN(d.getTime())) return dateString;
-
-    const formattedDate = d.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    }).toUpperCase();
-
-    const formattedTime = d.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    });
-
-    return `${formattedDate} • ${formattedTime}`;
-  } catch {
-    return dateString;
-  }
-}
+// isPast and dateLabel are computed by the page; dateLabel is formatted
+// server-side in lib/events so it can't drift with the viewer's locale.
+export type EventItem = Event & {
+  isPast?: boolean;
+  dateLabel: string;
+};
 
 export const EventCard: React.FC<{ event: EventItem }> = ({ event }) => {
-  const displayDate = formatEventDate(event.date);
-
   return (
     <Card className="rounded-2xl bg-[#100B18] border border-[#4C2A66]/50 p-6 transition-all duration-300 hover:border-amber-400/50 hover:bg-[#140E20] flex flex-col justify-between group shadow-[0_4px_20px_rgba(0,0,0,0.3)]">
       <div className="space-y-4">
         {/* Date & Category Badges */}
         <div className="flex flex-wrap items-center gap-2">
           <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-mono font-semibold bg-[#211235] text-purple-200 border border-purple-500/40">
-            {displayDate}
+            {event.dateLabel}
           </span>
-          {event.category && (
+          {event.mode && (
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium bg-[#171020] text-amber-300 border border-amber-400/30">
-              {event.category}
+              {event.mode}
             </span>
           )}
         </div>
@@ -81,14 +52,14 @@ export const EventCard: React.FC<{ event: EventItem }> = ({ event }) => {
             <circle cx="12" cy="10" r="3" />
           </svg>
           <span className="truncate">
-            {event.location ? event.location : 'Galgotias College of Engineering & Technology'}
+            {event.venue || 'Galgotias College of Engineering & Technology'}
           </span>
         </div>
       </div>
 
       {/* Action / Registration CTA */}
       <div className="pt-6 mt-4 border-t border-[#4C2A66]/30">
-        {event.registrationUrl ? (
+        {!event.isPast && event.registrationUrl ? (
           <a
             href={event.registrationUrl}
             target="_blank"
