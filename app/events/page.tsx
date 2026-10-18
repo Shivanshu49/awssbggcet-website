@@ -1,44 +1,28 @@
 import React from 'react';
 import { EventTabs } from '@/components/sections/EventTabs';
-import { getUpcoming, getPast } from '@/lib/events';
+import { getUpcoming, getPast, formatEventDate } from '@/lib/events';
+import gallery from '@/content/gallery.json';
 
 export const metadata = {
   title: 'Events | AWS Student Builder Group GCET',
   description: 'Explore upcoming workshops, hackathons, and technical bootcamps at GCET.',
 };
 
-export default async function EventsPage() {
-  const upcomingRaw = await getUpcoming();
-  const pastRaw = await getPast();
-
-  const upcomingEvents = (upcomingRaw || []).map((e: any) => ({
-    id: String(e.id),
-    title: e.title,
-    date: e.date,
-    category: e.category,
-    description: e.description,
-    location: e.location,
-    featured: Boolean(e.featured),
-    registrationUrl: e.registrationUrl,
-    imageUrl: e.imageUrl,
+export default function EventsPage() {
+  const upcomingEvents = getUpcoming().map((e) => ({
+    ...e,
     isPast: false,
+    dateLabel: formatEventDate(e.date),
   }));
-
-  const pastEvents = (pastRaw || []).map((e: any) => ({
-    id: String(e.id),
-    title: e.title,
-    date: e.date,
-    category: e.category,
-    description: e.description,
-    location: e.location,
-    featured: false,
-    registrationUrl: e.registrationUrl,
-    imageUrl: e.imageUrl,
+  const pastEvents = getPast().map((e) => ({
+    ...e,
     isPast: true,
+    dateLabel: formatEventDate(e.date),
   }));
+  const galleryPhotos = gallery.map((p) => ({ src: p.image, title: p.title }));
 
   return (
-    <main className="min-h-screen bg-[#08060D] text-[#F8FAFC] py-20 px-4 sm:px-6">
+    <div className="min-h-screen bg-[#08060D] text-[#F8FAFC] py-20 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
         <div className="text-center max-w-2xl mx-auto mb-14">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#171020] border border-amber-300/40 mb-4 shadow-[0_0_12px_rgba(253,230,138,0.15)]">
@@ -59,9 +43,9 @@ export default async function EventsPage() {
         <EventTabs
           upcomingEvents={upcomingEvents}
           pastEvents={pastEvents}
-          galleryPhotos={[]}
+          galleryPhotos={galleryPhotos}
         />
       </div>
-    </main>
+    </div>
   );
 }

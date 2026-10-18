@@ -1,0 +1,22 @@
+[
+  {
+    "title": "Official Stage Setup",
+    "image": "/events/seminar-stage-banner.webp"
+  },
+  {
+    "title": "Audience & Faculty Gathering",
+    "image": "/events/seminar-hall-audience.webp"
+  },
+  {
+    "title": "Keynote Address",
+    "image": "/events/seminar-keynote-speaker.webp"
+  },
+  {
+    "title": "Tech Desk & Demo",
+    "image": "/events/seminar-felicitation.webp"
+  },
+  {
+    "title": "Speaker Felicitation",
+    "image": "/events/seminar-hands-on-demo.webp"
+  }
+]

@@ -127,7 +127,7 @@ export function ResourcesView({
           {filteredResources.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredResources.map((item, idx) => (
-                <Reveal key={item.id} delay={idx}>
+                <Reveal key={item.id} delay={idx * 0.06}>
                   <ResourceCard resource={item} />
                 </Reveal>
               ))}
@@ -138,7 +138,7 @@ export function ResourcesView({
                 No resources matched your search query.
               </p>
               <p className="text-xs text-slate-400">
-                Try clearing your search query or selecting "All" categories.
+                Try clearing your search query or selecting &quot;All&quot; categories.
               </p>
             </div>
           )}
