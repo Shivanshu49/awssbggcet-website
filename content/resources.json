@@ -61,93 +61,101 @@
     }
   ],
   "items": [
-    {
-      "id": "res-1",
-      "title": "AWS Free Tier Survival & Budget Safety Guide",
-      "category": "AWS Fundamentals",
-      "type": "Guide / PDF",
-      "difficulty": "Beginner",
-      "description": "Step-by-step checklist to avoid surprise bills: setting up $1 billing alerts, CloudWatch alarms, and auto-terminating test instances.",
-      "link": "https://github.com/awsbc-gcet/aws-free-tier-safety-checklist",
-      "tags": ["IAM", "Budgets", "Billing", "Free Tier"],
-      "updatedAt": "Oct 2026"
-    },
-    {
-      "id": "res-2",
-      "title": "Next.js 15 + AWS Amplify Gen 2 Production Starter",
-      "category": "Projects",
-      "type": "Code Repository",
-      "difficulty": "Intermediate",
-      "description": "A pre-configured boilerplate with TypeScript, Tailwind CSS, Cognito auth wrappers, and DynamoDB CRUD hooks ready to clone.",
-      "link": "https://github.com/awsbc-gcet/nextjs15-amplify-starter",
-      "tags": ["Next.js", "Amplify", "Cognito", "TypeScript"],
-      "updatedAt": "Sep 2026"
-    },
-    {
-      "id": "res-3",
-      "title": "Building RAG on Bedrock: Complete Workshop Repo",
-      "category": "AI/ML",
-      "type": "Workshop Materials",
-      "difficulty": "Intermediate",
-      "description": "Full workshop source code containing document ingestion pipelines, OpenSearch vector index scripts, and streaming Lambda handlers.",
-      "link": "https://github.com/awsbc-gcet/bedrock-rag-workshop",
-      "tags": ["Amazon Bedrock", "RAG", "OpenSearch", "Python"],
-      "updatedAt": "Oct 2026"
-    },
-    {
-      "id": "res-4",
-      "title": "Dockerizing & Deploying Node.js to AWS ECS Fargate",
-      "category": "DevOps",
-      "type": "Tutorial",
-      "difficulty": "Intermediate",
-      "description": "Multi-stage Dockerfile patterns, ECR push commands, task definition JSON templates, and ALB target group routing configurations.",
-      "link": "https://github.com/awsbc-gcet/ecs-fargate-hands-on",
-      "tags": ["Docker", "ECS", "Fargate", "ALB"],
-      "updatedAt": "Aug 2026"
-    },
-    {
-      "id": "res-5",
-      "title": "AWS Certified Solutions Architect Associate (SAA-C03) Study Sheet",
-      "category": "Interview Preparation",
-      "type": "Cheatsheet",
-      "difficulty": "Advanced",
-      "description": "High-yield architectural comparison tables: S3 storage classes, EBS vs EFS, RDS Multi-AZ vs Read Replicas, and VPC Peering vs Transit Gateway.",
-      "link": "https://github.com/awsbc-gcet/saa-c03-architecture-cheatsheet",
-      "tags": ["SAA-C03", "Certifications", "Architecture"],
-      "updatedAt": "Sep 2026"
-    },
-    {
-      "id": "res-6",
-      "title": "Debugging 10 Common AWS Deployment Errors",
-      "category": "Problem Solving",
-      "type": "Troubleshooting Guide",
-      "difficulty": "Beginner to Intermediate",
-      "description": "Fixes for S3 403 Access Denied, CORS failures on API Gateway, Lambda VPC timeout bugs, and RDS connection security group misconfigurations.",
-      "link": "https://github.com/awsbc-gcet/aws-troubleshooting-handbook",
-      "tags": ["CORS", "Security Groups", "IAM Policies", "VPC"],
-      "updatedAt": "Oct 2026"
-    },
-    {
-      "id": "res-7",
-      "title": "Cloud System Design Interview Question Bank",
-      "category": "Interview Preparation",
-      "type": "Problem Solving",
-      "difficulty": "Advanced",
-      "description": "Real systems design prompts solved with AWS architectures: URL shortener with DynamoDB, photo upload pipeline with S3 & SQS, and rate limiter with ElastiCache.",
-      "link": "https://github.com/awsbc-gcet/cloud-system-design-primer",
-      "tags": ["System Design", "Interviews", "DynamoDB", "SQS"],
-      "updatedAt": "Jul 2026"
-    },
-    {
-      "id": "res-8",
-      "title": "Infrastructure as Code with AWS CDK in TypeScript",
-      "category": "DevOps",
-      "type": "Tutorial",
-      "difficulty": "Intermediate",
-      "description": "Learn to define VPCs, Lambda functions, and DynamoDB tables in pure TypeScript with type checking and reusable construct libraries.",
-      "link": "https://github.com/awsbc-gcet/aws-cdk-typescript-guide",
-      "tags": ["AWS CDK", "TypeScript", "IaC"],
-      "updatedAt": "Sep 2026"
-    }
-  ]
+  {
+    "id": "res-1",
+    "title": "AWS Free Tier Survival & Budget Safety Guide",
+    "category": "AWS Fundamentals",
+    "type": "Official Docs",
+    "difficulty": "Beginner",
+    "description": "Step-by-step checklist to avoid surprise bills: setting up $1 billing alerts, CloudWatch alarms, and auto-terminating test instances.",
+    "link": "https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html",
+    "youtubeLink": "https://www.youtube.com/results?search_query=aws+free+tier+budgets+billing+alerts",
+    "tags": ["IAM", "Budgets", "Billing", "Free Tier"],
+    "updatedAt": "Oct 2026"
+  },
+  {
+    "id": "res-2",
+    "title": "Next.js 15 + AWS Amplify Gen 2 Production Starter",
+    "category": "Projects",
+    "type": "Official Docs",
+    "difficulty": "Intermediate",
+    "description": "A pre-configured boilerplate with TypeScript, Tailwind CSS, Cognito auth wrappers, and DynamoDB CRUD hooks ready to clone.",
+    "link": "https://docs.amplify.aws/nextjs/",
+    "youtubeLink": "https://www.youtube.com/results?search_query=aws+amplify+gen+2+nextjs+tutorial",
+    "tags": ["Next.js", "Amplify", "Cognito", "TypeScript"],
+    "updatedAt": "Sep 2026"
+  },
+  {
+    "id": "res-3",
+    "title": "Building RAG on Bedrock: Complete Workshop Repo",
+    "category": "AI/ML",
+    "type": "Official Docs",
+    "difficulty": "Intermediate",
+    "description": "Full workshop source code containing document ingestion pipelines, OpenSearch vector index scripts, and streaming Lambda handlers.",
+    "link": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html",
+    "youtubeLink": "https://www.youtube.com/results?search_query=amazon+bedrock+knowledge+bases+rag+tutorial",
+    "tags": ["Amazon Bedrock", "RAG", "OpenSearch", "Python"],
+    "updatedAt": "Oct 2026"
+  },
+  {
+    "id": "res-4",
+    "title": "Dockerizing & Deploying Node.js to AWS ECS Fargate",
+    "category": "DevOps",
+    "type": "Official Docs",
+    "difficulty": "Intermediate",
+    "description": "Multi-stage Dockerfile patterns, ECR push commands, task definition JSON templates, and ALB target group routing configurations.",
+    "link": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-fargate.html",
+    "youtubeLink": "https://www.youtube.com/results?search_query=deploy+nodejs+docker+aws+ecs+fargate",
+    "tags": ["Docker", "ECS", "Fargate", "ALB"],
+    "updatedAt": "Aug 2026"
+  },
+  {
+    "id": "res-5",
+    "title": "AWS Certified Solutions Architect Associate (SAA-C03) Study Sheet",
+    "category": "Interview Preparation",
+    "type": "Free Course",
+    "difficulty": "Advanced",
+    "description": "High-yield architectural comparison tables: S3 storage classes, EBS vs EFS, RDS Multi-AZ vs Read Replicas, and VPC Peering vs Transit Gateway.",
+    "link": "https://aws.amazon.com/certification/certified-solutions-architect-associate/",
+    "youtubeLink": "https://www.youtube.com/results?search_query=aws+solutions+architect+associate+saa-c03+full+course",
+    "tags": ["SAA-C03", "Certifications", "Architecture"],
+    "updatedAt": "Sep 2026"
+  },
+  {
+    "id": "res-6",
+    "title": "Debugging 10 Common AWS Deployment Errors",
+    "category": "Problem Solving",
+    "type": "Official Docs",
+    "difficulty": "Beginner to Intermediate",
+    "description": "Fixes for S3 403 Access Denied, CORS failures on API Gateway, Lambda VPC timeout bugs, and RDS connection security group misconfigurations.",
+    "link": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/troubleshoot-403-errors.html",
+    "youtubeLink": "https://www.youtube.com/results?search_query=aws+s3+403+access+denied+cors+fix",
+    "tags": ["CORS", "Security Groups", "IAM Policies", "VPC"],
+    "updatedAt": "Oct 2026"
+  },
+  {
+    "id": "res-7",
+    "title": "Cloud System Design Interview Question Bank",
+    "category": "Interview Preparation",
+    "type": "Official Docs",
+    "difficulty": "Advanced",
+    "description": "Real systems design prompts solved with AWS architectures: URL shortener with DynamoDB, photo upload pipeline with S3 & SQS, and rate limiter with ElastiCache.",
+    "link": "https://aws.amazon.com/architecture/",
+    "youtubeLink": "https://www.youtube.com/results?search_query=aws+system+design+interview+url+shortener+dynamodb",
+    "tags": ["System Design", "Interviews", "DynamoDB", "SQS"],
+    "updatedAt": "Jul 2026"
+  },
+  {
+    "id": "res-8",
+    "title": "Infrastructure as Code with AWS CDK in TypeScript",
+    "category": "DevOps",
+    "type": "Official Docs",
+    "difficulty": "Intermediate",
+    "description": "Learn to define VPCs, Lambda functions, and DynamoDB tables in pure TypeScript with type checking and reusable construct libraries.",
+    "link": "https://docs.aws.amazon.com/cdk/v2/guide/home.html",
+    "youtubeLink": "https://www.youtube.com/results?search_query=aws+cdk+typescript+tutorial",
+    "tags": ["AWS CDK", "TypeScript", "IaC"],
+    "updatedAt": "Sep 2026"
+  }
+]
 }
