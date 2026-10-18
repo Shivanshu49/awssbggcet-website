@@ -1,7 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <rect width="64" height="64" rx="12" fill="#ED7100" fill-opacity="0.15" />
-  <rect x="1" y="1" width="62" height="62" rx="11" stroke="#ED7100" stroke-width="2" stroke-opacity="0.4" />
-  <rect x="18" y="18" width="28" height="28" rx="4" fill="#ED7100" />
-  <path d="M12 26h6m-6 6h6m-6 6h6m34-18h6m-6 6h6m-6 6h6M26 12v6m6-6v6m6-6v6m-18 34v6m6-6v6m6-6v6" stroke="#ED7100" stroke-width="2.5" stroke-linecap="round" />
-  <text x="32" y="36" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" text-anchor="middle">EC2</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Official AWS Compute Orange Background Pill -->
+  <rect width="64" height="64" rx="10" fill="#ED7100" />
+  <!-- Official EC2 Isometric Cube Graphics -->
+  <g fill="#FFFFFF" fill-rule="evenodd">
+    <!-- Top Face -->
+    <polygon points="32,14 48,22.5 32,31 16,22.5" opacity="0.95" />
+    <!-- Left Face -->
+    <polygon points="16,25 30,32.5 30,48 16,40.5" opacity="0.8" />
+    <!-- Right Face -->
+    <polygon points="34,32.5 48,25 48,40.5 34,48" opacity="0.88" />
+    <!-- Center Line Inset -->
+    <polygon points="32,32 32,49 30,48 30,31" opacity="0.4" />
+  </g>
+  <!-- Official Service Inset Label -->
+  <text x="32" y="39" fill="#ED7100" font-family="-apple-system, BlinkMacSystemFont, &#39;Segoe UI&#39;, Roboto, sans-serif" font-size="9" font-weight="900" text-anchor="middle" letter-spacing="0.5">EC2</text>
 </svg>
