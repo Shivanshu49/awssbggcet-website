@@ -13,7 +13,7 @@ export default function ResourcesPage() {
   const resourcesData = getResourcesData();
 
   return (
-    <div className="py-12 sm:py-16">
+    <div className="bg-[#08060D] py-12 sm:py-16">
       <Container>
         {/* Page Header */}
         <div className="max-w-3xl mb-12">

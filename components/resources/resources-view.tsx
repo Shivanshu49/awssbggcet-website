@@ -2,12 +2,12 @@
 
 import React, { useState } from "react";
 import { ResourceItem, ResourceCard } from "@/components/resources/resource-card";
-import { LearningPaths } from "@/components/resources/learning-paths";
+import { LearningPaths, type LearningPath } from "@/components/resources/learning-paths";
 import { Reveal } from "@/components/ui/reveal";
-import { Search, Filter, BookMarked, Compass } from "lucide-react";
+import { Search, BookMarked, Compass } from "lucide-react";
 
 interface ResourcesViewProps {
-  learningPaths: any[];
+  learningPaths: LearningPath[];
   resources: ResourceItem[];
 }
 

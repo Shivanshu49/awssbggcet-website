@@ -1,3 +1,4 @@
+import "server-only";
 import eventsData from "@/content/events.json";
 
 // Data seam: swap the JSON import for an API call later. All date logic
