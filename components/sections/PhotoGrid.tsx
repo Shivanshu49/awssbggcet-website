@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef, useMemo } from 'react';
 import Image from 'next/image';
 import { Sparkles, X, MapPin } from 'lucide-react';
+import { prefersReducedMotion, watchVisibility } from '@/lib/motion';
 import styles from './DomeGallery.module.css';
 
 export interface GalleryPhoto {
@@ -43,42 +44,74 @@ export const PhotoGrid: React.FC<{ photos: GalleryPhoto[] }> = ({ photos }) => {
   }, []);
 
   const segments = 24;
+  const unit = 360 / segments / 2;
   const radius = isMobile ? 310 : 650;
   const items = useMemo(() => buildReactBitsItems(photos, segments), [photos, segments]);
 
-  const [rotation, setRotation] = useState({ x: -4, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState<GalleryPhoto | null>(null);
 
+  // Rotation lives outside React: the auto-rotate loop and the drag handlers
+  // write it straight to the DOM, so turning the dome never re-renders tiles.
+  const rotation = useRef({ x: -4, y: 0 });
+  const isDragging = useRef(false);
+  const stepFrom = useRef(0);
   const startPos = useRef({ x: 0, y: 0 });
   const startRot = useRef({ x: 0, y: 0 });
+  const rootRef = useRef<HTMLDivElement>(null);
   const sphereRef = useRef<HTMLDivElement>(null);
+  const tileRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const paint = useRef(() => {});
+
+  useLayoutEffect(() => {
+    paint.current = () => {
+      const sphere = sphereRef.current;
+      if (!sphere) return;
+      const { x, y } = rotation.current;
+      sphere.style.transform = `translateZ(-${radius}px) rotateX(${x}deg) rotateY(${y}deg)`;
+      // Tiles facing away are hidden, same 85° cut-off as when they were unmounted.
+      items.forEach((it, idx) => {
+        const tile = tileRefs.current[idx];
+        const isBack = Math.abs(wrapAngle(unit * it.x + y)) > 85;
+        if (tile && tile.hidden !== isBack) tile.hidden = isBack;
+      });
+    };
+    paint.current();
+  }, [items, radius, unit]);
 
   useEffect(() => {
-    if (isDragging || selectedPhoto) return;
-    const interval = setInterval(() => {
-      setRotation((prev) => ({
-        x: prev.x,
-        y: wrapAngle(prev.y + 0.18),
-      }));
-    }, 30);
-    return () => clearInterval(interval);
-  }, [isDragging, selectedPhoto]);
-
-  useEffect(() => {
-    if (sphereRef.current) {
-      sphereRef.current.style.transform = `translateZ(-${radius}px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`;
-    }
-  }, [rotation, radius]);
+    const root = rootRef.current;
+    if (!root || selectedPhoto || prefersReducedMotion()) return;
+    let raf = 0;
+    const tick = (now: number) => {
+      // Same 0.18° step every 30 ms the old setInterval took, counted from when
+      // rotation (re)started, so speed and cadence match.
+      if (!isDragging.current && now - stepFrom.current >= 30) {
+        for (; now - stepFrom.current >= 30; stepFrom.current += 30) {
+          rotation.current.y = wrapAngle(rotation.current.y + 0.18);
+        }
+        paint.current();
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    const unwatch = watchVisibility(root, (visible) => {
+      cancelAnimationFrame(raf);
+      stepFrom.current = performance.now();
+      raf = visible ? requestAnimationFrame(tick) : 0;
+    });
+    return () => {
+      cancelAnimationFrame(raf);
+      unwatch();
+    };
+  }, [selectedPhoto]);
 
   const handleStart = (clientX: number, clientY: number) => {
-    setIsDragging(true);
+    isDragging.current = true;
     startPos.current = { x: clientX, y: clientY };
-    startRot.current = { ...rotation };
+    startRot.current = { ...rotation.current };
   };
 
   const handleMove = (clientX: number, clientY: number) => {
-    if (!isDragging) return;
+    if (!isDragging.current) return;
     const dx = clientX - startPos.current.x;
     const dy = clientY - startPos.current.y;
 
@@ -86,16 +119,21 @@ export const PhotoGrid: React.FC<{ photos: GalleryPhoto[] }> = ({ photos }) => {
     const nextX = clamp(startRot.current.x - dy / sens, -15, 15);
     const nextY = wrapAngle(startRot.current.y + dx / (sens * 0.9));
 
-    setRotation({ x: nextX, y: nextY });
+    rotation.current = { x: nextX, y: nextY };
+    paint.current();
   };
 
-  const handleEnd = () => setIsDragging(false);
+  const handleEnd = () => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    stepFrom.current = performance.now();
+  };
 
   if (photos.length === 0) return null;
 
   return (
     <div className="select-none my-6">
-      <div className={styles.sphereRoot}>
+      <div ref={rootRef} className={styles.sphereRoot}>
         <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 pointer-events-none">
           <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-[#181124]/90 border border-[#4C2A66]/60 backdrop-blur-md text-[10px] sm:text-[11px] font-mono text-purple-200 shadow-sm">
             <Sparkles className="w-3 h-3 text-amber-400" />
@@ -120,18 +158,15 @@ export const PhotoGrid: React.FC<{ photos: GalleryPhoto[] }> = ({ photos }) => {
           <div className={styles.stage}>
             <div ref={sphereRef} className={styles.sphere}>
               {items.map((it, idx) => {
-                const unit = 360 / segments / 2;
                 const rotY = unit * it.x;
                 const rotX = unit * it.y * 1.5;
-
-                const relY = wrapAngle(rotY + rotation.y);
-                const isBack = Math.abs(relY) > 85;
-
-                if (isBack) return null;
 
                 return (
                   <div
                     key={idx}
+                    ref={(el) => {
+                      tileRefs.current[idx] = el;
+                    }}
                     className={styles.item}
                     style={{
                       transform: `rotateY(${rotY}deg) rotateX(${rotX}deg) translateZ(${radius}px)`,

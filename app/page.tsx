@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Calendar, UserPlus } from 'lucide-react';
+import { prefersReducedMotion, watchVisibility } from '@/lib/motion';
 
 /* ============================================================================
    WEBGL2 INTERACTIVE CURSOR GRID
@@ -136,24 +137,6 @@ const parseHex = (hex = '#ffffff'): [number, number, number] => {
   if (Number.isNaN(num)) return [1, 1, 1];
   return [((num >> 16) & 255) / 255, ((num >> 8) & 255) / 255, (num & 255) / 255];
 };
-
-// Calls onChange(true) while el is on screen in a visible tab, onChange(false) otherwise.
-const watchVisibility = (el: Element, onChange: (visible: boolean) => void) => {
-  let onScreen = false;
-  const update = () => onChange(onScreen && !document.hidden);
-  const io = new IntersectionObserver(([entry]) => {
-    onScreen = entry.isIntersecting;
-    update();
-  });
-  io.observe(el);
-  document.addEventListener('visibilitychange', update);
-  return () => {
-    io.disconnect();
-    document.removeEventListener('visibilitychange', update);
-  };
-};
-
-const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 interface CursorGridProps {
   cellSize?: number;
@@ -722,6 +705,9 @@ export default function HomePage() {
         }
         .animate-marquee:hover {
           animation-play-state: paused;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .animate-marquee { animation: none; }
         }
       `,
         }}

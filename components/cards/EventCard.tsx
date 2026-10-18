@@ -83,7 +83,7 @@ export const EventCard: React.FC<{ event: EventItem }> = ({ event }) => {
           </a>
         ) : (
           <div className="w-full text-center py-2 text-xs font-mono text-[#A89DB5]/60 bg-[#171020]/50 rounded-xl border border-purple-900/20">
-            Event Concluded
+            {event.isPast ? 'Event Concluded' : 'Registration Opening Soon'}
           </div>
         )}
       </div>
