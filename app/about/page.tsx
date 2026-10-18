@@ -1,80 +1,64 @@
-import type { Metadata } from "next";
-import { Container } from "@/components/shared/Container";
-import { Button } from "@/components/ui/button";
-import site from "@/content/site.json";
+import React from 'react';
+import { VisionSection } from '@/components/sections/VisionSection';
+import { TeamSection } from '@/components/sections/TeamSection';
+import { TeamMember } from '@/components/cards/TeamCard';
+import { MentorsRow, MentorItem } from '@/components/sections/MentorsRow';
+import team from '@/content/team.json';
 
-export const metadata: Metadata = {
-  title: site.clubName,
-  description: site.tagline,
+export const metadata = {
+  title: 'About | AWS Student Builder Group GCET',
+  description: 'Learn about our mission, student leadership, and mentors driving cloud builders at GCET.',
 };
 
 export default function AboutPage() {
+  const teamMembers: TeamMember[] = team;
+  const mentors: MentorItem[] = [];
+
   return (
-    <Container className="py-16">
-      <h1 className="text-4xl font-bold tracking-tight text-ink">About AWS Builder Center GCET</h1>
-
-      <p className="text-2xl text-ink-muted/80 mb-8">
-        A student-driven developer community at GCET exploring AWS, cloud computing,
-        DevOps, AI, and modern software engineering through hands-on learning, technical
-        events, and collaborative projects.
-      </p>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-        <div>
-          <h2 className="text-xl font-semibold text-ink mb-4">Mission</h2>
-          <p className="text-lg text-ink-muted/70">
-            To empower GCET students to learn, build, and ship on AWS together through
-            hands-on workshops, collaborative projects, and community-driven events.
+    <div className="min-h-screen bg-[#08060D] text-[#F8FAFC] py-20 px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto space-y-20">
+        {/* Header */}
+        <div className="text-center max-w-2xl mx-auto">
+          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#171020] border border-purple-400/30 mb-4 shadow-[0_0_12px_rgba(192,132,252,0.15)]">
+            <span className="w-2 h-2 rounded-full bg-purple-400" />
+            <span className="text-xs font-mono text-purple-200">
+              GCET Student Chapter
+            </span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight mb-4">
+            About the Builder Group
+          </h1>
+          <p className="text-xs sm:text-sm text-[#A89DB5] leading-relaxed">
+            Empowering students across all years to build, architect, and deploy production-grade
+            cloud solutions on AWS.
           </p>
         </div>
-        <div>
-          <h2 className="text-xl font-semibold text-ink mb-4">Vision</h2>
-          <p className="text-lg text-ink-muted/70">
-            To become the premier student cloud community at GCET, shaping the next
-            generation of cloud architects and AI innovators.
-          </p>
-        </div>
-        <div>
-          <h2 className="text-xl font-semibold text-ink mb-4">Values</h2>
-          <ul className="list-disc pl-5 text-sm text-ink-muted/70 space-y-2">
-            <li>Hands-on Learning</li>
-            <li>Community First</li>
-            <li>Continuous Growth</li>
-            <li>Ethical Innovation</li>
-          </ul>
-        </div>
-      </div>
 
-      <div className="border-t border-border pt-12">
-        <h2 className="text-xl font-semibold text-ink mb-4">Get Involved</h2>
-        <p className="text-lg text-ink-muted/70 mb-6">
-          Whether you are new to cloud computing or an experienced developer, there is a
-          place for you in our community. Join our events, explore our learning paths,
-          or submit your own project to be featured.
-        </p>
-        <div className="flex gap-3">
-          <Button
-            asChild
-            variant="brand"
-            size="lg"
-            className="px-6 py-3 text-lg"
-          >
-            <a href={site.joinFormUrl} target="_blank" rel="noopener noreferrer">
-              Join Club
-            </a>
-          </Button>
-          <Button
-            asChild
-            variant="outline"
-            size="lg"
-            className="px-6 py-3 text-lg"
-          >
-            <a href="/learning" target="_blank" rel="noopener noreferrer">
-              Explore Learning
-            </a>
-          </Button>
+        {/* Mission, Vision & 5-Step Journey */}
+        <VisionSection />
+
+        {/* Core Team Roster */}
+        <div>
+          <div className="text-center mb-10">
+            <span className="text-xs font-mono text-amber-300 uppercase tracking-widest">
+              Leadership
+            </span>
+            <h2 className="text-2xl font-bold text-white mt-1">Core Team</h2>
+          </div>
+          <TeamSection members={teamMembers} />
+        </div>
+
+        {/* Faculty & Industry Mentors */}
+        <div>
+          <div className="text-center mb-10">
+            <span className="text-xs font-mono text-amber-300 uppercase tracking-widest">
+              Advisors
+            </span>
+            <h2 className="text-2xl font-bold text-white mt-1">Faculty & Industry Mentors</h2>
+          </div>
+          <MentorsRow mentors={mentors} />
         </div>
       </div>
-    </Container>
+    </div>
   );
 }

@@ -2,7 +2,7 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Check, Clock, UserCheck } from "lucide-react";
 
-interface LearningPath {
+export interface LearningPath {
   id: string;
   title: string;
   duration: string;

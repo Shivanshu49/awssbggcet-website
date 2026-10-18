@@ -1,77 +1,51 @@
-import type { Metadata } from "next";
-import { Container } from "@/components/shared/Container";
-import { EventImage } from "@/components/shared/EventImage";
-import site from "@/content/site.json";
-import eventsData from "@/content/events.json";
+import React from 'react';
+import { EventTabs } from '@/components/sections/EventTabs';
+import { getUpcoming, getPast, formatEventDate } from '@/lib/events';
+import gallery from '@/content/gallery.json';
 
-export const metadata: Metadata = {
-  title: `${site.clubName} Events`,
-  description: site.tagline,
+export const metadata = {
+  title: 'Events | AWS Student Builder Group GCET',
+  description: 'Explore upcoming workshops, hackathons, and technical bootcamps at GCET.',
 };
 
 export default function EventsPage() {
+  const upcomingEvents = getUpcoming().map((e) => ({
+    ...e,
+    isPast: false,
+    dateLabel: formatEventDate(e.date),
+  }));
+  const pastEvents = getPast().map((e) => ({
+    ...e,
+    isPast: true,
+    dateLabel: formatEventDate(e.date),
+  }));
+  const galleryPhotos = gallery.map((p) => ({ src: p.image, title: p.title }));
+
   return (
-    <Container className="py-16">
-      <h1 className="text-4xl font-bold tracking-tight text-ink">Events</h1>
-
-      <p className="text-2xl text-ink-muted/80 mb-8">
-        Build your skills and connect with the community
-      </p>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {eventsData.map((event) => (
-          <div
-            key={event.slug}
-            className="group rounded-lg bg-surface overflow-hidden hover:bg-surface-alt transition-colors"
-          >
-            {event.coverImage && (
-              <EventImage src={event.coverImage} alt={event.title} />
-            )}
-            <div className="p-6">
-              <span className="inline-block px-2 py-1 text-xs font-medium rounded-full mb-3">
-                {event.mode}
-              </span>
-              <h3 className="text-lg font-semibold text-ink group-hover:text-aws-orange transition-colors mb-3">
-                {event.title}
-              </h3>
-              <p className="text-sm text-ink-muted/70 mb-4">
-                {new Date(event.date).toLocaleDateString("en-IN", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </p>
-              <p className="text-sm text-ink-muted/70 mb-4">
-                {event.venue}
-              </p>
-              <p className="text-sm text-ink-muted/70 mb-4">
-                {event.description}
-              </p>
-              {event.registrationUrl && (
-                <a
-                  href={event.registrationUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-aws-orange font-medium hover:underline"
-                >
-                  Register
-                </a>
-              )}
-            </div>
+    <div className="min-h-screen bg-[#08060D] text-[#F8FAFC] py-20 px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#171020] border border-amber-300/40 mb-4 shadow-[0_0_12px_rgba(253,230,138,0.15)]">
+            <span className="w-2 h-2 rounded-full bg-amber-300" />
+            <span className="text-xs font-mono text-amber-200">
+              Community Calendar
+            </span>
           </div>
-        ))}
-      </div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight mb-4">
+            Events & Flagship Initiatives
+          </h1>
+          <p className="text-xs sm:text-sm text-[#A89DB5] leading-relaxed">
+            Hands-on technical bootcamps, solution challenges, and architectural sessions
+            hosted for students across Galgotias College of Engineering & Technology.
+          </p>
+        </div>
 
-      <div className="mt-8 text-center">
-        <a
-          href="/events"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-aws-orange font-medium hover:underline"
-        >
-          View All Events
-        </a>
+        <EventTabs
+          upcomingEvents={upcomingEvents}
+          pastEvents={pastEvents}
+          galleryPhotos={galleryPhotos}
+        />
       </div>
-    </Container>
+    </div>
   );
 }

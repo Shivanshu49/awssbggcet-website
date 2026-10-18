@@ -4,18 +4,10 @@ import React, { useState } from "react";
 import { ResourceItem, ResourceCard } from "@/components/resources/resource-card";
 import { LearningPaths } from "@/components/resources/learning-paths";
 import { Reveal } from "@/components/ui/reveal";
-import { Search, BookMarked, Compass } from "lucide-react";
+import { Search, Filter, BookMarked, Compass } from "lucide-react";
 
 interface ResourcesViewProps {
-  learningPaths: Array<{
-    id: string;
-    title: string;
-    duration: string;
-    level: string;
-    description: string;
-    modules: string[];
-    recommendedFor: string;
-  }>;
+  learningPaths: any[];
   resources: ResourceItem[];
 }
 
@@ -135,7 +127,7 @@ export function ResourcesView({
           {filteredResources.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredResources.map((item, idx) => (
-                <Reveal key={item.id} delay={idx}>
+                <Reveal key={item.id} delay={idx * 0.06}>
                   <ResourceCard resource={item} />
                 </Reveal>
               ))}
