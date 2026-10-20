@@ -1,0 +1,129 @@
+.sphereRoot {
+  --radius: 650px;
+  --viewer-pad: 40px;
+  --overlay-blur-color: #0b0714;
+  --tile-radius: 20px;
+  --enlarge-radius: 24px;
+  position: relative;
+  width: 100%;
+  height: 640px;
+  overflow: hidden;
+  user-select: none;
+  background-color: #0a0612;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(76, 42, 102, 0.45);
+  touch-action: pan-y;
+}
+
+/* Mobile viewport adjustments */
+@media (max-width: 640px) {
+  .sphereRoot {
+    --radius: 380px;
+    height: 480px;
+    border-radius: 1rem;
+  }
+}
+
+.sphereMain {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  perspective: 1200px;
+}
+
+@media (max-width: 640px) {
+  .sphereMain {
+    perspective: 800px;
+  }
+}
+
+.stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+}
+
+.sphere {
+  position: relative;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(var(--radius) * 0.22);
+  height: calc(var(--radius) * 0.28);
+  margin-left: calc(var(--radius) * -0.11);
+  margin-top: calc(var(--radius) * -0.14);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+@media (max-width: 640px) {
+  .item {
+    width: calc(var(--radius) * 0.26);
+    height: calc(var(--radius) * 0.32);
+    margin-left: calc(var(--radius) * -0.13);
+    margin-top: calc(var(--radius) * -0.16);
+  }
+}
+
+.itemImage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--tile-radius);
+  overflow: hidden;
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+  background: #151022;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+}
+
+.itemImage:hover {
+  border-color: #fbbf24;
+  transform: scale(1.08);
+}
+
+.itemImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.edgeFade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 90px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.edgeFadeTop {
+  top: 0;
+  background: linear-gradient(to bottom, #0a0612, transparent);
+}
+
+.edgeFadeBottom {
+  bottom: 0;
+  background: linear-gradient(to top, #0a0612, transparent);
+}
+
+.overlayBlur {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at center, transparent 40%, rgba(10, 6, 18, 0.8) 100%);
+  z-index: 8;
+}

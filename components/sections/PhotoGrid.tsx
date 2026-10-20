@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef, useMemo } from 'react';
 import Image from 'next/image';
 import { Sparkles, X, MapPin } from 'lucide-react';
+import { prefersReducedMotion, watchVisibility } from '@/lib/motion';
+import styles from './DomeGallery.module.css';
 
 export interface GalleryPhoto {
   src: string;
@@ -12,179 +14,235 @@ export interface GalleryPhoto {
   location?: string;
 }
 
-const DEFAULT_IMAGES: GalleryPhoto[] = [
-  {
-    src: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=700&q=80',
-    title: 'Cloud DevOps Workshop',
-    desc: 'Hands-on AWS architecture session in Lab 304, GCET',
-    location: 'Lab 304, GCET'
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=700&q=80',
-    title: 'AWS Innovation Hackathon',
-    desc: '24-hour student builder sprint building GenAI solutions',
-    location: 'Auditorium Block C'
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=700&q=80',
-    title: 'Serverless Masterclass',
-    desc: 'Deep dive into AWS Lambda, API Gateway and DynamoDB',
-    location: 'Seminar Hall 2'
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=700&q=80',
-    title: 'Tech Speaker Series',
-    desc: 'AWS Solutions Architects mentoring GCET undergraduates',
-    location: 'Virtual Conference'
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=700&q=80',
-    title: 'Campus Community Meet',
-    desc: 'Building cloud literacy across all engineering years',
-    location: 'GCET Central Amphitheatre'
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&w=700&q=80',
-    title: 'Builder Showcase',
-    desc: 'Students presenting production cloud deployments',
-    location: 'Innovation Lab'
-  }
-];
+const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max);
+const wrapAngle = (deg: number) => (((deg + 180) % 360) + 360) % 360 - 180;
 
-export const PhotoGrid: React.FC<{ photos?: GalleryPhoto[] }> = ({ photos = DEFAULT_IMAGES }) => {
-  const sphereRef = useRef<HTMLDivElement>(null);
-  const [selectedItem, setSelectedItem] = useState<GalleryPhoto | null>(null);
-  const isDragging = useRef(false);
-  const startPos = useRef({ x: 0, y: 0 });
-  const rot = useRef({ x: -4, y: 0 });
+function buildReactBitsItems(pool: GalleryPhoto[], segments: number) {
+  const xCols = Array.from({ length: segments }, (_, i) => -segments + i * 2);
+  const evenYs = [-4, -2, 0, 2, 4];
+  const oddYs = [-3, -1, 1, 3];
+
+  const coords = xCols.flatMap((x, c) => {
+    const ys = c % 2 === 0 ? evenYs : oddYs;
+    return ys.map((y) => ({ x, y }));
+  });
+
+  return coords.map((c, i) => ({
+    ...c,
+    photo: pool[i % pool.length],
+  }));
+}
+
+export const PhotoGrid: React.FC<{ photos: GalleryPhoto[] }> = ({ photos }) => {
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    let raf = 0;
-    const autoRotate = () => {
-      if (!isDragging.current && !selectedItem && sphereRef.current) {
-        rot.current.y = (rot.current.y + 0.16) % 360;
-        sphereRef.current.style.transform = `translateZ(-540px) rotateX(${rot.current.x}deg) rotateY(${rot.current.y}deg)`;
-      }
-      raf = requestAnimationFrame(autoRotate);
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const segments = 24;
+  const unit = 360 / segments / 2;
+  const radius = isMobile ? 310 : 650;
+  const items = useMemo(() => buildReactBitsItems(photos, segments), [photos, segments]);
+
+  const [selectedPhoto, setSelectedPhoto] = useState<GalleryPhoto | null>(null);
+
+  // Rotation lives outside React: the auto-rotate loop and the drag handlers
+  // write it straight to the DOM, so turning the dome never re-renders tiles.
+  const rotation = useRef({ x: -4, y: 0 });
+  const isDragging = useRef(false);
+  const stepFrom = useRef(0);
+  const startPos = useRef({ x: 0, y: 0 });
+  const startRot = useRef({ x: 0, y: 0 });
+  const rootRef = useRef<HTMLDivElement>(null);
+  const sphereRef = useRef<HTMLDivElement>(null);
+  const tileRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const paint = useRef(() => {});
+
+  useLayoutEffect(() => {
+    paint.current = () => {
+      const sphere = sphereRef.current;
+      if (!sphere) return;
+      const { x, y } = rotation.current;
+      sphere.style.transform = `translateZ(-${radius}px) rotateX(${x}deg) rotateY(${y}deg)`;
+      // Tiles facing away are hidden, same 85° cut-off as when they were unmounted.
+      items.forEach((it, idx) => {
+        const tile = tileRefs.current[idx];
+        const isBack = Math.abs(wrapAngle(unit * it.x + y)) > 85;
+        if (tile && tile.hidden !== isBack) tile.hidden = isBack;
+      });
     };
-    raf = requestAnimationFrame(autoRotate);
-    return () => cancelAnimationFrame(raf);
-  }, [selectedItem]);
+    paint.current();
+  }, [items, radius, unit]);
 
-  const onPointerDown = (e: React.PointerEvent) => {
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root || selectedPhoto || prefersReducedMotion()) return;
+    let raf = 0;
+    const tick = (now: number) => {
+      // Same 0.18° step every 30 ms the old setInterval took, counted from when
+      // rotation (re)started, so speed and cadence match.
+      if (!isDragging.current && now - stepFrom.current >= 30) {
+        for (; now - stepFrom.current >= 30; stepFrom.current += 30) {
+          rotation.current.y = wrapAngle(rotation.current.y + 0.18);
+        }
+        paint.current();
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    const unwatch = watchVisibility(root, (visible) => {
+      cancelAnimationFrame(raf);
+      stepFrom.current = performance.now();
+      raf = visible ? requestAnimationFrame(tick) : 0;
+    });
+    return () => {
+      cancelAnimationFrame(raf);
+      unwatch();
+    };
+  }, [selectedPhoto]);
+
+  const handleStart = (clientX: number, clientY: number) => {
     isDragging.current = true;
-    startPos.current = { x: e.clientX, y: e.clientY };
+    startPos.current = { x: clientX, y: clientY };
+    startRot.current = { ...rotation.current };
   };
 
-  const onPointerMove = (e: React.PointerEvent) => {
-    if (!isDragging.current || !sphereRef.current) return;
-    const dx = e.clientX - startPos.current.x;
-    const dy = e.clientY - startPos.current.y;
-    startPos.current = { x: e.clientX, y: e.clientY };
+  const handleMove = (clientX: number, clientY: number) => {
+    if (!isDragging.current) return;
+    const dx = clientX - startPos.current.x;
+    const dy = clientY - startPos.current.y;
 
-    rot.current.x = Math.max(-12, Math.min(12, rot.current.x - dy * 0.1));
-    rot.current.y = (rot.current.y + dx * 0.1) % 360;
-    sphereRef.current.style.transform = `translateZ(-540px) rotateX(${rot.current.x}deg) rotateY(${rot.current.y}deg)`;
+    const sens = isMobile ? 14 : 24;
+    const nextX = clamp(startRot.current.x - dy / sens, -15, 15);
+    const nextY = wrapAngle(startRot.current.y + dx / (sens * 0.9));
+
+    rotation.current = { x: nextX, y: nextY };
+    paint.current();
   };
 
-  const onPointerUp = () => {
+  const handleEnd = () => {
+    if (!isDragging.current) return;
     isDragging.current = false;
+    stepFrom.current = performance.now();
   };
+
+  if (photos.length === 0) return null;
 
   return (
-    <div
-      className="relative w-full h-[520px] overflow-hidden select-none bg-[#08060D] border border-[#4C2A66]/60 rounded-3xl"
-      style={{ perspective: '1100px' }}
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerUp}
-      onContextMenu={(e) => e.preventDefault()}
-    >
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(192,132,252,0.12)_0%,rgba(8,6,13,0.92)_80%)] z-10" />
-      <div className="absolute top-4 left-6 z-20 flex items-center space-x-2 text-xs font-mono text-purple-200 bg-[#171020]/90 px-3.5 py-1.5 rounded-full border border-purple-400/30">
-        <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
-        <span>Drag sphere to rotate / Click or Right-Click to inspect</span>
-      </div>
-
-      <div className="w-full h-full flex items-center justify-center pointer-events-auto" style={{ transformStyle: 'preserve-3d' }}>
-        <div ref={sphereRef} className="relative will-change-transform" style={{ transformStyle: 'preserve-3d', transform: 'translateZ(-540px)' }}>
-          {photos.map((it, idx) => {
-            const angle = (idx / photos.length) * 360;
-            return (
-              <div
-                key={idx}
-                onClick={() => setSelectedItem(it)}
-                onContextMenu={(e) => {
-                  e.preventDefault();
-                  setSelectedItem(it);
-                }}
-                className="absolute top-1/2 left-1/2 -ml-20 -mt-24 w-40 h-52 cursor-pointer rounded-2xl p-1 bg-[#171020]/95 border border-purple-400/40 hover:border-amber-300 hover:shadow-[0_0_25px_rgba(253,230,138,0.3)] transition-all duration-300 group overflow-hidden"
-                style={{
-                  transform: `rotateY(${angle}deg) translateZ(540px)`
-                }}
-              >
-                <div className="relative w-full h-full rounded-xl overflow-hidden">
-                  <Image
-                    src={it.src}
-                    alt={it.title || 'Event photograph'}
-                    fill
-                    sizes="160px"
-                    className="object-cover filter grayscale group-hover:grayscale-0 transition-all duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#08060D] via-transparent to-transparent opacity-80" />
-                  <span className="absolute bottom-2 left-2 right-2 text-[11px] font-medium text-white truncate">
-                    {it.title}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+    <div className="select-none my-6">
+      <div ref={rootRef} className={styles.sphereRoot}>
+        <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 pointer-events-none">
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-[#181124]/90 border border-[#4C2A66]/60 backdrop-blur-md text-[10px] sm:text-[11px] font-mono text-purple-200 shadow-sm">
+            <Sparkles className="w-3 h-3 text-amber-400" />
+            <span>Drag to rotate dome / Click to inspect</span>
+          </div>
         </div>
+
+        <main
+          className={`${styles.sphereMain} cursor-grab active:cursor-grabbing`}
+          onMouseDown={(e) => handleStart(e.clientX, e.clientY)}
+          onMouseMove={(e) => handleMove(e.clientX, e.clientY)}
+          onMouseUp={handleEnd}
+          onMouseLeave={handleEnd}
+          onTouchStart={(e) => {
+            if (e.touches[0]) handleStart(e.touches[0].clientX, e.touches[0].clientY);
+          }}
+          onTouchMove={(e) => {
+            if (e.touches[0]) handleMove(e.touches[0].clientX, e.touches[0].clientY);
+          }}
+          onTouchEnd={handleEnd}
+        >
+          <div className={styles.stage}>
+            <div ref={sphereRef} className={styles.sphere}>
+              {items.map((it, idx) => {
+                const rotY = unit * it.x;
+                const rotX = unit * it.y * 1.5;
+
+                return (
+                  <div
+                    key={idx}
+                    ref={(el) => {
+                      tileRefs.current[idx] = el;
+                    }}
+                    className={styles.item}
+                    style={{
+                      transform: `rotateY(${rotY}deg) rotateX(${rotX}deg) translateZ(${radius}px)`,
+                    }}
+                  >
+                    <div
+                      className={styles.itemImage}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedPhoto(it.photo);
+                      }}
+                    >
+                      <Image
+                        src={it.photo.src}
+                        alt={it.photo.title || 'Dome Tile'}
+                        fill
+                        sizes="(max-width: 640px) 99px, 143px"
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className={styles.overlayBlur} />
+          <div className={`${styles.edgeFade} ${styles.edgeFadeTop}`} />
+          <div className={`${styles.edgeFade} ${styles.edgeFadeBottom}`} />
+        </main>
       </div>
 
-      {selectedItem && (
+      {selectedPhoto && (
         <div
-          onClick={() => setSelectedItem(null)}
-          className="absolute inset-0 z-40 bg-[#08060D]/85 backdrop-blur-md flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md"
+          onClick={() => setSelectedPhoto(null)}
         >
           <div
+            className="relative max-w-lg w-full bg-[#120D1D] border border-amber-400/50 rounded-2xl overflow-hidden shadow-[0_0_45px_rgba(255,153,0,0.3)] p-5 sm:p-6 space-y-4"
             onClick={(e) => e.stopPropagation()}
-            className="relative max-w-md w-full bg-[#171020] border-2 border-purple-400/60 rounded-3xl p-6 shadow-[0_0_40px_rgba(192,132,252,0.25)]"
           >
             <button
-              onClick={() => setSelectedItem(null)}
-              className="absolute top-4 right-4 text-purple-200 hover:text-white bg-[#21152E] p-2 rounded-full border border-purple-500/30"
+              onClick={() => setSelectedPhoto(null)}
+              className="absolute top-4 right-4 p-1.5 rounded-lg bg-[#1F1530] text-[#A89DB5] hover:text-white transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
-            <div className="relative w-full h-52 rounded-2xl overflow-hidden mb-4 border border-purple-500/20">
+
+            <div className="w-full h-56 sm:h-64 rounded-xl overflow-hidden bg-black">
               <Image
-                src={selectedItem.src}
-                alt={selectedItem.title || 'Event image'}
-                fill
-                sizes="400px"
-                className="object-cover"
+                src={selectedPhoto.src}
+                alt={selectedPhoto.title || 'Selected photo'}
+                width={464}
+                height={256}
+                sizes="(max-width: 640px) 100vw, 464px"
+                className="w-full h-full object-cover"
               />
             </div>
-            <span className="inline-block text-xs font-mono text-amber-300 bg-amber-950/40 px-2.5 py-1 rounded-full mb-2 border border-amber-400/30">
-              GCET Community Chapter
-            </span>
-            <h3 className="text-lg font-bold text-white mb-1">{selectedItem.title}</h3>
-            {selectedItem.location && (
-              <div className="flex items-center text-xs text-purple-300/80 mb-3 gap-1">
-                <MapPin className="w-3.5 h-3.5 text-amber-300" />
-                <span>{selectedItem.location}</span>
-              </div>
-            )}
-            <p className="text-xs text-purple-200/90 mb-4 leading-relaxed">{selectedItem.desc}</p>
-            <div className="flex justify-between items-center pt-3 border-t border-[#4C2A66]">
-              <span className="text-[11px] text-purple-300/70 font-mono">AWS Student Builder Group</span>
-              <button
-                onClick={() => setSelectedItem(null)}
-                className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-purple-500 to-amber-400 text-slate-950 font-bold text-xs shadow-md"
-              >
-                Close View
-              </button>
+
+            <div className="space-y-2">
+              <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-[#2A1642] border border-purple-500/40 text-amber-300">
+                Moment Archival
+              </span>
+              <h3 className="text-base sm:text-lg font-bold text-white">
+                {selectedPhoto.title || 'Student Builder Event'}
+              </h3>
+              {selectedPhoto.desc && (
+                <p className="text-xs text-[#A89DB5] leading-relaxed">
+                  {selectedPhoto.desc}
+                </p>
+              )}
+              {selectedPhoto.location && (
+                <p className="text-xs font-mono text-amber-300 flex items-center gap-1.5 pt-1">
+                  <MapPin className="w-3.5 h-3.5 text-amber-400" />
+                  <span>{selectedPhoto.location}</span>
+                </p>
+              )}
             </div>
           </div>
         </div>

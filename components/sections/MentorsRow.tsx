@@ -1,18 +1,25 @@
+'use client';
+
 import React from 'react';
 import Image from 'next/image';
-import { Card } from '@/components/ui/card';
 
 export interface MentorItem {
-  id: string;
+  id?: string;
   name: string;
-  designation: string;
-  affiliation?: string;
-  photoUrl?: string;
+  role: string;
+  organization?: string;
+  bio?: string;
+  avatar?: string;
+  imageUrl?: string;
   linkedinUrl?: string;
 }
 
-export const MentorsRow: React.FC<{ mentors: MentorItem[] }> = ({ mentors }) => {
-  if (!mentors || mentors.length === 0) {
+interface MentorsRowProps {
+  mentors?: MentorItem[];
+}
+
+export const MentorsRow: React.FC<MentorsRowProps> = ({ mentors = [] }) => {
+  if (mentors.length === 0) {
     return (
       <div className="p-8 text-center bg-[#100B18]/60 border border-[#4C2A66]/40 rounded-2xl">
         <p className="text-xs font-mono text-[#A89DB5]">
@@ -23,56 +30,93 @@ export const MentorsRow: React.FC<{ mentors: MentorItem[] }> = ({ mentors }) => 
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      {mentors.map((mentor) => (
-        <Card
-          key={mentor.id}
-          className="p-6 rounded-2xl bg-[#100B18] border border-[#4C2A66]/50 flex items-center space-x-4 hover:border-amber-300/50 transition-all"
-        >
-          <div className="relative w-16 h-16 rounded-full overflow-hidden bg-[#171020] border border-purple-900/50 shrink-0">
-            {mentor.photoUrl ? (
-              <Image
-                src={mentor.photoUrl}
-                alt={mentor.name}
-                fill
-                sizes="64px"
-                className="object-cover"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-[10px] font-mono text-purple-300/40">
-                Mentor
-              </div>
-            )}
-          </div>
+    <section className="py-12 sm:py-16 border-t border-[#4C2A66]/30">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-10">
+        <div className="text-center space-y-2">
+          <span className="text-xs font-mono font-bold text-amber-400 tracking-widest uppercase">
+            COMMUNITY ADVISORS
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            Mentors & Industry Guides
+          </h2>
+          <p className="text-sm text-[#A89DB5] max-w-xl mx-auto">
+            Experienced AWS architects and GCET faculty helping students bridge academia with industry.
+          </p>
+        </div>
 
-          <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-bold text-[#F8FAFC] truncate">
-              {mentor.name}
-            </h3>
-            <p className="text-xs font-mono text-amber-300/90 truncate">
-              {mentor.designation}
-            </p>
-            {mentor.affiliation && (
-              <p className="text-[11px] text-[#A89DB5] truncate">
-                {mentor.affiliation}
-              </p>
-            )}
-            {mentor.linkedinUrl && (
-              <a
-                href={mentor.linkedinUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`${mentor.name} LinkedIn`}
-                className="inline-block mt-2 text-[#A89DB5] hover:text-amber-300 transition-colors"
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {mentors.map((mentor, index) => {
+            const photoSrc = mentor.avatar || mentor.imageUrl;
+
+            return (
+              <div
+                key={mentor.id || index}
+                className="group relative rounded-2xl bg-[#100B18] border border-[#4C2A66]/50 p-6 flex flex-col sm:flex-row items-center sm:items-start gap-5 transition-all duration-300 hover:border-amber-400/60 hover:bg-[#140E20] shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:-translate-y-1"
               >
-                <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-                </svg>
-              </a>
-            )}
-          </div>
-        </Card>
-      ))}
-    </div>
+                <div className="relative w-20 h-20 rounded-2xl p-1 bg-gradient-to-tr from-purple-500/40 via-amber-400/40 to-transparent group-hover:from-amber-400 group-hover:to-purple-500 transition-all duration-500 shrink-0">
+                  <div className="w-full h-full rounded-xl overflow-hidden bg-[#1a1224]">
+                    {photoSrc ? (
+                      <Image
+                        src={photoSrc}
+                        alt={mentor.name}
+                        width={80}
+                        height={80}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-amber-400 font-mono font-bold text-xl">
+                        {mentor.name.charAt(0)}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex-1 text-center sm:text-left space-y-2">
+                  <div>
+                    <h3 className="text-base font-bold text-white group-hover:text-amber-200 transition-colors">
+                      {mentor.name}
+                    </h3>
+                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-1">
+                      <span className="text-[11px] font-mono font-semibold text-purple-200">
+                        {mentor.role}
+                      </span>
+                      {mentor.organization && (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-[#1F142D] border border-amber-400/30 text-amber-300">
+                          {mentor.organization}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {mentor.bio && (
+                    <p className="text-xs text-[#A89DB5] leading-relaxed">
+                      {mentor.bio}
+                    </p>
+                  )}
+
+                  {mentor.linkedinUrl && (
+                    <div className="pt-2">
+                      <a
+                        href={mentor.linkedinUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-[11px] font-mono text-purple-300 hover:text-amber-300 transition-colors"
+                      >
+                        <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                          <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
+                        </svg>
+                        <span>Connect on LinkedIn</span>
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
   );
 };
+
+export default MentorsRow;

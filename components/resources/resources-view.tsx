@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+<<<<<<< HEAD
 import {
   ResourceItem,
   ResourceCard,
@@ -12,6 +13,12 @@ import {
 import { Reveal } from "@/components/shared/Reveal";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { Search } from "lucide-react";
+=======
+import { ResourceItem, ResourceCard } from "@/components/resources/resource-card";
+import { LearningPaths, type LearningPath } from "@/components/resources/learning-paths";
+import { Reveal } from "@/components/ui/reveal";
+import { Search, BookMarked, Compass } from "lucide-react";
+>>>>>>> origin/main
 
 interface ResourcesViewProps {
   learningPaths: LearningPath[];
