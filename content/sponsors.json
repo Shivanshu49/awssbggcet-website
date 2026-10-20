@@ -2,16 +2,19 @@
   {
     "name": "AWS Cloud Clubs",
     "category": "Community Partner",
-    "website": "https://aws.amazon.com/developer/community/students/"
+    "website": "https://aws.amazon.com/developer/community/students/",
+    "logo": "/sponsors/aws-cloud-clubs.webp"
   },
   {
     "name": "Galgotias College of Engineering & Technology",
     "category": "Institution",
-    "website": "https://galgotiacollege.edu/"
+    "website": "https://galgotiacollege.edu/",
+    "logo": "/sponsors/gcet-logo.webp"
   },
   {
     "name": "AWS Educate",
     "category": "Learning Platform",
-    "website": "https://aws.amazon.com/education/awseducate/"
+    "website": "https://aws.amazon.com/education/awseducate/",
+    "logo": "/sponsors/aws-educate.webp"
   }
 ]
