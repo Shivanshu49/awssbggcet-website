@@ -1,59 +1,23 @@
 'use client';
 
 import React from 'react';
-
-export interface TeamMember {
-  id?: string;
-  name: string;
-  role: string;
-  bio?: string;
-  avatar?: string;
-  imageUrl?: string;
-  links?: {
-    github?: string;
-    linkedin?: string;
-    twitter?: string;
-    portfolio?: string;
-  };
-}
+import Image from 'next/image';
+import type { TeamMember } from '@/components/cards/TeamCard';
 
 interface TeamSectionProps {
   members?: TeamMember[];
 }
 
-const DEFAULT_MEMBERS: TeamMember[] = [
-  {
-    name: 'Lead Organizer',
-    role: 'Cloud Lead & AWS Community Builder',
-    bio: 'Passionate about architecting serverless applications and scaling student cloud literacy.',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
-    links: { github: '#', linkedin: '#' }
-  },
-  {
-    name: 'Technical Lead',
-    role: 'DevOps & Infrastructure',
-    bio: 'Specializing in IaC with Terraform, container orchestration, and CI/CD pipelines.',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
-    links: { github: '#', linkedin: '#' }
-  },
-  {
-    name: 'Event Coordinator',
-    role: 'Operations & Community Outreach',
-    bio: 'Connecting student builders with industry mentors and organizing hands-on hackathons.',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80',
-    links: { linkedin: '#' }
-  },
-  {
-    name: 'Content & Design Lead',
-    role: 'UI/UX & Developer Relations',
-    bio: 'Crafting developer-first experiences, documentation, and technical workshops.',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
-    links: { github: '#', linkedin: '#' }
-  }
-];
-
 export const TeamSection: React.FC<TeamSectionProps> = ({ members = [] }) => {
-  const displayMembers = members && members.length > 0 ? members : DEFAULT_MEMBERS;
+  if (members.length === 0) {
+    return (
+      <div className="p-8 text-center bg-[#100B18]/60 border border-[#4C2A66]/40 rounded-2xl">
+        <p className="text-xs font-mono text-[#A89DB5]">
+          Executive student leadership roster is currently being updated.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <section className="py-12 sm:py-16">
@@ -71,22 +35,21 @@ export const TeamSection: React.FC<TeamSectionProps> = ({ members = [] }) => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {displayMembers.map((member, index) => {
-            const photoSrc = member.avatar || member.imageUrl;
-
+          {members.map((member) => {
             return (
               <div
-                key={member.id || index}
+                key={member.name}
                 className="group relative rounded-2xl bg-[#100B18] border border-[#4C2A66]/50 p-6 flex flex-col items-center text-center transition-all duration-300 hover:border-amber-400/60 hover:bg-[#140E20] shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:-translate-y-1"
               >
                 <div className="relative w-24 h-24 mb-4 rounded-full p-1 bg-gradient-to-tr from-purple-500/40 via-amber-400/40 to-transparent group-hover:from-amber-400 group-hover:to-purple-500 transition-all duration-500">
                   <div className="w-full h-full rounded-full overflow-hidden bg-[#1a1224]">
-                    {photoSrc ? (
-                      <img
-                        src={photoSrc}
+                    {member.image ? (
+                      <Image
+                        src={member.image}
                         alt={member.name}
+                        width={96}
+                        height={96}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        loading="lazy"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-amber-400 font-mono font-bold text-xl">
@@ -110,11 +73,11 @@ export const TeamSection: React.FC<TeamSectionProps> = ({ members = [] }) => {
                   </p>
                 )}
 
-                {member.links && (
+                {(member.github || member.linkedin) && (
                   <div className="flex items-center gap-3 mt-4 pt-4 border-t border-[#4C2A66]/30 text-[#A89DB5]">
-                    {member.links.github && (
+                    {member.github && (
                       <a
-                        href={member.links.github}
+                        href={member.github}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="hover:text-amber-400 transition-colors p-1"
@@ -125,9 +88,9 @@ export const TeamSection: React.FC<TeamSectionProps> = ({ members = [] }) => {
                         </svg>
                       </a>
                     )}
-                    {member.links.linkedin && (
+                    {member.linkedin && (
                       <a
-                        href={member.links.linkedin}
+                        href={member.linkedin}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="hover:text-amber-400 transition-colors p-1"
