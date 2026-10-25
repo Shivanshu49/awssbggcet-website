@@ -7,11 +7,7 @@ import resourcesData from "@/content/resources.json";
  * content/resources.json — a topic can never appear without real content,
  * and every path is assigned exactly one topic.
  */
-export type PathTopicId =
-  | "fundamentals"
-  | "fullstack"
-  | "serverless"
-  | "genai";
+export type PathTopicId = "fundamentals" | "fullstack" | "serverless" | "genai";
 
 export interface PathTopic {
   id: PathTopicId;
@@ -42,17 +38,22 @@ export function getLearningPaths(): LearningPathEntry[] {
   return resourcesData.learningPaths.map((path) => {
     const topic = TOPIC_BY_PATH_ID[path.id] ?? "fundamentals";
     const topicLabel =
-      PATH_TOPICS.find((entry) => entry.id === topic)?.label ?? "AWS Fundamentals";
+      PATH_TOPICS.find((entry) => entry.id === topic)?.label ??
+      "AWS Fundamentals";
     return { ...path, topic, topicLabel };
   });
 }
 
 export function getTopicLabel(topic: PathTopicId): string {
-  return PATH_TOPICS.find((entry) => entry.id === topic)?.label ?? "AWS Fundamentals";
+  return (
+    PATH_TOPICS.find((entry) => entry.id === topic)?.label ?? "AWS Fundamentals"
+  );
 }
 
 /** Count of learning paths per topic, keyed by topic id. */
-export function getTopicCounts(paths: { topic: PathTopicId }[]): Map<PathTopicId, number> {
+export function getTopicCounts(
+  paths: { topic: PathTopicId }[],
+): Map<PathTopicId, number> {
   const counts = new Map<PathTopicId, number>();
   for (const path of paths) {
     counts.set(path.topic, (counts.get(path.topic) ?? 0) + 1);
@@ -61,23 +62,23 @@ export function getTopicCounts(paths: { topic: PathTopicId }[]): Map<PathTopicId
 }
 
 /**
- * Level badge colors tuned for light surfaces (Badge's built-in variants are
- * amber/emerald-on-dark and would fail contrast on white cards).
+ * Level badge colors tuned for the dark page surfaces used by the Learning
+ * and Resources pages.
  */
 export function levelBadgeClass(level: string): string {
   switch (level) {
     case "Beginner":
-      return "border-emerald-600/40 bg-emerald-50 text-emerald-700";
+      return "border-emerald-500/30 bg-emerald-950/40 text-emerald-300";
     case "Beginner to Intermediate":
-      return "border-lime-600/40 bg-lime-50 text-lime-800";
+      return "border-lime-500/30 bg-lime-950/40 text-lime-300";
     case "Intermediate":
-      return "border-amber-600/40 bg-amber-50 text-amber-700";
+      return "border-amber-400/40 bg-amber-950/40 text-amber-300";
     case "Intermediate to Advanced":
-      return "border-orange-600/40 bg-orange-50 text-orange-700";
+      return "border-orange-400/30 bg-orange-950/40 text-orange-300";
     case "Advanced":
-      return "border-rose-600/40 bg-rose-50 text-rose-700";
+      return "border-rose-400/30 bg-rose-950/40 text-rose-300";
     default:
-      return "border-border bg-muted text-muted-foreground";
+      return "border-[#4C2A66]/50 bg-[#171020] text-[#A89DB5]";
   }
 }
 
@@ -135,7 +136,7 @@ const ROADMAP_STAGES_BY_PATH: Record<string, number[]> = {
 export type ResourceEntry = (typeof resourcesData.items)[number];
 
 export function getRelatedResourcesForPath(
-  path: LearningPathEntry
+  path: LearningPathEntry,
 ): ResourceEntry[] {
   const ids = RESOURCES_BY_TOPIC[path.topic] ?? [];
   return resourcesData.items.filter((item) => ids.includes(item.id));
@@ -158,7 +159,7 @@ export function getResourcesLinkedToPaths(): LinkedResource[] {
     .map((resource) => ({
       resource,
       paths: paths.filter((path) =>
-        (RESOURCES_BY_TOPIC[path.topic] ?? []).includes(resource.id)
+        (RESOURCES_BY_TOPIC[path.topic] ?? []).includes(resource.id),
       ),
     }))
     .filter((entry) => entry.paths.length > 0);
@@ -175,7 +176,7 @@ export type ProjectEntry = {
 
 export function getSuggestedProjectsForPath(
   pathId: string,
-  projects: ProjectEntry[]
+  projects: ProjectEntry[],
 ): ProjectEntry[] {
   const ids = PROJECTS_BY_PATH[pathId] ?? [];
   return projects.filter((project) => ids.includes(project.id));
@@ -184,7 +185,7 @@ export function getSuggestedProjectsForPath(
 /** Learning paths a suggested project builds on (may be none). */
 export function getPathsForProject(projectId: string): LearningPathEntry[] {
   return getLearningPaths().filter((path) =>
-    (PROJECTS_BY_PATH[path.id] ?? []).includes(projectId)
+    (PROJECTS_BY_PATH[path.id] ?? []).includes(projectId),
   );
 }
 

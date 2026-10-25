@@ -1,24 +1,9 @@
 import { Clock, ExternalLink, Hammer } from "lucide-react";
 import { Reveal } from "@/components/shared/Reveal";
 import { SectionHeading } from "@/components/shared/SectionHeading";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { levelBadgeClass } from "@/lib/learning";
 import { HANDS_ON_WORKSHOPS } from "./learning-data";
-
-function levelClass(level: string): string {
-  switch (level) {
-    case "Beginner":
-      return "border-emerald-600/40 bg-emerald-50 text-emerald-700";
-    case "Intermediate":
-      return "border-amber-600/40 bg-amber-50 text-amber-700";
-    case "Intermediate to Advanced":
-      return "border-orange-600/40 bg-orange-50 text-orange-700";
-    case "Advanced":
-      return "border-rose-600/40 bg-rose-50 text-rose-700";
-    default:
-      return "border-border bg-surface-alt text-ink-muted";
-  }
-}
 
 export function WorkshopsSection() {
   return (
@@ -35,16 +20,16 @@ export function WorkshopsSection() {
       />
 
       {HANDS_ON_WORKSHOPS.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border bg-surface p-10 text-center">
-          <p className="font-semibold text-ink">Workshops are being curated.</p>
-          <p className="mt-1 text-sm text-ink-muted">
+        <div className="rounded-3xl border border-dashed border-[#4C2A66]/60 bg-[#100B18] p-10 text-center">
+          <p className="font-bold text-white">Workshops are being curated.</p>
+          <p className="mt-1 text-sm text-[#A89DB5]">
             Check the official AWS Workshops catalog in the meantime.
           </p>
           <a
             href="https://workshops.aws/"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 inline-block text-sm font-semibold text-aws-navy underline underline-offset-4 hover:text-aws-orange focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-aws-navy"
+            className="mt-4 inline-block text-sm font-semibold text-amber-300 underline underline-offset-4 hover:text-amber-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300"
           >
             Open AWS Workshops
             <span className="sr-only"> (opens in a new tab)</span>
@@ -59,44 +44,48 @@ export function WorkshopsSection() {
                   href={workshop.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex h-full items-start gap-4 rounded-2xl border border-border bg-surface p-5 transition-all duration-200 hover:-translate-y-1 hover:border-aws-navy hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-aws-navy sm:p-6"
+                  className="group flex h-full items-start gap-4 rounded-2xl border border-[#4C2A66]/50 bg-[#100B18] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-amber-300/50 hover:bg-[#171020] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300 sm:p-6"
                 >
                   <span
                     aria-hidden="true"
-                    className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg bg-surface-alt text-aws-navy ring-1 ring-border"
+                    className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl border border-purple-400/30 bg-[#171020] text-purple-300"
                   >
                     <Hammer className="size-5" />
                   </span>
 
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <Badge variant="muted">{workshop.topic}</Badge>
-                      <Badge
-                        variant="outline"
-                        className={cn(levelClass(workshop.level), "font-semibold")}
+                      <span className="rounded-full border border-purple-500/30 bg-purple-950/40 px-2.5 py-0.5 font-mono text-[11px] font-semibold text-purple-300">
+                        {workshop.topic}
+                      </span>
+                      <span
+                        className={cn(
+                          "inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-semibold",
+                          levelBadgeClass(workshop.level),
+                        )}
                       >
                         {workshop.level}
-                      </Badge>
+                      </span>
                       {workshop.duration && (
-                        <span className="inline-flex items-center gap-1 text-xs text-ink-muted">
+                        <span className="inline-flex items-center gap-1 font-mono text-[11px] text-[#9C90AA]">
                           <Clock className="size-3" aria-hidden="true" />
                           {workshop.duration}
                         </span>
                       )}
                     </div>
 
-                    <h3 className="mt-3 font-heading text-base font-semibold text-ink">
+                    <h3 className="mt-3 text-base font-bold text-white transition-colors group-hover:text-amber-200">
                       {workshop.title}
                       <ExternalLink
-                        className="ml-1.5 inline size-3.5 -translate-y-0.5 text-ink-muted transition-colors group-hover:text-aws-orange"
+                        className="ml-1.5 inline size-3.5 -translate-y-0.5 text-[#A89DB5] transition-colors group-hover:text-amber-300"
                         aria-hidden="true"
                       />
                       <span className="sr-only"> (opens in a new tab)</span>
                     </h3>
-                    <p className="mt-1.5 text-sm leading-relaxed text-ink-muted">
+                    <p className="mt-1.5 text-sm leading-relaxed text-[#A89DB5]">
                       {workshop.description}
                     </p>
-                    <p className="mt-3 text-xs font-semibold text-ink-muted uppercase">
+                    <p className="mt-3 font-mono text-[11px] font-semibold tracking-wider text-[#9C90AA] uppercase">
                       Source: {workshop.source}
                     </p>
                   </div>

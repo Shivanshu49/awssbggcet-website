@@ -12,6 +12,25 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "@/components/ui/reveal",
+              message: "Use @/components/shared/Reveal instead.",
+            },
+            {
+              name: "@/components/ui/container",
+              message: "Use @/components/shared/Container instead.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     ignores: [
       "node_modules/**",
       ".next/**",

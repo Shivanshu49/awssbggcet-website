@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Container } from "@/components/shared/Container";
 import {
   LearningHero,
   FeaturedPaths,
@@ -27,8 +26,8 @@ export const metadata: Metadata = {
 
 export default function LearningPage() {
   return (
-    <div className="bg-surface-alt py-10 sm:py-14 md:py-16">
-      <Container className="space-y-16 sm:space-y-20 md:space-y-24">
+    <div className="min-h-screen bg-[#08060D] px-4 py-20 text-[#F8FAFC] sm:px-6">
+      <div className="mx-auto max-w-6xl space-y-16 sm:space-y-20 md:space-y-24">
         {/* Hero */}
         <LearningHero />
 
@@ -58,7 +57,7 @@ export default function LearningPage() {
 
         {/* Call to action */}
         <LearningCta />
-      </Container>
+      </div>
     </div>
   );
 }
