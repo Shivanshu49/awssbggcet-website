@@ -11,23 +11,7 @@ import gallery from '@/content/gallery.json';
 import resources from '@/content/resources.json';
 import { PhotoGrid } from '@/components/sections/PhotoGrid';
 import { LeadershipProfileCard } from '@/components/sections/LeadershipProfileCard';
-import {
-  SocialPlatformIcon,
-  type SocialPlatform,
-} from '@/components/ui/SocialPlatformIcon';
 import { prefersReducedMotion, watchVisibility } from '@/lib/motion';
-
-const SOCIAL_LINKS: {
-  platform: SocialPlatform;
-  label: string;
-  href: string;
-}[] = [
-  { platform: 'linkedin', label: 'LinkedIn', href: site.socials.linkedin },
-  { platform: 'instagram', label: 'Instagram', href: site.socials.instagram },
-  { platform: 'x', label: 'X', href: site.socials.x },
-  { platform: 'github', label: 'GitHub', href: site.socials.github },
-  { platform: 'discord', label: 'Discord', href: site.socials.discord },
-];
 
 /* ============================================================================
    WEBGL2 INTERACTIVE CURSOR GRID (HOME HERO)
