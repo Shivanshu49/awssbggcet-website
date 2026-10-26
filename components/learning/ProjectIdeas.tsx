@@ -26,9 +26,11 @@ export function ProjectIdeas() {
       />
 
       {PROJECT_IDEAS.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border bg-surface p-10 text-center">
-          <p className="font-semibold text-ink">Project ideas are being curated.</p>
-          <p className="mt-1 text-sm text-ink-muted">
+        <div className="rounded-3xl border border-dashed border-[#4C2A66]/60 bg-[#100B18] p-10 text-center">
+          <p className="font-bold text-white">
+            Project ideas are being curated.
+          </p>
+          <p className="mt-1 text-sm text-[#A89DB5]">
             The hands-on workshops above are a great way to practice in the
             meantime.
           </p>
@@ -41,38 +43,41 @@ export function ProjectIdeas() {
             return (
               <li key={project.id} className="h-full">
                 <Reveal delay={Math.min(index * 0.05, 0.2)} className="h-full">
-                  <article className="group/card relative flex h-full flex-col rounded-2xl border border-border bg-surface p-6 transition-all duration-200 hover:-translate-y-1 hover:border-aws-navy hover:shadow-md">
+                  <article className="group/card relative flex h-full flex-col rounded-2xl border border-[#4C2A66]/50 bg-[#100B18] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-amber-300/50 hover:bg-[#171020]">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <span
                         className={cn(
                           "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold",
-                          levelBadgeClass(project.difficulty)
+                          levelBadgeClass(project.difficulty),
                         )}
                       >
                         {project.difficulty}
                       </span>
-                      <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-muted uppercase">
-                        <Lightbulb className="size-3.5 text-aws-orange" aria-hidden="true" />
+                      <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-semibold tracking-wider text-[#9C90AA] uppercase">
+                        <Lightbulb
+                          className="size-3.5 text-amber-300"
+                          aria-hidden="true"
+                        />
                         Suggested project
                       </span>
                     </div>
 
-                    <h3 className="mt-3 font-heading text-lg font-semibold text-balance text-ink">
+                    <h3 className="mt-3 text-lg font-bold text-balance text-white transition-colors group-hover/card:text-amber-200">
                       {project.title}
                     </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-ink-muted">
+                    <p className="mt-2 text-sm leading-relaxed text-[#A89DB5]">
                       {project.description}
                     </p>
 
                     <div className="mt-4">
-                      <p className="text-xs font-semibold tracking-wider text-ink-muted uppercase">
+                      <p className="font-mono text-[11px] font-semibold tracking-wider text-purple-300/80 uppercase">
                         Skills practiced
                       </p>
                       <ul className="mt-2 flex flex-wrap gap-1.5">
                         {project.skillsLearned.map((skill) => (
                           <li
                             key={skill}
-                            className="rounded-md bg-surface-alt px-2 py-0.5 text-xs font-medium text-ink-muted ring-1 ring-border"
+                            className="rounded-md border border-[#4C2A66]/40 bg-[#171020] px-2 py-0.5 font-mono text-[11px] font-medium text-[#A89DB5]"
                           >
                             {skill}
                           </li>
@@ -89,22 +94,25 @@ export function ProjectIdeas() {
                           <li key={path.id}>
                             <Link
                               href={`/learning/${path.id}`}
-                              className="relative z-10 inline-flex items-center gap-1 rounded-full border border-aws-orange/40 bg-aws-orange/10 px-2.5 py-1 text-xs font-semibold text-[#8a5200] transition-colors hover:bg-aws-orange/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-aws-navy"
+                              className="relative z-10 inline-flex items-center gap-1 rounded-full border border-amber-300/40 bg-amber-950/30 px-2.5 py-1 text-xs font-semibold text-amber-200 transition-colors hover:bg-amber-900/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300"
                             >
                               Builds on: {path.topicLabel}
-                              <ArrowRight className="size-3" aria-hidden="true" />
+                              <ArrowRight
+                                className="size-3"
+                                aria-hidden="true"
+                              />
                             </Link>
                           </li>
                         ))}
                       </ul>
                     )}
 
-                    <div className="mt-auto pt-5">
+                    <div className="mt-auto border-t border-[#4C2A66]/40 pt-4">
                       <a
                         href={project.docUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-aws-navy transition-colors group-hover/card:text-aws-orange focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-aws-navy"
+                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-amber-300 transition-colors hover:text-amber-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300"
                       >
                         Follow the official guide
                         <ExternalLink className="size-3.5" aria-hidden="true" />

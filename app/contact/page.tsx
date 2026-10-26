@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/shared/Container";
 import site from "@/content/site.json";
 import { SOCIAL_LINKS } from "@/lib/constants";
+import { SocialIcon } from "@/components/shared/SocialIcon";
 
 export const metadata: Metadata = {
   title: `${site.clubName} Contact`,
@@ -44,17 +45,7 @@ export default function ContactPage() {
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-ink-muted/70 hover:text-aws-orange transition-colors"
               >
-                {social.platform === "discord"
-                  ? <i className="lucide-react discord size-4" />
-                  : social.platform === "github"
-                  ? <i className="lucide-react git-branch size-4" />
-                  : social.platform === "x"
-                  ? <i className="lucide-react x size-4" />
-                  : social.platform === "instagram"
-                  ? <i className="lucide-react instagram size-4" />
-                  : social.platform === "linkedin"
-                  ? <i className="lucide-react linkedin size-4" />
-                  : null}
+                <SocialIcon platform={social.platform} className="size-4" />
                 {social.label}
               </a>
             ))}

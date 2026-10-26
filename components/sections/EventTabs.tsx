@@ -89,15 +89,17 @@ export const EventTabs: React.FC<EventTabsProps> = ({
               <Timeline events={pastEvents} />
             </div>
 
-            <div className="pt-10 border-t border-[#4C2A66]/40">
-              <div className="text-center mb-8">
-                <span className="text-xs font-mono text-amber-300 uppercase tracking-widest">
-                  Captured Moments
-                </span>
-                <h3 className="text-xl font-bold text-white mt-1">3D Spherical Moments Gallery</h3>
+            {galleryPhotos.length > 0 && (
+              <div className="pt-10 border-t border-[#4C2A66]/40">
+                <div className="text-center mb-8">
+                  <span className="text-xs font-mono text-amber-300 uppercase tracking-widest">
+                    Captured Moments
+                  </span>
+                  <h3 className="text-xl font-bold text-white mt-1">3D Spherical Moments Gallery</h3>
+                </div>
+                <PhotoGrid photos={galleryPhotos} />
               </div>
-              <PhotoGrid photos={galleryPhotos} />
-            </div>
+            )}
           </div>
         ) : (
           <div className="text-center py-16 px-4 bg-[#100B18]/60 rounded-3xl border border-[#4C2A66]/40 max-w-xl mx-auto">

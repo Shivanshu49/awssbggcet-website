@@ -8,15 +8,7 @@ import {
   Layers,
   Lightbulb,
 } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { SectionHeading } from "@/components/shared/SectionHeading";
 import { OFFICIAL_RESOURCES, OfficialResource } from "./learning-data";
 
 const RESOURCE_ICONS = {
@@ -36,29 +28,19 @@ export function OfficialResources() {
       aria-labelledby="official-resources-heading"
       className="scroll-mt-24 space-y-8"
     >
-      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-        <div className="max-w-2xl">
-          <p className="flex items-center gap-2 text-sm font-semibold tracking-wide text-ink-muted uppercase">
-            <span
-              aria-hidden="true"
-              className="h-1 w-6 rounded-full bg-aws-orange"
-            />
-            Verified AWS Platforms
-          </p>
-          <h2
-            id="official-resources-heading"
-            className="mt-3 text-3xl font-semibold tracking-tight text-ink sm:text-4xl"
-          >
-            Official AWS Learning Resources
-          </h2>
-          <p className="mt-3 text-base text-ink-muted sm:text-lg">
-            Direct access to official Amazon Web Services training, architecture
-            guidelines, hands-on workshops, and community builder centers.
-          </p>
-        </div>
+      <SectionHeading
+        id="official-resources-heading"
+        eyebrow="Verified AWS Platforms"
+        title="Official AWS Learning Resources"
+        description="Direct access to official Amazon Web Services training, architecture guidelines, hands-on workshops, and community builder centers."
+      />
 
-        <div className="inline-flex items-center gap-1.5 self-start rounded-md border border-border bg-surface-alt px-3 py-1.5 text-xs font-medium text-ink-muted md:self-end">
-          <ExternalLink className="size-3.5" aria-hidden="true" />
+      <div className="flex justify-center">
+        <div className="inline-flex items-center gap-1.5 rounded-full border border-[#4C2A66]/50 bg-[#100B18] px-3.5 py-1.5 font-mono text-[11px] text-[#A89DB5]">
+          <ExternalLink
+            className="size-3.5 text-amber-300"
+            aria-hidden="true"
+          />
           <span>All resources link to external official AWS domains</span>
         </div>
       </div>
@@ -69,65 +51,61 @@ export function OfficialResources() {
           const isBuilderCenter = resource.id === "builder-center";
 
           return (
-            <Card
+            <div
               key={resource.id}
-              className={`flex flex-col justify-between border transition-all duration-200 hover:-translate-y-1 hover:shadow-md ${
+              className={`group flex flex-col justify-between rounded-2xl border p-6 transition-all duration-300 hover:-translate-y-1 ${
                 isBuilderCenter
-                  ? "border-aws-navy bg-surface ring-2 ring-aws-navy/15 lg:col-span-1"
-                  : "border-border bg-surface hover:border-aws-navy"
+                  ? "border-amber-300/40 bg-gradient-to-br from-[#1b1226] to-[#100B18] shadow-[0_0_24px_rgba(251,191,36,0.08)] hover:border-amber-300/60"
+                  : "border-[#4C2A66]/50 bg-[#100B18] hover:border-amber-300/50 hover:bg-[#171020]"
               }`}
             >
-              <CardHeader>
-                <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center justify-between gap-2">
                   <div
-                    className={`inline-flex size-11 items-center justify-center rounded-lg ring-1 ${
+                    className={`inline-flex size-11 items-center justify-center rounded-xl border ${
                       isBuilderCenter
-                        ? "bg-aws-navy text-surface ring-aws-navy"
-                        : "bg-surface-alt text-aws-navy ring-border"
+                        ? "border-amber-300/40 bg-amber-300/10 text-amber-300"
+                        : "border-purple-400/30 bg-[#171020] text-purple-300"
                     }`}
                   >
                     <IconComponent className="size-5" aria-hidden="true" />
                   </div>
                   {isBuilderCenter && (
-                    <span className="rounded-full bg-aws-navy px-2.5 py-0.5 text-[11px] font-semibold tracking-wide text-surface uppercase">
+                    <span className="rounded-full border border-amber-300/40 bg-amber-950/40 px-2.5 py-0.5 font-mono text-[10px] font-semibold tracking-wide text-amber-300 uppercase">
                       Featured Hub
                     </span>
                   )}
                 </div>
 
-                <CardTitle className="mt-4 text-xl font-semibold text-ink">
+                <h3 className="mt-4 text-xl font-bold text-white transition-colors group-hover:text-amber-200">
                   {resource.name}
-                </CardTitle>
-                <CardDescription className="mt-2 text-sm leading-relaxed text-ink-muted">
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-[#A89DB5]">
                   {resource.purpose}
-                </CardDescription>
-              </CardHeader>
+                </p>
+              </div>
 
-              <CardContent className="pt-0">
-                <span className="font-mono text-xs text-ink-muted">
+              <div className="mt-4">
+                <span className="font-mono text-xs text-[#9C90AA]">
                   {resource.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
                 </span>
-              </CardContent>
+              </div>
 
-              <CardFooter className="pt-2">
-                <Button
-                  asChild
-                  variant={isBuilderCenter ? "brand" : "default"}
-                  size="default"
-                  className="w-full justify-center font-semibold"
-                >
-                  <a
-                    href={resource.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`Visit official website for ${resource.name} (opens in a new tab)`}
-                  >
-                    <span>Visit Official Website</span>
-                    <ExternalLink className="size-3.5" aria-hidden="true" />
-                  </a>
-                </Button>
-              </CardFooter>
-            </Card>
+              <a
+                href={resource.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Visit official website for ${resource.name} (opens in a new tab)`}
+                className={`mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold tracking-wide transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300 ${
+                  isBuilderCenter
+                    ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-[0_0_15px_rgba(251,191,36,0.2)] hover:from-amber-300 hover:to-amber-400"
+                    : "border border-[#4C2A66]/50 bg-[#171020] text-[#F8FAFC] hover:border-amber-300/50 hover:text-amber-200"
+                }`}
+              >
+                <span>Visit Official Website</span>
+                <ExternalLink className="size-3.5" aria-hidden="true" />
+              </a>
+            </div>
           );
         })}
       </div>
