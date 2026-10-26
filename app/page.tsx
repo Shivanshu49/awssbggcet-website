@@ -11,6 +11,22 @@ import gallery from '@/content/gallery.json';
 import resources from '@/content/resources.json';
 import { PhotoGrid } from '@/components/sections/PhotoGrid';
 import { LeadershipProfileCard } from '@/components/sections/LeadershipProfileCard';
+import {
+  SocialPlatformIcon,
+  type SocialPlatform,
+} from '@/components/ui/SocialPlatformIcon';
+
+const SOCIAL_LINKS: {
+  platform: SocialPlatform;
+  label: string;
+  href: string;
+}[] = [
+  { platform: 'linkedin', label: 'LinkedIn', href: site.socials.linkedin },
+  { platform: 'instagram', label: 'Instagram', href: site.socials.instagram },
+  { platform: 'x', label: 'X', href: site.socials.x },
+  { platform: 'github', label: 'GitHub', href: site.socials.github },
+  { platform: 'discord', label: 'Discord', href: site.socials.discord },
+];
 
 /* ============================================================================
    WEBGL2 INTERACTIVE CURSOR GRID (HOME HERO)
@@ -698,9 +714,6 @@ export default function FullySynchronizedPage() {
               aria-hidden="true"
             />
             <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center text-center">
-              <div className="inline-flex items-center px-5 py-1.5 rounded-full bg-[#130B20]/95 border border-[#FBBF24]/35 mb-8">
-                <span className="font-mono-jb text-xs text-[#FBBF24]">NAVIGATION COMPONENT: HOME SECTION</span>
-              </div>
               <h1 className="font-bold tracking-[-0.03em] leading-[1.12] space-y-2">
                 <span className="block text-4xl sm:text-6xl text-white">Build with the Cloud.</span>
                 <span className="block text-3xl sm:text-6xl text-[#FBBF24]">Create Beyond the Classroom.</span>
@@ -712,7 +725,7 @@ export default function FullySynchronizedPage() {
                 <Link href="/#events" className="px-7 py-3.5 rounded-full bg-[#FBBF24] text-[#0B0714] font-bold text-xs uppercase">
                   Explore Events
                 </Link>
-                <Link href="/#contact" className="px-7 py-3.5 rounded-xl bg-[#130C22] text-white border border-[#5B3285] font-semibold text-xs uppercase">
+                <Link href="/#contact" className="px-7 py-3.5 rounded-xl bg-[#FBBF24] text-[#090511] font-semibold text-xs uppercase shadow-[0_0_20px_rgba(251,191,36,0.25)] transition-colors hover:bg-amber-300">
                   Join Community
                 </Link>
               </div>
@@ -725,11 +738,6 @@ export default function FullySynchronizedPage() {
          2. ABOUT SECTION
          ==================================================== */}
       <div id="about" className="scroll-mt-24 py-16 border-t border-[#4C2A66]/30 bg-[#090511]">
-        <div className="text-center mb-8">
-          <span className="text-[10px] font-mono uppercase px-4 py-1 rounded-full bg-[#130C22] text-[#A855F7] border border-[#A855F7]/30">
-            Navigation Component: About Section
-          </span>
-        </div>
         <section className="w-full px-6 sm:px-12 max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <span className="font-mono-jb text-xs uppercase tracking-[0.2em] text-[#A855F7]">About the Builder Group</span>
@@ -779,10 +787,10 @@ export default function FullySynchronizedPage() {
                 <h3 className="mt-2 text-2xl font-bold sm:text-3xl">Core Team &amp; Leadership</h3>
               </div>
               <p className="max-w-xl text-sm leading-relaxed text-[#9E92B0]">
-                Student leaders and builders guiding the AWS Builder Center GCET chapter.
+                Our faculty advisor, student leaders, and builders guiding the AWS Builder Center GCET chapter.
               </p>
             </div>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-2 items-stretch gap-5 md:grid-cols-4">
               {team.map((member) => (
                 <LeadershipProfileCard key={member.name} member={member} />
               ))}
@@ -795,11 +803,6 @@ export default function FullySynchronizedPage() {
          3. EVENTS SECTION (WITH REGISTRATION & GALLERY)
          ==================================================== */}
       <div id="events" className="scroll-mt-24 py-16 border-t border-[#4C2A66]/30 bg-[#0B0713]">
-        <div className="text-center mb-8">
-          <span className="text-[10px] font-mono uppercase px-4 py-1 rounded-full bg-[#130C22] text-[#FBBF24] border border-[#FBBF24]/30">
-            Navigation Component: Events Section
-          </span>
-        </div>
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-5xl font-bold mb-3">Events &amp; Flagship Initiatives</h2>
@@ -928,11 +931,6 @@ export default function FullySynchronizedPage() {
          4. RESOURCES SECTION
          ==================================================== */}
       <div id="resources" className="scroll-mt-24 py-16 border-t border-[#4C2A66]/30 bg-[#090511]">
-        <div className="text-center mb-8">
-          <span className="text-[10px] font-mono uppercase px-4 py-1 rounded-full bg-[#130C22] text-[#FBBF24] border border-[#FBBF24]/30">
-            Navigation Component: Resources Section
-          </span>
-        </div>
         <section className="mx-auto w-full max-w-6xl px-6">
           <div className="mx-auto mb-14 max-w-3xl text-center">
             <span className="font-mono-jb text-xs uppercase tracking-[0.2em] text-[#FBBF24]">{resources.sectionEyebrow}</span>
@@ -1007,32 +1005,39 @@ export default function FullySynchronizedPage() {
          5. CONTACT SECTION
          ==================================================== */}
       <div id="contact" className="scroll-mt-24 py-16 border-t border-[#4C2A66]/30 bg-[#0B0713]">
-        <div className="text-center mb-8">
-          <span className="text-[10px] font-mono uppercase px-4 py-1 rounded-full bg-[#130C22] text-[#A855F7] border border-[#A855F7]/30">
-            Navigation Component: Contact Section
-          </span>
-        </div>
         <section className="w-full px-6 max-w-3xl mx-auto text-center">
+          <div className="mx-auto mb-6 flex size-16 items-center justify-center overflow-hidden rounded-2xl border border-[#A855F7]/40 bg-[#160F24] shadow-[0_0_18px_rgba(168,85,247,0.2)]">
+            <Image
+              src="/logo/awslogo.png"
+              alt="AWS Builder Center GCET logo"
+              width={64}
+              height={64}
+              className="size-full object-cover"
+            />
+          </div>
           <h2 className="text-3xl sm:text-5xl font-bold mb-4">Join the Community</h2>
           <p className="text-base text-[#CFC5DC] mb-8">Have questions or want to collaborate? Reach out to our core team directly via email.</p>
           <p className="mx-auto mb-8 max-w-2xl text-sm leading-relaxed text-[#9E92B0]">
             Join a learning cohort, take part in workshops and hackathons, collaborate on cloud projects, or follow our channels for chapter announcements and community updates.
           </p>
-          <a href={`mailto:${site.email}`} className="inline-flex items-center gap-2 rounded-xl bg-[#FBBF24] px-8 py-4 text-sm font-bold uppercase text-[#0B0714] transition-colors hover:bg-amber-300">
+          <a href={`mailto:${site.email}`} className="inline-flex max-w-full items-center gap-2 rounded-full border border-[#FBBF24]/50 bg-[#130C22] px-6 py-3 text-sm font-bold normal-case text-[#FBBF24] transition-colors hover:border-[#FBBF24] hover:bg-[#1B1130]">
             {site.email}
           </a>
           <div className="mt-12">
             <h3 className="font-mono-jb text-xs uppercase tracking-[0.2em] text-[#A855F7]">Find us on</h3>
             <div className="mt-5 flex flex-wrap justify-center gap-3">
-              {Object.entries(site.socials).map(([platform, url]) => (
+              {SOCIAL_LINKS.map(({ platform, label, href }) => (
                 <a
                   key={platform}
-                  href={url}
+                  href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-full border border-[#4C2A66]/50 bg-[#130C22] px-5 py-2.5 text-xs font-semibold capitalize text-[#D8CEE6] transition-colors hover:border-[#FBBF24]/60 hover:text-[#FBBF24]"
+                  aria-label={label}
+                  title={label}
+                  className="inline-flex min-h-11 items-center gap-2.5 rounded-full border border-[#4C2A66]/50 bg-[#130C22] px-4 py-2.5 text-xs font-semibold text-[#D8CEE6] transition-all hover:-translate-y-0.5 hover:border-[#FBBF24]/60 hover:bg-[#1B1130] hover:text-[#FBBF24] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FBBF24]"
                 >
-                  {platform}
+                  <SocialPlatformIcon platform={platform} className="size-4" />
+                  <span>{label}</span>
                 </a>
               ))}
             </div>
@@ -1041,7 +1046,7 @@ export default function FullySynchronizedPage() {
             href={site.joinFormUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-10 inline-flex items-center gap-2 rounded-full border border-[#FBBF24]/50 px-6 py-3 text-xs font-bold uppercase tracking-wide text-[#FBBF24] transition-colors hover:bg-[#FBBF24]/10"
+            className="mt-10 inline-flex items-center gap-2 rounded-full bg-[#FBBF24] px-6 py-3 text-xs font-bold uppercase tracking-wide text-[#090511] shadow-[0_0_20px_rgba(251,191,36,0.2)] transition-colors hover:bg-amber-300"
           >
             <UserPlus className="size-4" aria-hidden="true" />
             Join the Builder Group

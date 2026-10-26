@@ -38,5 +38,21 @@
     "image": "/team/anurag-singh.webp",
     "linkedin": "",
     "github": ""
+  },
+  {
+    "name": "Ritesh Yadav",
+    "role": "Mentor",
+    "group": "mentor",
+    "image": "",
+    "linkedin": "",
+    "github": ""
+  },
+  {
+    "name": "Dr Pallavi Goyel",
+    "role": "Faculty Advisor, GCET",
+    "group": "faculty",
+    "image": "",
+    "linkedin": "",
+    "github": ""
   }
 ]

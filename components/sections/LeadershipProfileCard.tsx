@@ -1,19 +1,28 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
+import { X } from 'lucide-react';
 import type { TeamMember } from '@/components/cards/TeamCard';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import styles from './LeadershipProfileCard.module.css';
 
 export function LeadershipProfileCard({ member }: { member: TeamMember }) {
-  const [flipped, setFlipped] = useState(false);
-  const [hovered, setHovered] = useState(false);
-  const [focused, setFocused] = useState(false);
-  const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const frontButtonRef = useRef<HTMLButtonElement>(null);
-  const backButtonRef = useRef<HTMLButtonElement>(null);
-  const showingBack = flipped || hovered || focused;
-  const groupLabel = member.group === 'lead' ? 'Leadership' : 'Core Team';
+  const groupLabel =
+    member.group === 'lead'
+      ? 'Leadership'
+      : member.group === 'mentor'
+        ? 'Mentor'
+        : member.group === 'faculty'
+          ? 'Faculty Advisor'
+          : 'Core Team';
   const profileLinks = [
     { label: 'LinkedIn', href: member.linkedin },
     { label: 'GitHub', href: member.github },
@@ -22,138 +31,115 @@ export function LeadershipProfileCard({ member }: { member: TeamMember }) {
       ? [{ label: 'Portfolio', href: member.portfolioUrl }]
       : []),
   ].filter((link) => link.href);
-
-  useEffect(
-    () => () => {
-      if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
-    },
-    [],
-  );
+  const initials = member.name
+    .split(/\s+/)
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 2);
 
   return (
-    <article
-      className={styles.card}
-      data-flipped={showingBack}
-      aria-label={`${member.name}, ${member.role}`}
-      onPointerEnter={(event) => {
-        if (event.pointerType === 'mouse') {
-          hoverTimerRef.current = setTimeout(() => setHovered(true), 120);
-        }
-      }}
-      onPointerLeave={(event) => {
-        if (event.pointerType === 'mouse') {
-          if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
-          hoverTimerRef.current = null;
-          setHovered(false);
-        }
-      }}
-      onFocusCapture={() => setFocused(true)}
-      onBlurCapture={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false);
-      }}
-    >
-      <div className={styles.cardInner}>
+    <Dialog>
+      <DialogTrigger asChild>
         <button
-          ref={frontButtonRef}
           type="button"
-          className={`${styles.face} ${styles.front}`}
-          onClick={() => {
-            setFlipped(true);
-            requestAnimationFrame(() => backButtonRef.current?.focus());
-          }}
-          aria-label={`Show details for ${member.name}`}
-          aria-pressed={showingBack}
-          aria-hidden={flipped}
-          tabIndex={flipped ? -1 : 0}
+          className={styles.profileTrigger}
+          aria-label={`View ${member.name}'s profile`}
         >
           <span className={styles.portrait}>
-            <Image
-              src={member.image}
-              alt=""
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className={styles.image}
-            />
+            {member.image ? (
+              <Image
+                src={member.image}
+                alt=""
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+                className={styles.image}
+              />
+            ) : (
+              <span className={styles.initials} aria-hidden="true">
+                {initials}
+              </span>
+            )}
           </span>
           <span className={styles.frontDetails}>
             <span className={styles.group}>{groupLabel}</span>
             <span className={styles.name}>{member.name}</span>
             <span className={styles.role}>{member.role}</span>
-            <span className={styles.flipHint}>Tap or hover to view profile</span>
+            <span className={styles.flipHint}>Click name to view profile</span>
           </span>
         </button>
+      </DialogTrigger>
 
-        <div className={`${styles.face} ${styles.back}`} aria-hidden={!showingBack}>
-          <span className={styles.backEyebrow}>AWS Builder Center GCET</span>
-          <h4 className={styles.backName}>{member.name}</h4>
-          <p className={styles.backRole}>{member.role}</p>
+      <DialogContent
+        className={styles.dialogContent}
+        overlayClassName={styles.dialogOverlay}
+        showCloseButton={false}
+      >
+        <motion.article
+          className={styles.dialogCard}
+          initial={{ opacity: 0, scale: 0.76, y: 42, rotateX: -9 }}
+          animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
+          transition={{ type: 'spring', stiffness: 340, damping: 24, mass: 0.8 }}
+          style={{ transformPerspective: 1200 }}
+        >
+          <DialogClose className={styles.closeButton} aria-label="Close profile">
+            <X className="size-5" aria-hidden="true" />
+          </DialogClose>
 
-          <section className={styles.bioSection} aria-label={`${member.name} bio`}>
-            <h5 className={styles.sectionLabel}>About</h5>
-            <p className={styles.bio}>
-              {member.bio || 'Bio details have not been added yet.'}
-            </p>
-          </section>
+          <div className={styles.dialogProfile}>
+            <div className={styles.dialogPortrait}>
+              {member.image ? (
+                <Image
+                  src={member.image}
+                  alt={`${member.name}`}
+                  fill
+                  sizes="(max-width: 640px) 40vw, 220px"
+                  className={styles.image}
+                />
+              ) : (
+                <span className={styles.dialogInitials} aria-hidden="true">
+                  {initials}
+                </span>
+              )}
+            </div>
+            <span className={styles.dialogGroup}>{groupLabel}</span>
+            <p className={styles.dialogRole}>{member.role}</p>
+          </div>
 
-          <section className={styles.achievementsSection} aria-label={`${member.name} achievements`}>
-            <h5 className={styles.sectionLabel}>Key achievements</h5>
-            {member.achievements && member.achievements.length > 0 ? (
-              <ul className={styles.achievements}>
-                {member.achievements.map((achievement) => (
-                  <li key={achievement}>{achievement}</li>
-                ))}
-              </ul>
-            ) : (
-              <p className={styles.noLinks}>No achievements added yet.</p>
+          <div className={styles.dialogDetails}>
+            <span className={styles.dialogEyebrow}>AWS Builder Center GCET</span>
+            <DialogTitle className={styles.dialogName}>{member.name}</DialogTitle>
+            <DialogDescription className={styles.dialogDescription}>
+              {member.bio || `${member.role} at AWS Builder Center GCET.`}
+            </DialogDescription>
+
+            {member.achievements && member.achievements.length > 0 && (
+              <section className={styles.achievementsSection}>
+                <h3 className={styles.sectionLabel}>Key achievements</h3>
+                <ul className={styles.achievements}>
+                  {member.achievements.map((achievement) => (
+                    <li key={achievement}>{achievement}</li>
+                  ))}
+                </ul>
+              </section>
             )}
-          </section>
 
-          <dl className={styles.details}>
-            <div>
-              <dt>Team</dt>
-              <dd>{groupLabel}</dd>
-            </div>
-            <div>
-              <dt>Position</dt>
-              <dd>{member.role}</dd>
-            </div>
-          </dl>
-
-          <div className={styles.profileLinks}>
-            <span className={styles.linksLabel}>Social links</span>
-            {profileLinks.length > 0 ? (
-              <div className={styles.links}>
+            {profileLinks.length > 0 && (
+              <nav className={styles.profileLinks} aria-label={`${member.name} social links`}>
                 {profileLinks.map((link) => (
                   <a
                     key={link.label}
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    tabIndex={showingBack ? 0 : -1}
                   >
                     {link.label}
                   </a>
                 ))}
-              </div>
-            ) : (
-              <p className={styles.noLinks}>No profile links provided yet.</p>
+              </nav>
             )}
           </div>
-
-          <button
-            ref={backButtonRef}
-            type="button"
-            className={styles.backButton}
-            onClick={() => {
-              setFlipped(false);
-              requestAnimationFrame(() => frontButtonRef.current?.focus());
-            }}
-            tabIndex={showingBack ? 0 : -1}
-          >
-            Show portrait
-          </button>
-        </div>
-      </div>
-    </article>
+        </motion.article>
+      </DialogContent>
+    </Dialog>
   );
 }
