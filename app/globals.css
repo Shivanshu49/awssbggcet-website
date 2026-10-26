@@ -79,6 +79,36 @@
   * {
     @apply border-border outline-ring/50;
   }
+
+  .navbar-floating {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    z-index: 100;
+    width: calc(100% - 2rem);
+    max-width: 80rem;
+    transform: translateX(-50%);
+    pointer-events: auto;
+  }
+
+  .navbar-corner-glow {
+    isolation: isolate;
+  }
+
+  .navbar-corner-glow::before {
+    position: absolute;
+    z-index: -1;
+    inset: -8px;
+    border-radius: inherit;
+    background:
+      radial-gradient(ellipse at top left, rgb(255 255 255 / 70%), transparent 22%),
+      radial-gradient(ellipse at top right, rgb(255 255 255 / 70%), transparent 22%),
+      radial-gradient(ellipse at bottom left, rgb(255 255 255 / 70%), transparent 22%),
+      radial-gradient(ellipse at bottom right, rgb(255 255 255 / 70%), transparent 22%);
+    filter: blur(8px);
+    content: "";
+    pointer-events: none;
+  }
   html {
     @apply font-sans;
   }
