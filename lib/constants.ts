@@ -1,12 +1,11 @@
 import site from "@/content/site.json";
 
 export const NAV_ITEMS = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Events", href: "/events" },
-  { label: "Resources", href: "/resources" },
-  { label: "Learning", href: "/learning" },
-  { label: "Contact", href: "/contact" },
+  { label: "Home", href: "/#home" },
+  { label: "About", href: "/#about" },
+  { label: "Events", href: "/#events" },
+  { label: "Resources", href: "/#resources" },
+  { label: "Contact", href: "/#contact" },
 ] as const;
 
 export const SOCIAL_LINKS = [

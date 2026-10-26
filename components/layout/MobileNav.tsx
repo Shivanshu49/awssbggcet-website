@@ -23,16 +23,16 @@ export function MobileNav({ joinFormUrl }: { joinFormUrl: string }) {
         <Button
           variant="ghost"
           size="icon-lg"
-          className="md:hidden"
+          className="text-white hover:bg-white/10 hover:text-[#FBBF24] lg:hidden"
           aria-label="Open menu"
         >
           <Menu className="size-5" />
         </Button>
       </DialogTrigger>
       <DialogPortal>
-        <DialogOverlay className="bg-aws-squid/60 md:hidden" />
+        <DialogOverlay className="bg-aws-squid/60 lg:hidden" />
         {/* Raw Content: shadcn's DialogContent is a centred modal, this is a right-side sheet. */}
-        <DialogPrimitive.Content className="fixed inset-y-0 right-0 z-50 flex w-full max-w-xs flex-col gap-6 bg-surface p-6 text-ink shadow-xl outline-none md:hidden data-open:animate-in data-open:slide-in-from-right data-closed:animate-out data-closed:slide-out-to-right">
+        <DialogPrimitive.Content className="fixed inset-y-0 right-0 z-50 flex w-full max-w-xs flex-col gap-6 bg-surface p-6 text-ink shadow-xl outline-none lg:hidden data-open:animate-in data-open:slide-in-from-right data-closed:animate-out data-closed:slide-out-to-right">
           <div className="flex items-center justify-between">
             <DialogTitle className="text-lg font-semibold">Menu</DialogTitle>
             <DialogClose asChild>

@@ -32,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn(inter.variable, sora.variable)}>
-      <body className="flex min-h-dvh flex-col antialiased">
+      <body className="flex min-h-dvh flex-col bg-[#090511] antialiased">
         <a
           href="#main"
           className="sr-only rounded-md bg-aws-navy px-4 py-2 text-surface focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50"
@@ -40,7 +40,7 @@ export default function RootLayout({
           Skip to content
         </a>
         <Header />
-        <main id="main" className="flex-1">
+        <main id="main" className="flex-1 pt-24">
           {children}
         </main>
         <Footer />
