@@ -15,6 +15,7 @@ import {
   SocialPlatformIcon,
   type SocialPlatform,
 } from '@/components/ui/SocialPlatformIcon';
+import { prefersReducedMotion, watchVisibility } from '@/lib/motion';
 
 const SOCIAL_LINKS: {
   platform: SocialPlatform;
