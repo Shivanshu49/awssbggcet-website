@@ -4,8 +4,8 @@ export const NAV_ITEMS = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Events", href: "/events" },
-  { label: "Resources", href: "/resources" },
   { label: "Learning", href: "/learning" },
+  { label: "Resources", href: "/resources" },
   { label: "Contact", href: "/contact" },
 ] as const;
 

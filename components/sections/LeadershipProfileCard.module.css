@@ -1,0 +1,261 @@
+.card {
+  min-width: 0;
+  min-height: 390px;
+  perspective: 1000px;
+}
+
+.cardInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  transform-style: preserve-3d;
+  transition: transform 820ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border: 1px solid rgb(76 42 102 / 55%);
+  border-radius: 1rem;
+  background: #130c22;
+  color: #fff;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition:
+    border-color 450ms ease,
+    box-shadow 450ms ease;
+}
+
+.front {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 250ms ease,
+    box-shadow 250ms ease;
+}
+
+.portrait {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #090511;
+}
+
+.image {
+  object-fit: cover;
+  transition: transform 500ms ease;
+}
+
+.frontDetails {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.15rem;
+}
+
+.group,
+.backEyebrow,
+.linksLabel {
+  color: #c084fc;
+  font-family: var(--font-mono-jb), monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.name {
+  margin-top: 0.65rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.role {
+  margin-top: 0.4rem;
+  color: #fbbf24;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.flipHint {
+  margin-top: auto;
+  padding-top: 0.7rem;
+  color: #9e92b0;
+  font-family: var(--font-mono-jb), monospace;
+  font-size: 0.625rem;
+}
+
+.back {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.4rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  transform: rotateY(180deg);
+  border-color: rgb(251 191 36 / 45%);
+  background:
+    radial-gradient(ellipse at top right, rgb(168 85 247 / 14%), transparent 50%),
+    #100b18;
+}
+
+.backName {
+  margin-top: 1rem;
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.backRole {
+  margin-top: 0.4rem;
+  color: #fbbf24;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.bioSection,
+.achievementsSection {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.sectionLabel {
+  color: #c084fc;
+  font-family: var(--font-mono-jb), monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.bio,
+.achievements {
+  margin-top: 0.4rem;
+  color: #d8cee6;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.achievements {
+  padding-left: 1rem;
+  list-style: disc;
+}
+
+.achievements li + li {
+  margin-top: 0.25rem;
+}
+
+.details {
+  display: grid;
+  width: 100%;
+  gap: 0.85rem;
+  margin-top: 1.4rem;
+  border-top: 1px solid rgb(76 42 102 / 50%);
+  padding-top: 1rem;
+}
+
+.details dt {
+  color: #9e92b0;
+  font-family: var(--font-mono-jb), monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.details dd {
+  margin-top: 0.25rem;
+  color: #d8cee6;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.profileLinks {
+  margin-top: 1.1rem;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.links a {
+  color: #fbbf24;
+  font-size: 0.8rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.noLinks {
+  margin-top: 0.5rem;
+  color: #9e92b0;
+  font-size: 0.75rem;
+}
+
+.backButton {
+  margin-top: auto;
+  padding-top: 1.2rem;
+  color: #d8cee6;
+  font-size: 0.75rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.front:focus-visible,
+.backButton:focus-visible,
+.links a:focus-visible {
+  outline: 2px solid #fbbf24;
+  outline-offset: -4px;
+}
+
+.card[data-flipped='true'] .cardInner {
+  transform: rotateY(180deg) scale(1.015);
+}
+
+.card[data-flipped='true'] .back {
+  border-color: rgb(251 191 36 / 65%);
+  box-shadow: 0 0 32px rgb(168 85 247 / 12%), inset 0 0 28px rgb(251 191 36 / 3%);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .front:hover {
+    border-color: rgb(251 191 36 / 60%);
+    box-shadow: 0 0 28px rgb(251 191 36 / 10%);
+  }
+
+  .front:hover .image {
+    transform: scale(1.04);
+  }
+}
+
+@media (max-width: 640px) {
+  .card {
+    min-height: 360px;
+  }
+
+  .back {
+    padding: 1.15rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cardInner,
+  .front,
+  .image,
+  .face {
+    transition-duration: 0.01ms;
+  }
+}

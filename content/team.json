@@ -38,5 +38,21 @@
     "image": "/team/anurag-singh.webp",
     "linkedin": "",
     "github": ""
+  },
+  {
+    "name": "Prof. Pallavi Goel",
+    "role": "HOD & Faculty Advisor",
+    "group": "mentor",
+    "image": "/team/pallavi-goel.webp",
+    "linkedin": "",
+    "github": ""
+  },
+  {
+    "name": "Mr. Ritesh Yadav",
+    "role": "Club Mentor",
+    "group": "mentor",
+    "image": "/team/ritesh-yadav.webp",
+    "linkedin": "",
+    "github": ""
   }
 ]

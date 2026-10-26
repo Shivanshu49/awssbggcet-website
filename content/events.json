@@ -15,5 +15,22 @@
       "/events/seminar-felicitation.webp",
       "/events/seminar-hands-on-demo.webp"
     ]
+  },
+  {
+    "slug": "velocity-inaugural-event-feb-2026",
+    "title": "VELOCITY: Inaugural Event",
+    "date": "2026-02-21T10:30:00+05:30",
+    "mode": "offline",
+    "venue": "Auditorium, D-Block, GCET",
+    "description": "Igniting Innovation, Shaping Futures in Cloud. The official flagship launch and inaugural ceremony of AWS Cloud Club GCET, featuring keynote addresses, faculty mentorship, and student builder felicitations.",
+    "registrationUrl": "",
+    "coverImage": "/events/velocity-sapling-felicitation.webp",
+    "gallery": [
+      "/events/velocity-sapling-felicitation.webp",
+      "/events/velocity-certificate-presentation.webp",
+      "/events/velocity-core-leads-stage.webp",
+      "/events/velocity-faculty-discussion.webp",
+      "/events/velocity-team-audience.webp"
+    ]
   }
 ]

@@ -18,5 +18,25 @@
   {
     "title": "Speaker Felicitation",
     "image": "/events/seminar-hands-on-demo.webp"
+  },
+  {
+    "title": "VELOCITY: Sapling Felicitation",
+    "image": "/events/velocity-sapling-felicitation.webp"
+  },
+  {
+    "title": "VELOCITY: Certificate Presentation",
+    "image": "/events/velocity-certificate-presentation.webp"
+  },
+  {
+    "title": "VELOCITY: Student Leadership Roster",
+    "image": "/events/velocity-core-leads-stage.webp"
+  },
+  {
+    "title": "VELOCITY: Faculty & Guest Discussion",
+    "image": "/events/velocity-faculty-discussion.webp"
+  },
+  {
+    "title": "VELOCITY: Student Builders in Audience",
+    "image": "/events/velocity-team-audience.webp"
   }
 ]

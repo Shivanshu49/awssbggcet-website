@@ -10,7 +10,9 @@ export interface TeamMember {
   image: string;
   linkedin: string;
   github: string;
+  twitter?: string;
   bio?: string;
+  achievements?: string[];
   portfolioUrl?: string;
 }
 
