@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { EventItem } from '@/components/cards/EventCard';
-import { Timeline } from '@/components/sections/Timeline';
+import { TimelineSection as Timeline } from '@/components/sections/Timeline';
+
 import { PhotoGrid, GalleryPhoto } from '@/components/sections/PhotoGrid';
 
 interface EventTabsProps {

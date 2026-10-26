@@ -2,10 +2,18 @@
 
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { Calendar, UserPlus } from 'lucide-react';
+import Image from 'next/image';
+import { Calendar, UserPlus, Sparkles, BookOpen, ExternalLink } from 'lucide-react';
+import site from '@/content/site.json';
+import team from '@/content/team.json';
+import events from '@/content/events.json';
+import gallery from '@/content/gallery.json';
+import resources from '@/content/resources.json';
+import { PhotoGrid } from '@/components/sections/PhotoGrid';
+import { LeadershipProfileCard } from '@/components/sections/LeadershipProfileCard';
 
 /* ============================================================================
-   WEBGL2 INTERACTIVE CURSOR GRID
+   WEBGL2 INTERACTIVE CURSOR GRID (HOME HERO)
    ============================================================================ */
 
 const INTRO_SECONDS = 1.4;
@@ -137,6 +145,31 @@ const parseHex = (hex = '#ffffff'): [number, number, number] => {
   return [((num >> 16) & 255) / 255, ((num >> 8) & 255) / 255, (num & 255) / 255];
 };
 
+type CursorGridProps = {
+  cellSize?: number;
+  color?: string;
+  gridColor?: string;
+  radius?: number;
+  falloff?: keyof typeof FALLOFF_CURVES;
+  holdTime?: number;
+  fadeDuration?: number;
+  lineWidth?: number;
+  maxOpacity?: number;
+  fillOpacity?: number;
+  gridOpacity?: number;
+  gridStyle?: keyof typeof STYLES;
+  cellRadius?: number;
+  cellGap?: number;
+  spotlight?: number;
+  ambient?: number;
+  edgeFade?: number;
+  intro?: boolean;
+  dpr?: number;
+  children?: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+};
+
 function CursorGrid({
   cellSize = 58,
   color = '#FAF8F5',
@@ -160,7 +193,7 @@ function CursorGrid({
   children,
   className = '',
   style,
-}: Record<string, any>) {
+}: CursorGridProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -339,7 +372,27 @@ function CursorGrid({
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('resize', rebuild);
     };
-  }, []);
+  }, [
+    ambient,
+    cellGap,
+    cellRadius,
+    cellSize,
+    color,
+    dpr,
+    edgeFade,
+    fadeDuration,
+    falloff,
+    fillOpacity,
+    gridColor,
+    gridOpacity,
+    gridStyle,
+    holdTime,
+    intro,
+    lineWidth,
+    maxOpacity,
+    radius,
+    spotlight,
+  ]);
 
   return (
     <div ref={containerRef} className={`relative w-full overflow-hidden ${className}`} style={style}>
@@ -349,10 +402,6 @@ function CursorGrid({
   );
 }
 
-/* ============================================================================
-   HOME PAGE COMPONENT (DEFAULT EXPORT)
-   ============================================================================ */
-
 const TICKER_ITEMS = [
   'AWS Cloud Foundations Bootcamp – Oct 12',
   'Hack-Cloud GCET 2026: 24h Sprint – Oct 26',
@@ -361,237 +410,231 @@ const TICKER_ITEMS = [
   'AWS Certified Cloud Practitioner Study Cohort – Dec 5',
 ];
 
-export default function HomePage() {
+const EVENT_CARDS = [
+  {
+    title: 'AWS Cloud Foundations Bootcamp',
+    date: '2026-10-12',
+    format: 'Hands-on workshop',
+    description: 'A hands-on bootcamp introducing cloud foundations and AWS services.',
+  },
+  {
+    title: 'Hack-Cloud GCET 2026: 24h Sprint',
+    date: '2026-10-26',
+    format: '24-hour hackathon',
+    description: 'A 24-hour hands-on cloud hackathon building scalable serverless solutions on AWS.',
+  },
+  {
+    title: 'Generative AI with Amazon Bedrock Masterclass',
+    date: '2026-11-08',
+    format: 'Technical masterclass',
+    description: 'Build enterprise-grade LLM applications using Amazon Bedrock and Claude.',
+  },
+  {
+    title: 'Serverless Microservices Architecture Challenge',
+    date: '2026-11-24',
+    format: 'Architecture challenge',
+    description: 'Design and build event-driven microservices using AWS serverless services.',
+  },
+  {
+    title: 'AWS Certified Cloud Practitioner Study Cohort',
+    date: '2026-12-05',
+    format: 'Guided study cohort',
+    description: 'Prepare for the AWS Certified Cloud Practitioner exam with a guided study cohort.',
+  },
+];
+
+type TimelineEvent = {
+  key: string;
+  date: string;
+  title: string;
+  description: string;
+  format: string;
+  venue?: string;
+  coverImage?: string;
+};
+
+export default function FullySynchronizedPage() {
   const strandsCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const todayInIndia = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Kolkata',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(new Date());
+  const upcomingEvents = EVENT_CARDS.filter((event) => event.date >= todayInIndia);
+  const pastEvents: TimelineEvent[] = [
+    ...events
+      .filter((event) => event.date.slice(0, 10) < todayInIndia)
+      .map((event) => ({
+        key: event.slug,
+        date: event.date,
+        title: event.title,
+        description: event.description,
+        format: `${event.mode} event`,
+        venue: event.venue,
+        coverImage: event.coverImage,
+      })),
+    ...EVENT_CARDS.filter((event) => event.date < todayInIndia).map((event) => ({
+      ...event,
+      key: event.title,
+    })),
+  ].sort((first, second) => second.date.localeCompare(first.date));
+
+  const formatEventDate = (date: string) =>
+    new Intl.DateTimeFormat('en-IN', {
+      dateStyle: 'medium',
+      timeZone: 'Asia/Kolkata',
+    }).format(new Date(date.length === 10 ? `${date}T12:00:00+05:30` : date));
 
   useEffect(() => {
     const canvas = strandsCanvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const context = canvas?.getContext('2d');
+    if (!canvas || !context) return undefined;
 
-    let animationFrameId: number;
-    let time = 0;
-
-    const handleResize = () => {
-      if (!canvas) return;
-      const dpr = window.devicePixelRatio || 1;
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let frame = 0;
+    let width = 0;
+    let height = 0;
+    const resize = () => {
+      const bounds = canvas.getBoundingClientRect();
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      width = bounds.width;
+      height = bounds.height;
+      canvas.width = Math.round(width * ratio);
+      canvas.height = Math.round(height * ratio);
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
     };
 
-    handleResize();
-    window.addEventListener('resize', handleResize);
-
-    const getWaveY = (
-      normX: number,
-      height: number,
-      t: number,
-      config: {
-        baseY: number;
-        dipX: number;
-        dipDepth: number;
-        crestX: number;
-        crestHeight: number;
-        freq: number;
-        speed: number;
-        phase: number;
-        amp: number;
-      }
-    ) => {
-      const dip =
-        Math.exp(-Math.pow((normX - config.dipX) / 0.24, 2)) * config.dipDepth;
-      const crest =
-        Math.exp(-Math.pow((normX - config.crestX) / 0.22, 2)) *
-        config.crestHeight;
-      const leftLift = Math.exp(-Math.pow(normX / 0.18, 2)) * -22;
-
-      const organicMotion =
-        Math.sin(normX * config.freq + t * config.speed + config.phase) *
-          config.amp +
-        Math.cos(
-          normX * (config.freq * 0.65) - t * (config.speed * 0.8) + config.phase
-        ) *
-          (config.amp * 0.55);
-
-      return height * config.baseY + dip - crest + leftLift + organicMotion;
-    };
-
-    const ribbonFamilies = [
-      {
-        primaryColor: '#FBBF24',
-        deepColor: '#F59E0B',
-        whiteMix: '#FFFBEB',
-        auraRgb: '251, 191, 36',
-        main: {
-          baseY: 0.71,
-          dipX: 0.36,
-          dipDepth: 56,
-          crestX: 0.81,
-          crestHeight: 68,
-          freq: 7.5,
-          speed: 0.018,
-          phase: 0.0,
-          amp: 12,
+    const draw = (time: number) => {
+      context.clearRect(0, 0, width, height);
+      const elapsed = reducedMotion ? 0 : time;
+      const waves = [
+        {
+          base: 0.58,
+          amplitude: 0.13,
+          phase: 0.2,
+          speed: 0.00032,
+          offset: -20,
+          primary: '251, 191, 36',
+          deep: '245, 158, 11',
         },
-        companion: {
-          baseY: 0.73,
-          dipX: 0.41,
-          dipDepth: 42,
-          crestX: 0.78,
-          crestHeight: 46,
-          freq: 8.2,
-          speed: 0.014,
-          phase: 1.1,
-          amp: 10,
+        {
+          base: 0.58,
+          amplitude: 0.13,
+          phase: 0.2,
+          speed: 0.00032,
+          offset: 26,
+          primary: '168, 85, 247',
+          deep: '147, 51, 234',
         },
-      },
-      {
-        primaryColor: '#A855F7',
-        deepColor: '#9333EA',
-        whiteMix: '#FAF5FF',
-        auraRgb: '168, 85, 247',
-        main: {
-          baseY: 0.76,
-          dipX: 0.33,
-          dipDepth: 68,
-          crestX: 0.79,
-          crestHeight: 42,
-          freq: 7.0,
-          speed: -0.016,
-          phase: 2.1,
-          amp: 13,
-        },
-        companion: {
-          baseY: 0.81,
-          dipX: 0.28,
-          dipDepth: 64,
-          crestX: 0.83,
-          crestHeight: 28,
-          freq: 6.4,
-          speed: 0.013,
-          phase: 3.4,
-          amp: 11,
-        },
-      },
-    ];
+      ];
 
-    const render = () => {
-      const width = canvas.clientWidth;
-      const height = canvas.clientHeight;
-      ctx.clearRect(0, 0, width, height);
-      time += 1;
-
-      ctx.save();
-      ctx.globalCompositeOperation = 'lighter';
-      const step = 6;
-
-      ribbonFamilies.forEach((family) => {
-        const mainPts: Array<{ x: number; y: number }> = [];
-        const compPts: Array<{ x: number; y: number }> = [];
-
-        for (let x = 0; x <= width; x += step) {
-          const normX = x / width;
-          mainPts.push({ x, y: getWaveY(normX, height, time, family.main) });
-          compPts.push({ x, y: getWaveY(normX, height, time, family.companion) });
-        }
-
-        const tracePath = (pts: Array<{ x: number; y: number }>) => {
-          ctx.beginPath();
-          pts.forEach((p, idx) => {
-            if (idx === 0) ctx.moveTo(p.x, p.y);
-            else ctx.lineTo(p.x, p.y);
-          });
+      for (const wave of waves) {
+        const phase = wave.phase + elapsed * wave.speed;
+        const getPoint = (progress: number, offset: number) => ({
+          x: progress * width,
+          y:
+            height *
+              (wave.base +
+                Math.sin(progress * Math.PI * 2.15 + phase) * wave.amplitude +
+                Math.sin(progress * Math.PI * 1.05 - phase * 0.72) *
+                  wave.amplitude *
+                  0.24) +
+            wave.offset +
+            offset,
+        });
+        const trace = (offset: number) => {
+          context.beginPath();
+          for (let step = 0; step <= 144; step++) {
+            const point = getPoint(step / 144, offset);
+            if (step === 0) context.moveTo(point.x, point.y);
+            else context.lineTo(point.x, point.y);
+          }
         };
 
-        ctx.beginPath();
-        mainPts.forEach((p, idx) => {
-          if (idx === 0) ctx.moveTo(p.x, p.y);
-          else ctx.lineTo(p.x, p.y);
-        });
-        for (let i = compPts.length - 1; i >= 0; i--) {
-          ctx.lineTo(compPts[i].x, compPts[i].y);
+        context.lineCap = 'round';
+        context.lineJoin = 'round';
+        context.globalCompositeOperation = 'lighter';
+
+        const veil = context.createLinearGradient(
+          0,
+          height * (wave.base - 0.1) + wave.offset,
+          0,
+          height * (wave.base + 0.12) + wave.offset,
+        );
+        veil.addColorStop(0, `rgba(${wave.primary}, 0)`);
+        veil.addColorStop(0.5, `rgba(${wave.primary}, 0.11)`);
+        veil.addColorStop(1, `rgba(${wave.deep}, 0)`);
+        context.beginPath();
+        for (let step = 0; step <= 144; step++) {
+          const point = getPoint(step / 144, -9);
+          if (step === 0) context.moveTo(point.x, point.y);
+          else context.lineTo(point.x, point.y);
         }
-        ctx.closePath();
-        const veilGrad = ctx.createLinearGradient(0, 0, width, 0);
-        veilGrad.addColorStop(0.0, `rgba(${family.auraRgb}, 0.16)`);
-        veilGrad.addColorStop(0.5, `rgba(${family.auraRgb}, 0.04)`);
-        veilGrad.addColorStop(1.0, `rgba(${family.auraRgb}, 0.12)`);
-        ctx.fillStyle = veilGrad;
-        ctx.fill();
+        for (let step = 144; step >= 0; step--) {
+          const point = getPoint(step / 144, 13);
+          context.lineTo(point.x, point.y);
+        }
+        context.closePath();
+        context.fillStyle = veil;
+        context.fill();
 
-        tracePath(mainPts);
-        ctx.strokeStyle = `rgba(${family.auraRgb}, 0.11)`;
-        ctx.lineWidth = 48;
-        ctx.lineCap = 'round';
-        ctx.stroke();
+        trace(-9);
+        context.shadowColor = `rgba(${wave.primary}, 0.9)`;
+        context.shadowBlur = 20;
+        context.strokeStyle = `rgba(${wave.primary}, 0.32)`;
+        context.lineWidth = 18;
+        context.stroke();
 
-        tracePath(mainPts);
-        ctx.strokeStyle = `rgba(${family.auraRgb}, 0.22)`;
-        ctx.lineWidth = 20;
-        ctx.stroke();
+        trace(13);
+        context.shadowColor = `rgba(${wave.deep}, 0.85)`;
+        context.shadowBlur = 16;
+        context.strokeStyle = `rgba(${wave.deep}, 0.45)`;
+        context.lineWidth = 8;
+        context.stroke();
 
-        tracePath(mainPts);
-        ctx.strokeStyle = `rgba(${family.auraRgb}, 0.38)`;
-        ctx.lineWidth = 8;
-        ctx.stroke();
+        trace(-2);
+        context.shadowColor = `rgba(${wave.primary}, 0.95)`;
+        context.shadowBlur = 12;
+        context.strokeStyle = `rgba(${wave.primary}, 0.96)`;
+        context.lineWidth = 3;
+        context.stroke();
 
-        tracePath(compPts);
-        ctx.strokeStyle = `rgba(${family.auraRgb}, 0.18)`;
-        ctx.lineWidth = 10;
-        ctx.stroke();
-
-        const compGrad = ctx.createLinearGradient(0, 0, width, 0);
-        compGrad.addColorStop(0.0, family.whiteMix);
-        compGrad.addColorStop(0.5, family.deepColor);
-        compGrad.addColorStop(1.0, family.whiteMix);
-        tracePath(compPts);
-        ctx.strokeStyle = compGrad;
-        ctx.lineWidth = 1.5;
-        ctx.shadowColor = family.primaryColor;
-        ctx.shadowBlur = 12;
-        ctx.stroke();
-
-        const mainGrad = ctx.createLinearGradient(0, 0, width, 0);
-        mainGrad.addColorStop(0.0, family.whiteMix);
-        mainGrad.addColorStop(0.32, family.primaryColor);
-        mainGrad.addColorStop(0.8, family.whiteMix);
-        mainGrad.addColorStop(1.0, family.primaryColor);
-        tracePath(mainPts);
-        ctx.strokeStyle = mainGrad;
-        ctx.lineWidth = 2.6;
-        ctx.shadowColor = family.primaryColor;
-        ctx.shadowBlur = 20;
-        ctx.stroke();
-
-        const hotCoreGrad = ctx.createLinearGradient(0, 0, width, 0);
-        hotCoreGrad.addColorStop(0.0, 'rgba(255, 255, 255, 0.95)');
-        hotCoreGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.15)');
-        hotCoreGrad.addColorStop(1.0, 'rgba(255, 255, 255, 0.8)');
-        tracePath(mainPts);
-        ctx.strokeStyle = hotCoreGrad;
-        ctx.lineWidth = 1.15;
-        ctx.shadowColor = '#FFFFFF';
-        ctx.shadowBlur = 10;
-        ctx.stroke();
-      });
-
-      ctx.restore();
-      animationFrameId = requestAnimationFrame(render);
+        trace(-3);
+        context.shadowColor = 'rgba(255, 248, 255, 0.9)';
+        context.shadowBlur = 12;
+        context.strokeStyle = 'rgba(255, 248, 255, 0.82)';
+        context.lineWidth = 1;
+        context.stroke();
+      }
+      context.globalCompositeOperation = 'source-over';
+      context.shadowBlur = 0;
     };
 
-    render();
+    const onResize = () => {
+      resize();
+      if (reducedMotion) draw(0);
+    };
 
+    resize();
+    if (reducedMotion) {
+      draw(0);
+    } else {
+      const animate = (time: number) => {
+        draw(time);
+        frame = requestAnimationFrame(animate);
+      };
+      frame = requestAnimationFrame(animate);
+    }
+    window.addEventListener('resize', onResize);
     return () => {
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(frame);
+      window.removeEventListener('resize', onResize);
     };
   }, []);
 
   return (
-    <div className="font-space min-h-screen bg-[#090511] text-white overflow-hidden antialiased">
+    <div className="font-space min-h-screen bg-[#090511] text-white selection:bg-[#FBBF24] selection:text-[#090511]">
       <style
         dangerouslySetInnerHTML={{
           __html: `
@@ -613,105 +656,400 @@ export default function HomePage() {
         }}
       />
 
-      <div className="w-full bg-[#0D0718] border-b border-[#4C2A66]/40 py-2.5 overflow-hidden">
+      {/* Ticker */}
+      <div id="home" className="scroll-mt-24 w-full bg-[#0D0718] border-b border-[#4C2A66]/40 py-2.5 overflow-hidden">
         <div className="flex items-center whitespace-nowrap animate-marquee">
           {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, idx) => (
             <div key={idx} className="inline-flex items-center mx-6">
               <span className="w-1.5 h-1.5 rounded-full bg-[#FBBF24] mr-3 shadow-[0_0_6px_#FBBF24]" />
-              <span className="font-mono-jb text-xs tracking-wide text-[#D8CEE6]">
-                {item}
-              </span>
+              <span className="font-mono-jb text-xs tracking-wide text-[#D8CEE6]">{item}</span>
             </div>
           ))}
         </div>
       </div>
 
-      <CursorGrid
-        cellSize={58}
-        color="#FAF8F5"
-        gridColor="#EFECE6"
-        radius={145}
-        falloff="smooth"
-        highlight="area"
-        holdTime={380}
-        fadeDuration={800}
-        lineWidth={1}
-        maxOpacity={0.68}
-        fillOpacity={0.06}
-        gridOpacity={0.095}
-        gridStyle="lines"
-        spotlight={0.52}
-        clickPulse={true}
-        pulseSpeed={650}
-        ambient={0.08}
-        edgeFade={0.18}
-        intro={true}
-        className="min-h-[86vh] flex items-center justify-center"
-      >
-        <section className="relative w-full min-h-[86vh] flex flex-col items-center justify-center px-4 sm:px-6 pt-10 pb-24">
-          <div
-            className="absolute inset-0 pointer-events-none z-0"
-            style={{
-              background:
-                'radial-gradient(ellipse 42% 32% at 50% 40%, rgba(9, 5, 17, 0.72) 0%, rgba(9, 5, 17, 0.35) 55%, transparent 100%)',
-            }}
-            aria-hidden="true"
-          />
-
-          <canvas
-            ref={strandsCanvasRef}
-            className="absolute inset-0 w-full h-full pointer-events-none z-0"
-            aria-hidden="true"
-          />
-
-          <div className="relative z-10 max-w-5xl mx-auto text-center flex flex-col items-center">
-            <div className="inline-flex items-center px-5 py-1.5 rounded-full bg-[#130B20]/95 border border-[#FBBF24]/35 mb-8">
-              <span className="font-mono-jb text-xs sm:text-sm tracking-wider text-[#FBBF24]">
-                AWS x GCET • Student Builder Group
-              </span>
-            </div>
-
-            <h1 className="font-bold tracking-[-0.03em] leading-[1.12] space-y-2">
-              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-[64px] text-white">
-                Build with the Cloud.
-              </span>
-              <span className="block text-3xl sm:text-5xl md:text-[54px] lg:text-[62px] text-[#FBBF24] md:whitespace-nowrap">
-                Create Beyond the Classroom
-                <span className="text-[#A855F7]">.</span>
-              </span>
-            </h1>
-
-            <p className="mt-7 max-w-2xl mx-auto text-sm sm:text-base md:text-[17px] text-[#CFC5DC] leading-relaxed font-normal">
-              Galgotias College of Engineering &amp; Technology&apos;s official student
-              cloud engineering community. Exploring scalable architectures, Amazon
-              Bedrock Generative AI, Kubernetes clusters, and certified cloud careers.
-            </p>
-
-            <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-5">
-              <Link
-                href="/events"
-                className="font-mono-jb inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full bg-[#FBBF24] hover:bg-[#F59E0B] text-[#0B0714] text-xs sm:text-sm font-bold tracking-wider uppercase shadow-[0_0_20px_rgba(251,191,36,0.28)] transition-all duration-300 hover:-translate-y-0.5"
-              >
-                <span>EXPLORE EVENTS</span>
-                <Calendar className="w-4 h-4 stroke-[2.2]" />
-              </Link>
-
-<div className="relative group">
-                <span className="absolute -top-1 -left-1 w-2.5 h-2.5 border-t-2 border-l-2 border-[#C084FC] pointer-events-none transition-transform group-hover:-translate-x-0.5 group-hover:-translate-y-0.5" />
-                <span className="absolute -bottom-1 -right-1 w-2.5 h-2.5 border-b-2 border-r-2 border-[#FBBF24] pointer-events-none transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5" />
-
-                <Link
-                  href="/contact"
-                  className="font-mono-jb inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl bg-[#130C22]/95 hover:bg-[#1B1130] text-white border border-[#5B3285] hover:border-[#A855F7] text-xs sm:text-sm font-semibold tracking-wider uppercase transition-all duration-300"
-                >
-                  <UserPlus className="w-4 h-4 text-[#FBBF24]" />
-                  <span>JOIN COMMUNITY</span>
+      {/* ====================================================
+         1. HOME SECTION
+         ==================================================== */}
+      <div>
+        <CursorGrid
+          cellSize={58}
+          color="#FAF8F5"
+          gridColor="#EFECE6"
+          radius={145}
+          falloff="smooth"
+          holdTime={380}
+          fadeDuration={800}
+          lineWidth={1}
+          maxOpacity={0.68}
+          fillOpacity={0.06}
+          gridOpacity={0.095}
+          gridStyle="lines"
+          spotlight={0.52}
+          ambient={0.08}
+          edgeFade={0.18}
+          intro={true}
+          className="min-h-[86vh] flex items-center justify-center"
+        >
+          <section className="relative w-full min-h-[86vh] flex flex-col items-center justify-center px-4 sm:px-6 pt-10 pb-24">
+            <canvas
+              ref={strandsCanvasRef}
+              className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-[46%] w-full opacity-95 sm:h-[48%]"
+              aria-hidden="true"
+            />
+            <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center text-center">
+              <div className="inline-flex items-center px-5 py-1.5 rounded-full bg-[#130B20]/95 border border-[#FBBF24]/35 mb-8">
+                <span className="font-mono-jb text-xs text-[#FBBF24]">NAVIGATION COMPONENT: HOME SECTION</span>
+              </div>
+              <h1 className="font-bold tracking-[-0.03em] leading-[1.12] space-y-2">
+                <span className="block text-4xl sm:text-6xl text-white">Build with the Cloud.</span>
+                <span className="block text-3xl sm:text-6xl text-[#FBBF24]">Create Beyond the Classroom.</span>
+              </h1>
+              <p className="mt-7 max-w-2xl mx-auto text-base text-[#CFC5DC]">
+                Galgotias College of Engineering &amp; Technology&apos;s official student cloud engineering community.
+              </p>
+              <div className="mt-12 flex gap-5">
+                <Link href="/#events" className="px-7 py-3.5 rounded-full bg-[#FBBF24] text-[#0B0714] font-bold text-xs uppercase">
+                  Explore Events
+                </Link>
+                <Link href="/#contact" className="px-7 py-3.5 rounded-xl bg-[#130C22] text-white border border-[#5B3285] font-semibold text-xs uppercase">
+                  Join Community
                 </Link>
               </div>
             </div>
+          </section>
+        </CursorGrid>
+      </div>
+
+      {/* ====================================================
+         2. ABOUT SECTION
+         ==================================================== */}
+      <div id="about" className="scroll-mt-24 py-16 border-t border-[#4C2A66]/30 bg-[#090511]">
+        <div className="text-center mb-8">
+          <span className="text-[10px] font-mono uppercase px-4 py-1 rounded-full bg-[#130C22] text-[#A855F7] border border-[#A855F7]/30">
+            Navigation Component: About Section
+          </span>
+        </div>
+        <section className="w-full px-6 sm:px-12 max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <span className="font-mono-jb text-xs uppercase tracking-[0.2em] text-[#A855F7]">About the Builder Group</span>
+            <h2 className="text-3xl sm:text-5xl font-bold mb-4">Empowering Cloud Builders at GCET</h2>
+            <p className="text-base sm:text-lg text-[#CFC5DC]">Empowering students across all years to build, architect, and deploy production-grade cloud solutions on AWS.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+            <div className="p-8 rounded-2xl bg-[#130C22] border border-[#4C2A66]/40">
+              <h3 className="text-xl font-bold text-amber-300 mb-3">Our Mission</h3>
+              <p className="text-sm text-[#CFC5DC] leading-relaxed">To provide students at Galgotias College of Engineering &amp; Technology with accessible, hands-on exposure to cloud architecture and emerging technologies, fostering a culture of building, experimentation, and industry alignment.</p>
+            </div>
+            <div className="p-8 rounded-2xl bg-[#130C22] border border-[#4C2A66]/40">
+              <h3 className="text-xl font-bold text-purple-300 mb-3">Our Vision</h3>
+              <p className="text-sm text-[#CFC5DC] leading-relaxed">To establish GCET as a recognized student hub for technical leadership, where students graduate with practical experience deploying production-ready cloud solutions.</p>
+            </div>
+          </div>
+
+          <div className="mb-16 rounded-3xl border border-[#4C2A66]/40 bg-[#100B18] p-7 sm:p-10">
+            <div className="mb-8 text-center">
+              <span className="font-mono-jb text-xs uppercase tracking-[0.2em] text-[#FBBF24]">The Builder Pathway</span>
+              <h3 className="mt-3 text-2xl font-bold sm:text-3xl">From curiosity to cloud leadership</h3>
+              <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-[#CFC5DC]">
+                A practical chapter journey that helps GCET students learn cloud fundamentals, turn ideas into working systems, and grow through community.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+              {[
+                { step: '01', title: 'Learn', detail: 'Build cloud fundamentals through guided learning paths, study cohorts, and AWS documentation.' },
+                { step: '02', title: 'Build', detail: 'Apply what you learn in hands-on labs, projects, and production-minded cloud builds.' },
+                { step: '03', title: 'Compete', detail: 'Challenge yourself in hackathons, architecture sprints, and technical competitions.' },
+                { step: '04', title: 'Connect', detail: 'Meet peers, mentors, speakers, and the wider AWS builder community.' },
+                { step: '05', title: 'Lead', detail: 'Share knowledge, mentor other builders, and help shape the next chapter initiatives.' },
+              ].map((item) => (
+                <article key={item.step} className="rounded-2xl border border-[#4C2A66]/40 bg-[#090511] p-5">
+                  <span className="font-mono-jb text-xs text-[#A855F7]">{item.step}</span>
+                  <h4 className="mt-3 text-lg font-bold text-[#FBBF24]">{item.title}</h4>
+                  <p className="mt-2 text-xs leading-relaxed text-[#CFC5DC]">{item.detail}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="mb-8 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+              <div>
+                <span className="font-mono-jb text-xs uppercase tracking-[0.2em] text-[#A855F7]">People behind the community</span>
+                <h3 className="mt-2 text-2xl font-bold sm:text-3xl">Core Team &amp; Leadership</h3>
+              </div>
+              <p className="max-w-xl text-sm leading-relaxed text-[#9E92B0]">
+                Student leaders and builders guiding the AWS Builder Center GCET chapter.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {team.map((member) => (
+                <LeadershipProfileCard key={member.name} member={member} />
+              ))}
+            </div>
           </div>
         </section>
-      </CursorGrid>
+      </div>
+
+      {/* ====================================================
+         3. EVENTS SECTION (WITH REGISTRATION & GALLERY)
+         ==================================================== */}
+      <div id="events" className="scroll-mt-24 py-16 border-t border-[#4C2A66]/30 bg-[#0B0713]">
+        <div className="text-center mb-8">
+          <span className="text-[10px] font-mono uppercase px-4 py-1 rounded-full bg-[#130C22] text-[#FBBF24] border border-[#FBBF24]/30">
+            Navigation Component: Events Section
+          </span>
+        </div>
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-5xl font-bold mb-3">Events &amp; Flagship Initiatives</h2>
+            <p className="text-sm sm:text-base text-[#9E92B0]">Hands-on technical bootcamps, solution challenges, and architectural sessions hosted for students.</p>
+          </div>
+          <section aria-labelledby="upcoming-events-heading">
+            <div className="mb-10 text-center">
+              <span className="font-mono-jb text-xs uppercase tracking-[0.2em] text-[#FBBF24]">Mark your calendar</span>
+              <h3 id="upcoming-events-heading" className="mt-2 text-2xl font-bold sm:text-3xl">Upcoming Events</h3>
+              <p className="mt-2 text-sm text-[#9E92B0]">A continuous timeline of workshops, challenges, and ways to build together.</p>
+            </div>
+            {upcomingEvents.length > 0 ? (
+              <div className="relative space-y-8 before:absolute before:bottom-4 before:left-[15px] before:top-4 before:w-px before:bg-gradient-to-b before:from-[#FBBF24] before:via-[#A855F7] before:to-[#4C2A66]/20 lg:before:left-1/2">
+                {upcomingEvents.map((event, index) => (
+                  <div key={event.title} className="relative grid grid-cols-[2rem_minmax(0,1fr)] gap-4 lg:grid-cols-[1fr_4rem_1fr] lg:gap-0">
+                    <div className="z-10 col-start-1 row-start-1 flex items-center justify-center lg:col-start-2 lg:row-start-1">
+                      <span className="relative flex size-8 items-center justify-center rounded-full border-2 border-[#FBBF24] bg-[#090511] shadow-[0_0_18px_rgba(251,191,36,0.55)]">
+                        <span className="size-2 rounded-full bg-[#FBBF24]" />
+                      </span>
+                    </div>
+                    <article className={`group relative col-start-2 row-start-1 overflow-hidden rounded-[1.75rem] border bg-[#100B18]/95 p-6 shadow-[0_16px_55px_rgba(0,0,0,0.28)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_55px_rgba(168,85,247,0.15)] sm:p-8 ${index === 0 ? 'border-[#FBBF24]/60 shadow-[0_0_35px_rgba(251,191,36,0.08)]' : 'border-[#4C2A66]/50 hover:border-[#A855F7]/60'} ${index % 2 === 0 ? 'lg:col-start-1 lg:text-right' : 'lg:col-start-3'} lg:row-start-1`}>
+                      <span className="pointer-events-none absolute -right-16 -top-16 size-48 rounded-full bg-[#A855F7]/10 blur-3xl transition-colors group-hover:bg-[#FBBF24]/10" />
+                      <div className={`relative flex flex-wrap items-center gap-2 ${index % 2 === 0 ? 'lg:justify-end' : ''}`}>
+                        <span className="inline-flex items-center gap-2 rounded-full border border-[#FBBF24]/20 bg-[#1B1130] px-3 py-1.5 font-mono-jb text-[10px] uppercase tracking-wide text-[#FBBF24]">
+                          <Calendar className="size-3.5" aria-hidden="true" />
+                          {formatEventDate(event.date)}
+                        </span>
+                        {index === 0 && (
+                          <span className="rounded-full border border-[#FBBF24]/30 bg-[#FBBF24]/10 px-3 py-1.5 font-mono-jb text-[10px] uppercase tracking-wide text-[#FBBF24]">
+                            Next up
+                          </span>
+                        )}
+                      </div>
+                      <h4 className={`relative mt-5 text-xl font-bold text-white sm:text-2xl ${index % 2 === 0 ? 'lg:text-right' : ''}`}>{event.title}</h4>
+                      <p className={`relative mt-2 font-mono-jb text-xs text-[#C4A5FD] ${index % 2 === 0 ? 'lg:text-right' : ''}`}>{event.format} · All levels welcome</p>
+                      <p className={`relative mt-4 max-w-xl text-sm leading-relaxed text-[#CFC5DC] ${index % 2 === 0 ? 'lg:ml-auto lg:text-right' : ''}`}>{event.description}</p>
+                      <div className={`relative mt-6 flex ${index % 2 === 0 ? 'lg:justify-end' : ''}`}>
+                        <Link
+                          href={site.joinFormUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 rounded-full bg-[#FBBF24] px-5 py-2.5 text-xs font-bold text-[#090511] shadow-[0_0_20px_rgba(251,191,36,0.2)] transition hover:bg-amber-300"
+                        >
+                          <UserPlus className="size-4" aria-hidden="true" />
+                          Register Now
+                          <ExternalLink className="size-3.5" aria-hidden="true" />
+                        </Link>
+                      </div>
+                    </article>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="rounded-2xl border border-[#4C2A66]/40 bg-[#100B18] px-6 py-10 text-center text-sm text-[#9E92B0]">
+                No upcoming events are scheduled right now. Check back soon for the next chapter event.
+              </p>
+            )}
+          </section>
+
+          <section aria-labelledby="past-events-heading" className="mt-16 border-t border-[#4C2A66]/40 pt-12">
+            <div className="mb-8">
+              <span className="font-mono-jb text-xs uppercase tracking-[0.2em] text-[#A855F7]">Chapter archive</span>
+              <h3 id="past-events-heading" className="mt-2 text-2xl font-bold sm:text-3xl">Past Events</h3>
+              <p className="mt-2 text-sm text-[#9E92B0]">Highlights from previous workshops and chapter gatherings.</p>
+            </div>
+            {pastEvents.length > 0 ? (
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                {pastEvents.map((event) => (
+                  <article key={event.key} className="overflow-hidden rounded-2xl border border-[#4C2A66]/40 bg-[#100B18]">
+                    {event.coverImage && (
+                      <div className="relative aspect-[16/7] overflow-hidden bg-[#090511]">
+                        <Image
+                          src={event.coverImage}
+                          alt=""
+                          fill
+                          sizes="(max-width: 768px) 100vw, 50vw"
+                          className="object-cover"
+                        />
+                      </div>
+                    )}
+                    <div className="p-6">
+                      <span className="inline-flex items-center gap-2 rounded-full bg-[#1B1130] px-3 py-1.5 font-mono-jb text-[10px] text-[#B8ACC9]">
+                        <Calendar className="size-3.5 text-[#A855F7]" aria-hidden="true" />
+                        {formatEventDate(event.date)}
+                      </span>
+                      <h4 className="mt-4 text-lg font-bold text-white">{event.title}</h4>
+                      <p className="mt-2 font-mono-jb text-[10px] uppercase tracking-wide text-[#A855F7]">
+                        {event.format}{event.venue ? ` · ${event.venue}` : ''}
+                      </p>
+                      <p className="mt-3 text-sm leading-relaxed text-[#CFC5DC]">{event.description}</p>
+                      {event.coverImage && (
+                        <Link href="/#event-gallery" className="mt-5 inline-flex items-center gap-2 text-xs font-semibold text-[#FBBF24] transition-colors hover:text-amber-200">
+                          View event photos
+                          <ExternalLink className="size-3.5" aria-hidden="true" />
+                        </Link>
+                      )}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <p className="rounded-2xl border border-[#4C2A66]/40 bg-[#100B18] px-6 py-8 text-sm text-[#9E92B0]">
+                Past event highlights will appear here after the next chapter gathering.
+              </p>
+            )}
+          </section>
+
+          <div id="event-gallery" className="scroll-mt-24 mt-16 border-t border-[#4C2A66]/40 pt-10">
+            <div className="mx-auto mb-10 max-w-2xl text-center">
+              <span className="font-mono-jb text-xs uppercase tracking-[0.2em] text-[#A855F7]">Chapter memories</span>
+              <h3 className="mt-3 text-2xl font-bold text-white sm:text-3xl">3D Spherical Moments Gallery</h3>
+              <p className="mt-3 text-sm leading-relaxed text-[#9E92B0]">A look back at the people, talks, and hands-on moments from our chapter events.</p>
+            </div>
+            <PhotoGrid
+              photos={gallery.map((moment) => ({
+                src: moment.image,
+                alt: moment.title,
+                title: moment.title,
+              }))}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* ====================================================
+         4. RESOURCES SECTION
+         ==================================================== */}
+      <div id="resources" className="scroll-mt-24 py-16 border-t border-[#4C2A66]/30 bg-[#090511]">
+        <div className="text-center mb-8">
+          <span className="text-[10px] font-mono uppercase px-4 py-1 rounded-full bg-[#130C22] text-[#FBBF24] border border-[#FBBF24]/30">
+            Navigation Component: Resources Section
+          </span>
+        </div>
+        <section className="mx-auto w-full max-w-6xl px-6">
+          <div className="mx-auto mb-14 max-w-3xl text-center">
+            <span className="font-mono-jb text-xs uppercase tracking-[0.2em] text-[#FBBF24]">{resources.sectionEyebrow}</span>
+            <h2 className="mt-3 text-3xl font-bold sm:text-5xl">{resources.sectionTitle}</h2>
+            <p className="mt-5 text-base leading-relaxed text-[#CFC5DC]">{resources.intro}</p>
+          </div>
+
+          <div className="mb-16">
+            <div className="mb-7 flex items-center gap-3">
+              <BookOpen className="size-5 text-[#FBBF24]" aria-hidden="true" />
+              <h3 className="text-2xl font-bold">Curated Learning Roadmaps</h3>
+            </div>
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+              {resources.learningPaths.map((path) => (
+                <article key={path.id} className="rounded-2xl border border-[#4C2A66]/40 bg-[#130C22] p-6 sm:p-7">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="rounded-full bg-[#FBBF24]/10 px-3 py-1 font-mono-jb text-[10px] text-[#FBBF24]">{path.level}</span>
+                    <span className="rounded-full bg-[#A855F7]/10 px-3 py-1 font-mono-jb text-[10px] text-[#D8B4FE]">{path.duration}</span>
+                  </div>
+                  <h4 className="mt-4 text-xl font-bold text-white">{path.title}</h4>
+                  <p className="mt-3 text-sm leading-relaxed text-[#CFC5DC]">{path.description}</p>
+                  <p className="mt-4 text-xs text-[#A89DB5]"><span className="font-semibold text-[#FBBF24]">Recommended for:</span> {path.recommendedFor}</p>
+                  <ul className="mt-5 space-y-3 border-t border-[#4C2A66]/40 pt-5">
+                    {path.modules.map((module) => (
+                      <li key={module} className="flex gap-3 text-sm leading-relaxed text-[#D8CEE6]">
+                        <Sparkles className="mt-0.5 size-4 shrink-0 text-[#A855F7]" aria-hidden="true" />
+                        <span>{module}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="mb-7 flex items-center gap-3">
+              <ExternalLink className="size-5 text-[#FBBF24]" aria-hidden="true" />
+              <h3 className="text-2xl font-bold">Labs, Repositories &amp; Masterclasses</h3>
+            </div>
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+              {resources.items.map((item) => (
+                <article key={item.id} className="flex flex-col rounded-2xl border border-[#4C2A66]/40 bg-[#130C22] p-6 transition-colors hover:border-[#A855F7]/50">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="rounded-full bg-[#1B1130] px-3 py-1 font-mono-jb text-[10px] text-[#FBBF24]">{item.category}</span>
+                    <span className="rounded-full border border-[#4C2A66]/50 px-3 py-1 font-mono-jb text-[10px] text-[#B8ACC9]">{item.difficulty}</span>
+                  </div>
+                  <h4 className="mt-4 text-lg font-bold text-white">{item.title}</h4>
+                  <p className="mt-3 flex-1 text-sm leading-relaxed text-[#CFC5DC]">{item.description}</p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {item.tags.map((tag) => (
+                      <span key={tag} className="rounded-md bg-[#090511] px-2 py-1 text-[10px] text-[#A89DB5]">{tag}</span>
+                    ))}
+                  </div>
+                  <p className="mt-4 font-mono-jb text-[10px] text-[#8E82A0]">{item.type} · Updated {item.updatedAt}</p>
+                  <div className="mt-5 flex flex-wrap gap-3 border-t border-[#4C2A66]/40 pt-4">
+                    <a href={item.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-xs font-semibold text-[#FBBF24] transition-colors hover:text-amber-200">
+                      Open resource <ExternalLink className="size-3.5" aria-hidden="true" />
+                    </a>
+                    <a href={item.youtubeLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-xs font-semibold text-[#D8CEE6] transition-colors hover:text-[#FBBF24]">
+                      Video guide <ExternalLink className="size-3.5" aria-hidden="true" />
+                    </a>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
+
+      {/* ====================================================
+         5. CONTACT SECTION
+         ==================================================== */}
+      <div id="contact" className="scroll-mt-24 py-16 border-t border-[#4C2A66]/30 bg-[#0B0713]">
+        <div className="text-center mb-8">
+          <span className="text-[10px] font-mono uppercase px-4 py-1 rounded-full bg-[#130C22] text-[#A855F7] border border-[#A855F7]/30">
+            Navigation Component: Contact Section
+          </span>
+        </div>
+        <section className="w-full px-6 max-w-3xl mx-auto text-center">
+          <h2 className="text-3xl sm:text-5xl font-bold mb-4">Join the Community</h2>
+          <p className="text-base text-[#CFC5DC] mb-8">Have questions or want to collaborate? Reach out to our core team directly via email.</p>
+          <p className="mx-auto mb-8 max-w-2xl text-sm leading-relaxed text-[#9E92B0]">
+            Join a learning cohort, take part in workshops and hackathons, collaborate on cloud projects, or follow our channels for chapter announcements and community updates.
+          </p>
+          <a href={`mailto:${site.email}`} className="inline-flex items-center gap-2 rounded-xl bg-[#FBBF24] px-8 py-4 text-sm font-bold uppercase text-[#0B0714] transition-colors hover:bg-amber-300">
+            {site.email}
+          </a>
+          <div className="mt-12">
+            <h3 className="font-mono-jb text-xs uppercase tracking-[0.2em] text-[#A855F7]">Find us on</h3>
+            <div className="mt-5 flex flex-wrap justify-center gap-3">
+              {Object.entries(site.socials).map(([platform, url]) => (
+                <a
+                  key={platform}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full border border-[#4C2A66]/50 bg-[#130C22] px-5 py-2.5 text-xs font-semibold capitalize text-[#D8CEE6] transition-colors hover:border-[#FBBF24]/60 hover:text-[#FBBF24]"
+                >
+                  {platform}
+                </a>
+              ))}
+            </div>
+          </div>
+          <Link
+            href={site.joinFormUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-10 inline-flex items-center gap-2 rounded-full border border-[#FBBF24]/50 px-6 py-3 text-xs font-bold uppercase tracking-wide text-[#FBBF24] transition-colors hover:bg-[#FBBF24]/10"
+          >
+            <UserPlus className="size-4" aria-hidden="true" />
+            Join the Builder Group
+            <ExternalLink className="size-3.5" aria-hidden="true" />
+          </Link>
+        </section>
+      </div>
+
     </div>
   );
 }

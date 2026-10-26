@@ -1,52 +1,46 @@
 'use client';
 
 import React from 'react';
-import { EventCard, EventItem } from '@/components/cards/EventCard';
+import { EventItem } from '@/components/cards/EventCard';
 
-interface TimelineProps {
-  events: EventItem[];
+interface TimelineSectionProps {
+  events?: EventItem[];
 }
 
-export const Timeline: React.FC<TimelineProps> = ({ events }) => {
+export function TimelineSection({ events }: TimelineSectionProps) {
+  const displayEvents = events && events.length > 0 ? events : [
+    {
+      title: 'Hack-Cloud GCET 2026: 24h Sprint',
+      date: 'October 26, 2026',
+      description: 'A 24-hour hands-on cloud hackathon building scalable serverless solutions on AWS.',
+      isUpcoming: true,
+    },
+  ];
+
   return (
-    <div className="relative max-w-5xl mx-auto px-4 sm:px-6">
-      {/* Responsive spine: left-aligned on mobile, centered on desktop */}
-      <div
-        className="absolute top-0 bottom-0 w-0.5 bg-[#3B1F54] left-4 md:left-1/2 -translate-x-1/2"
-        aria-hidden="true"
-      />
-
-      <div className="space-y-10 md:space-y-12">
-        {events.map((event, index) => {
-          const isEven = index % 2 === 0;
-
-          return (
-            <div
-              key={event.id || index}
-              className={`relative flex flex-col md:flex-row items-start md:items-center ${
-                isEven ? 'md:flex-row-reverse' : ''
-              }`}
-            >
-              {/* Event Card Container */}
-              <div className="w-full pl-8 md:pl-0 md:w-[calc(50%-2rem)]">
-                <EventCard event={event} />
-              </div>
-
-              {/* Responsive Node Indicator */}
-              <div className="absolute left-4 md:left-1/2 -translate-x-1/2 top-6 md:top-auto flex items-center justify-center pointer-events-none z-10">
-                <div className="w-5 h-5 rounded-full bg-[#100B18] border-2 border-amber-400 flex items-center justify-center shadow-[0_0_10px_rgba(251,191,36,0.35)]">
-                  <div className="w-1.5 h-1.5 rounded-full bg-purple-400" />
-                </div>
-              </div>
-
-              {/* Spacer balancing desktop alternation */}
-              <div className="hidden md:block md:w-[calc(50%-2rem)]" />
+    <div className="w-full space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {displayEvents.map((event, idx) => (
+          <div
+            key={idx}
+            className="p-6 rounded-2xl bg-[#130C22] border border-[#4C2A66]/40 hover:border-[#FBBF24]/50 transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)]"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-xs font-mono text-[#FBBF24] px-2.5 py-1 rounded-md bg-[#1B1130] border border-[#FBBF24]/20">
+                {event.date}
+              </span>
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             </div>
-          );
-        })}
+            <h3 className="text-xl font-bold text-white mb-2">{event.title}</h3>
+            <p className="text-sm text-[#CFC5DC] leading-relaxed mb-6">{event.description}</p>
+            <button className="font-mono text-xs font-bold text-[#0B0714] bg-[#FBBF24] hover:bg-[#F59E0B] px-4 py-2 rounded-lg transition-colors">
+              View Details
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );
-};
+}
 
-export default Timeline;
+export default TimelineSection;
