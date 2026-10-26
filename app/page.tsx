@@ -1047,39 +1047,32 @@ export default function FullySynchronizedPage() {
          5. CONTACT SECTION
          ==================================================== */}
       <div id="contact" className="scroll-mt-24 py-16 border-t border-[#4C2A66]/30 bg-[#0B0713]">
+        <div className="text-center mb-8">
+          <span className="text-[10px] font-mono uppercase px-4 py-1 rounded-full bg-[#130C22] text-[#A855F7] border border-[#A855F7]/30">
+            Navigation Component: Contact Section
+          </span>
+        </div>
         <section className="w-full px-6 max-w-3xl mx-auto text-center">
-          <div className="mx-auto mb-6 flex size-16 items-center justify-center overflow-hidden rounded-2xl border border-[#A855F7]/40 bg-[#160F24] shadow-[0_0_18px_rgba(168,85,247,0.2)]">
-            <Image
-              src="/logo/awslogo.png"
-              alt="AWS Builder Center GCET logo"
-              width={64}
-              height={64}
-              className="size-full object-cover"
-            />
-          </div>
           <h2 className="text-3xl sm:text-5xl font-bold mb-4">Join the Community</h2>
           <p className="text-base text-[#CFC5DC] mb-8">Have questions or want to collaborate? Reach out to our core team directly via email.</p>
           <p className="mx-auto mb-8 max-w-2xl text-sm leading-relaxed text-[#9E92B0]">
             Join a learning cohort, take part in workshops and hackathons, collaborate on cloud projects, or follow our channels for chapter announcements and community updates.
           </p>
-          <a href={`mailto:${site.email}`} className="inline-flex max-w-full items-center gap-2 rounded-full border border-[#FBBF24]/50 bg-[#130C22] px-6 py-3 text-sm font-bold normal-case text-[#FBBF24] transition-colors hover:border-[#FBBF24] hover:bg-[#1B1130]">
+          <a href={`mailto:${site.email}`} className="inline-flex items-center gap-2 rounded-xl bg-[#FBBF24] px-8 py-4 text-sm font-bold uppercase text-[#0B0714] transition-colors hover:bg-amber-300">
             {site.email}
           </a>
           <div className="mt-12">
             <h3 className="font-mono-jb text-xs uppercase tracking-[0.2em] text-[#A855F7]">Find us on</h3>
             <div className="mt-5 flex flex-wrap justify-center gap-3">
-              {SOCIAL_LINKS.map(({ platform, label, href }) => (
+              {Object.entries(site.socials).map(([platform, url]) => (
                 <a
                   key={platform}
-                  href={href}
+                  href={url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={label}
-                  title={label}
-                  className="inline-flex min-h-11 items-center gap-2.5 rounded-full border border-[#4C2A66]/50 bg-[#130C22] px-4 py-2.5 text-xs font-semibold text-[#D8CEE6] transition-all hover:-translate-y-0.5 hover:border-[#FBBF24]/60 hover:bg-[#1B1130] hover:text-[#FBBF24] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FBBF24]"
+                  className="rounded-full border border-[#4C2A66]/50 bg-[#130C22] px-5 py-2.5 text-xs font-semibold capitalize text-[#D8CEE6] transition-colors hover:border-[#FBBF24]/60 hover:text-[#FBBF24]"
                 >
-                  <SocialPlatformIcon platform={platform} className="size-4" />
-                  <span>{label}</span>
+                  {platform}
                 </a>
               ))}
             </div>
@@ -1088,7 +1081,7 @@ export default function FullySynchronizedPage() {
             href={site.joinFormUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-10 inline-flex items-center gap-2 rounded-full bg-[#FBBF24] px-6 py-3 text-xs font-bold uppercase tracking-wide text-[#090511] shadow-[0_0_20px_rgba(251,191,36,0.2)] transition-colors hover:bg-amber-300"
+            className="mt-10 inline-flex items-center gap-2 rounded-full border border-[#FBBF24]/50 px-6 py-3 text-xs font-bold uppercase tracking-wide text-[#FBBF24] transition-colors hover:bg-[#FBBF24]/10"
           >
             <UserPlus className="size-4" aria-hidden="true" />
             Join the Builder Group
