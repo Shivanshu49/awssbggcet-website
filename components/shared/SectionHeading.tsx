@@ -7,6 +7,8 @@ type SectionHeadingProps = {
   /** Optional id for the h2, so sections can reference it via aria-labelledby. */
   id?: string;
   className?: string;
+  /** Page sections use centered headings to match About and Events. */
+  align?: "left" | "center";
 };
 
 export function SectionHeading({
@@ -15,22 +17,29 @@ export function SectionHeading({
   description,
   id,
   className,
+  align = "center",
 }: SectionHeadingProps) {
   return (
-    <div className={cn("max-w-2xl", className)}>
-      {/* Orange stays a fill here: eyebrow text is too small for #FF9900. */}
-      <p className="flex items-center gap-2 text-sm font-semibold tracking-wide text-ink-muted uppercase">
-        <span aria-hidden className="h-1 w-6 rounded-full bg-aws-orange" />
+    <div
+      className={cn(
+        "max-w-2xl",
+        align === "center" && "mx-auto text-center",
+        className,
+      )}
+    >
+      <p className="font-mono text-xs tracking-widest text-amber-300 uppercase">
         {eyebrow}
       </p>
       <h2
         id={id}
-        className="mt-3 text-3xl font-semibold tracking-tight text-balance text-ink sm:text-4xl"
+        className="mt-1 text-2xl font-bold tracking-tight text-balance text-white sm:text-3xl"
       >
         {title}
       </h2>
       {description && (
-        <p className="mt-4 text-lg text-pretty text-ink-muted">{description}</p>
+        <p className="mt-3 text-xs leading-relaxed text-pretty text-[#A89DB5] sm:text-sm">
+          {description}
+        </p>
       )}
     </div>
   );

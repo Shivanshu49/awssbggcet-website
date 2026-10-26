@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 
 export interface MentorItem {
   id?: string;
@@ -17,27 +18,16 @@ interface MentorsRowProps {
   mentors?: MentorItem[];
 }
 
-const DEFAULT_MENTORS: MentorItem[] = [
-  {
-    name: 'AWS Community Advocate',
-    role: 'Sr. Solutions Architect',
-    organization: 'Amazon Web Services',
-    bio: 'Advising GCET student builders on enterprise architectures, cloud scalability, and certifications.',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
-    linkedinUrl: '#'
-  },
-  {
-    name: 'Faculty Mentor',
-    role: 'Professor & Head of Cloud Labs',
-    organization: 'GCET Greater Noida',
-    bio: 'Guiding student research, lab access, and university-wide hackathons.',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
-    linkedinUrl: '#'
-  }
-];
-
 export const MentorsRow: React.FC<MentorsRowProps> = ({ mentors = [] }) => {
-  const displayMentors = mentors && mentors.length > 0 ? mentors : DEFAULT_MENTORS;
+  if (mentors.length === 0) {
+    return (
+      <div className="p-8 text-center bg-[#100B18]/60 border border-[#4C2A66]/40 rounded-2xl">
+        <p className="text-xs font-mono text-[#A89DB5]">
+          Mentor details will be announced for the upcoming semester.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <section className="py-12 sm:py-16 border-t border-[#4C2A66]/30">
@@ -55,7 +45,7 @@ export const MentorsRow: React.FC<MentorsRowProps> = ({ mentors = [] }) => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {displayMentors.map((mentor, index) => {
+          {mentors.map((mentor, index) => {
             const photoSrc = mentor.avatar || mentor.imageUrl;
 
             return (
@@ -66,11 +56,12 @@ export const MentorsRow: React.FC<MentorsRowProps> = ({ mentors = [] }) => {
                 <div className="relative w-20 h-20 rounded-2xl p-1 bg-gradient-to-tr from-purple-500/40 via-amber-400/40 to-transparent group-hover:from-amber-400 group-hover:to-purple-500 transition-all duration-500 shrink-0">
                   <div className="w-full h-full rounded-xl overflow-hidden bg-[#1a1224]">
                     {photoSrc ? (
-                      <img
+                      <Image
                         src={photoSrc}
                         alt={mentor.name}
+                        width={80}
+                        height={80}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        loading="lazy"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-amber-400 font-mono font-bold text-xl">

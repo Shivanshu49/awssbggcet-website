@@ -5,7 +5,6 @@ import { ArrowRight, Clock, Layers, Search, SearchX } from "lucide-react";
 import Link from "next/link";
 import { Reveal } from "@/components/shared/Reveal";
 import { SectionHeading } from "@/components/shared/SectionHeading";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import {
   PATH_TOPICS,
@@ -44,19 +43,21 @@ function FilterChip({
       aria-pressed={active}
       onClick={onClick}
       className={cn(
-        "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
-        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-aws-navy",
+        "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold transition-all",
+        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300",
         active
-          ? "border-aws-navy bg-aws-navy text-surface"
-          : "border-border bg-surface text-ink hover:border-aws-orange"
+          ? "border-amber-300/40 bg-gradient-to-r from-purple-900/60 to-purple-800/40 text-amber-300 shadow-[0_0_12px_rgba(253,230,138,0.15)]"
+          : "border-[#4C2A66]/50 bg-[#100B18] text-[#A89DB5] hover:border-amber-300/40 hover:text-white",
       )}
     >
       {label}
       <span
         aria-hidden="true"
         className={cn(
-          "rounded-full px-1.5 text-xs font-semibold tabular-nums",
-          active ? "bg-surface/15 text-surface/90" : "bg-surface-alt text-ink-muted"
+          "rounded-full px-1.5 font-mono text-[11px] font-semibold tabular-nums",
+          active
+            ? "bg-purple-950/60 text-amber-200"
+            : "bg-[#171020] text-[#A89DB5]",
         )}
       >
         {count}
@@ -69,27 +70,34 @@ function PathCard({ path, index }: { path: LearningPathEntry; index: number }) {
   return (
     <li className="h-full">
       <Reveal delay={Math.min(index * 0.05, 0.2)} className="h-full">
-        <article className="group/card relative flex h-full flex-col rounded-2xl border border-border bg-surface p-6 transition-all duration-200 hover:-translate-y-1 hover:border-aws-navy hover:shadow-md sm:p-7">
+        <article className="group/card relative flex h-full flex-col rounded-2xl border border-[#4C2A66]/50 bg-[#100B18] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-amber-300/50 hover:bg-[#171020] sm:p-7">
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="muted">{path.topicLabel}</Badge>
-            <Badge className={cn(levelBadgeClass(path.level), "font-semibold")}>
+            <span className="rounded-full border border-purple-500/30 bg-purple-950/40 px-2.5 py-0.5 font-mono text-xs font-semibold text-purple-300">
+              {path.topicLabel}
+            </span>
+            <span
+              className={cn(
+                "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold",
+                levelBadgeClass(path.level),
+              )}
+            >
               {path.level}
-            </Badge>
+            </span>
           </div>
 
-          <h3 className="mt-4 font-heading text-xl font-semibold text-balance text-ink">
+          <h3 className="mt-4 text-xl font-bold text-balance text-white">
             <Link
               href={`/learning/${path.id}`}
-              className="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-aws-navy after:absolute after:inset-0 after:content-['']"
+              className="transition-colors after:absolute after:inset-0 after:content-[''] hover:text-amber-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300"
             >
               {path.title}
             </Link>
           </h3>
-          <p className="mt-2 text-sm leading-relaxed text-ink-muted">
+          <p className="mt-2 text-sm leading-relaxed text-[#A89DB5]">
             {path.description}
           </p>
 
-          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-ink-muted">
+          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 font-mono text-xs text-[#9C90AA]">
             <span className="inline-flex items-center gap-1.5">
               <Clock className="size-3.5" aria-hidden="true" />
               {path.duration}
@@ -100,12 +108,14 @@ function PathCard({ path, index }: { path: LearningPathEntry; index: number }) {
             </span>
           </div>
 
-          <div className="mt-auto flex items-center justify-between gap-3 pt-5">
-            <p className="text-xs text-ink-muted">
+          <div className="mt-auto flex items-center justify-between gap-3 border-t border-[#4C2A66]/40 pt-5">
+            <p className="text-xs text-[#A89DB5]">
               Recommended for{" "}
-              <span className="font-semibold text-ink">{path.recommendedFor}</span>
+              <span className="font-semibold text-[#F8FAFC]">
+                {path.recommendedFor}
+              </span>
             </p>
-            <span className="relative z-10 inline-flex items-center gap-1 text-sm font-semibold text-aws-navy transition-colors group-hover/card:text-aws-orange">
+            <span className="relative z-10 inline-flex items-center gap-1 text-sm font-semibold text-amber-300 transition-colors group-hover/card:text-amber-200">
               View path
               <ArrowRight
                 className="size-4 transition-transform group-hover/card:translate-x-0.5"
@@ -155,7 +165,8 @@ export function PathExplorer() {
   const activeTopicLabel =
     activeTopic === "all"
       ? "all topics"
-      : PATH_TOPICS.find((topic) => topic.id === activeTopic)?.label ?? "this topic";
+      : (PATH_TOPICS.find((topic) => topic.id === activeTopic)?.label ??
+        "this topic");
 
   function resetFilters() {
     setActiveTopic("all");
@@ -177,13 +188,13 @@ export function PathExplorer() {
       />
 
       {/* Search + level filter */}
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-end">
+      <div className="flex flex-col gap-4 rounded-3xl border border-[#4C2A66]/50 bg-[#100B18] p-5 sm:p-6 lg:flex-row lg:items-end">
         <div className="relative w-full lg:max-w-md">
           <label htmlFor="path-search" className="sr-only">
             Search learning paths
           </label>
           <Search
-            className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-ink-muted"
+            className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-[#9C90AA]"
             aria-hidden="true"
           />
           <input
@@ -192,19 +203,22 @@ export function PathExplorer() {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search paths, e.g. serverless, Terraform, Bedrock…"
-            className="w-full rounded-full border border-border bg-surface py-2.5 pr-4 pl-11 text-sm text-ink placeholder:text-ink-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-aws-navy"
+            className="w-full rounded-xl border border-[#4C2A66]/60 bg-[#08060D] py-2.5 pr-4 pl-11 text-sm text-white placeholder-[#9C90AA] focus-visible:border-amber-300/60 focus-visible:ring-1 focus-visible:ring-amber-300/30 focus-visible:outline-none"
           />
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <label htmlFor="level-filter" className="mr-1 text-sm text-ink-muted">
+          <label
+            htmlFor="level-filter"
+            className="mr-1 font-mono text-xs text-[#A89DB5]"
+          >
             Skill level
           </label>
           <select
             id="level-filter"
             value={activeLevel}
             onChange={(event) => setActiveLevel(event.target.value)}
-            className="rounded-full border border-border bg-surface px-4 py-2 text-sm text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-aws-navy"
+            className="rounded-xl border border-[#4C2A66]/60 bg-[#08060D] px-4 py-2 text-sm text-white focus-visible:border-amber-300/60 focus-visible:ring-1 focus-visible:ring-amber-300/30 focus-visible:outline-none"
           >
             <option value="all">All levels</option>
             {levelOptions.map((level) => (
@@ -220,7 +234,7 @@ export function PathExplorer() {
       <div
         role="group"
         aria-label="Filter learning paths by topic"
-        className="flex flex-wrap items-center gap-2"
+        className="flex flex-wrap items-center justify-center gap-2"
       >
         <FilterChip
           label="All Topics"
@@ -240,28 +254,32 @@ export function PathExplorer() {
       </div>
 
       {/* Result count — announced to screen readers when filters change */}
-      <p role="status" aria-live="polite" className="-mt-4 text-sm text-ink-muted">
+      <p
+        role="status"
+        aria-live="polite"
+        className="-mt-4 text-center font-mono text-xs text-[#A89DB5]"
+      >
         Showing {filteredPaths.length} of {paths.length} learning paths
         {activeTopic !== "all" ? ` for ${activeTopicLabel}` : ""}
         {activeLevel !== "all" ? ` at ${activeLevel} level` : ""}.
       </p>
 
       {filteredPaths.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border bg-surface p-10 text-center">
+        <div className="rounded-3xl border border-dashed border-[#4C2A66]/60 bg-[#100B18] p-10 text-center">
           <SearchX
-            className="mx-auto size-8 text-ink-muted"
+            className="mx-auto size-8 text-[#9C90AA]"
             aria-hidden="true"
           />
-          <p className="mt-3 font-semibold text-ink">
+          <p className="mt-3 font-bold text-white">
             No learning paths match your filters
           </p>
-          <p className="mt-1 text-sm text-ink-muted">
+          <p className="mt-1 text-sm text-[#A89DB5]">
             Try a different keyword, topic, or skill level.
           </p>
           <button
             type="button"
             onClick={resetFilters}
-            className="mt-4 text-sm font-semibold text-aws-navy underline underline-offset-4 hover:text-aws-orange focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-aws-navy"
+            className="mt-4 text-sm font-semibold text-amber-300 underline underline-offset-4 hover:text-amber-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300"
           >
             Clear all filters
           </button>
@@ -279,7 +297,7 @@ export function PathExplorer() {
               <button
                 type="button"
                 onClick={resetFilters}
-                className="text-sm font-semibold text-aws-navy underline underline-offset-4 hover:text-aws-orange focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-aws-navy"
+                className="text-sm font-semibold text-amber-300 underline underline-offset-4 hover:text-amber-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300"
               >
                 Clear all filters
               </button>
