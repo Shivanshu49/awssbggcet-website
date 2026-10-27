@@ -11,6 +11,7 @@ import gallery from '@/content/gallery.json';
 import resources from '@/content/resources.json';
 import { PhotoGrid } from '@/components/sections/PhotoGrid';
 import { LeadershipProfileCard } from '@/components/sections/LeadershipProfileCard';
+import { prefersReducedMotion, watchVisibility } from '@/lib/motion';
 
 /* ============================================================================
    WEBGL2 INTERACTIVE CURSOR GRID (HOME HERO)
@@ -755,9 +756,6 @@ export default function FullySynchronizedPage() {
               aria-hidden="true"
             />
             <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center text-center">
-              <div className="inline-flex items-center px-5 py-1.5 rounded-full bg-[#130B20]/95 border border-[#FBBF24]/35 mb-8">
-                <span className="font-mono-jb text-xs text-[#FBBF24]">NAVIGATION COMPONENT: HOME SECTION</span>
-              </div>
               <h1 className="font-bold tracking-[-0.03em] leading-[1.12] space-y-2">
                 <span className="block text-4xl sm:text-6xl text-white">Build with the Cloud.</span>
                 <span className="block text-3xl sm:text-6xl text-[#FBBF24]">Create Beyond the Classroom.</span>
@@ -769,7 +767,7 @@ export default function FullySynchronizedPage() {
                 <Link href="/#events" className="px-7 py-3.5 rounded-full bg-[#FBBF24] text-[#0B0714] font-bold text-xs uppercase">
                   Explore Events
                 </Link>
-                <Link href="/#contact" className="px-7 py-3.5 rounded-xl bg-[#130C22] text-white border border-[#5B3285] font-semibold text-xs uppercase">
+                <Link href="/#contact" className="px-7 py-3.5 rounded-xl bg-[#FBBF24] text-[#090511] font-semibold text-xs uppercase shadow-[0_0_20px_rgba(251,191,36,0.25)] transition-colors hover:bg-amber-300">
                   Join Community
                 </Link>
               </div>
@@ -782,11 +780,6 @@ export default function FullySynchronizedPage() {
          2. ABOUT SECTION
          ==================================================== */}
       <div id="about" className="scroll-mt-24 py-16 border-t border-[#4C2A66]/30 bg-[#090511]">
-        <div className="text-center mb-8">
-          <span className="text-[10px] font-mono uppercase px-4 py-1 rounded-full bg-[#130C22] text-[#A855F7] border border-[#A855F7]/30">
-            Navigation Component: About Section
-          </span>
-        </div>
         <section className="w-full px-6 sm:px-12 max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <span className="font-mono-jb text-xs uppercase tracking-[0.2em] text-[#A855F7]">About the Builder Group</span>
@@ -836,10 +829,10 @@ export default function FullySynchronizedPage() {
                 <h3 className="mt-2 text-2xl font-bold sm:text-3xl">Core Team &amp; Leadership</h3>
               </div>
               <p className="max-w-xl text-sm leading-relaxed text-[#9E92B0]">
-                Student leaders and builders guiding the AWS Builder Center GCET chapter.
+                Our faculty advisor, student leaders, and builders guiding the AWS Builder Center GCET chapter.
               </p>
             </div>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-2 items-stretch gap-5 md:grid-cols-4">
               {team.map((member) => (
                 <LeadershipProfileCard key={member.name} member={member} />
               ))}
@@ -852,11 +845,6 @@ export default function FullySynchronizedPage() {
          3. EVENTS SECTION (WITH REGISTRATION & GALLERY)
          ==================================================== */}
       <div id="events" className="scroll-mt-24 py-16 border-t border-[#4C2A66]/30 bg-[#0B0713]">
-        <div className="text-center mb-8">
-          <span className="text-[10px] font-mono uppercase px-4 py-1 rounded-full bg-[#130C22] text-[#FBBF24] border border-[#FBBF24]/30">
-            Navigation Component: Events Section
-          </span>
-        </div>
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-5xl font-bold mb-3">Events &amp; Flagship Initiatives</h2>
@@ -985,11 +973,6 @@ export default function FullySynchronizedPage() {
          4. RESOURCES SECTION
          ==================================================== */}
       <div id="resources" className="scroll-mt-24 py-16 border-t border-[#4C2A66]/30 bg-[#090511]">
-        <div className="text-center mb-8">
-          <span className="text-[10px] font-mono uppercase px-4 py-1 rounded-full bg-[#130C22] text-[#FBBF24] border border-[#FBBF24]/30">
-            Navigation Component: Resources Section
-          </span>
-        </div>
         <section className="mx-auto w-full max-w-6xl px-6">
           <div className="mx-auto mb-14 max-w-3xl text-center">
             <span className="font-mono-jb text-xs uppercase tracking-[0.2em] text-[#FBBF24]">{resources.sectionEyebrow}</span>

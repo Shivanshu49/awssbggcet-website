@@ -1,72 +1,82 @@
-.card {
-  min-width: 0;
-  min-height: 390px;
-  perspective: 1000px;
-}
-
-.cardInner {
-  position: relative;
+.profileTrigger {
+  display: flex;
   width: 100%;
-  height: 100%;
-  min-height: inherit;
-  transform-style: preserve-3d;
-  transition: transform 820ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  will-change: transform;
-  transform: translateZ(0);
-}
-
-.face {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
+  min-width: 0;
+  min-height: 270px;
+  flex-direction: column;
+  align-items: center;
   border: 1px solid rgb(76 42 102 / 55%);
   border-radius: 1rem;
   background: #130c22;
-  color: #fff;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  transition:
-    border-color 450ms ease,
-    box-shadow 450ms ease;
-}
-
-.front {
-  display: flex;
-  width: 100%;
-  flex-direction: column;
   padding: 0;
-  text-align: left;
+  color: #fff;
+  text-align: center;
   cursor: pointer;
   transition:
-    border-color 250ms ease,
-    box-shadow 250ms ease;
+    transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 280ms ease,
+    box-shadow 280ms ease;
+}
+
+.profileTrigger:hover {
+  transform: translateY(-5px);
+  border-color: rgb(251 191 36 / 60%);
+  box-shadow: 0 12px 36px rgb(168 85 247 / 14%), 0 0 24px rgb(251 191 36 / 8%);
+}
+
+.profileTrigger:focus-visible {
+  outline: 2px solid #fbbf24;
+  outline-offset: 4px;
 }
 
 .portrait {
   position: relative;
-  display: block;
-  width: 100%;
-  aspect-ratio: 4 / 3;
+  display: flex;
+  width: min(68%, 8rem);
+  aspect-ratio: 1;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.2rem;
   overflow: hidden;
+  border: 2px solid rgb(168 85 247 / 55%);
+  border-radius: 9999px;
   background: #090511;
+  box-shadow: 0 0 24px rgb(168 85 247 / 16%);
+  transition:
+    border-color 300ms ease,
+    box-shadow 300ms ease;
+}
+
+.profileTrigger:hover .portrait {
+  border-color: #fbbf24;
+  box-shadow: 0 0 30px rgb(251 191 36 / 22%);
 }
 
 .image {
   object-fit: cover;
-  transition: transform 500ms ease;
+}
+
+.initials,
+.dialogInitials {
+  color: #fbbf24;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
 }
 
 .frontDetails {
   display: flex;
   flex: 1;
+  width: 100%;
   flex-direction: column;
-  align-items: flex-start;
-  padding: 1.15rem;
+  align-items: center;
+  padding: 1rem 0.75rem 1.15rem;
 }
 
 .group,
-.backEyebrow,
-.linksLabel {
+.dialogGroup,
+.dialogEyebrow {
   color: #c084fc;
   font-family: var(--font-mono-jb), monospace;
   font-size: 0.625rem;
@@ -96,38 +106,135 @@
   font-size: 0.625rem;
 }
 
-.back {
+.dialogContent {
+  z-index: 110;
+  width: min(92vw, 760px);
+  max-width: 760px;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+}
+
+.dialogOverlay {
+  z-index: 105;
+  background: rgb(5 3 10 / 78%);
+  backdrop-filter: blur(8px);
+}
+
+.dialogCard {
+  position: relative;
+  display: grid;
+  min-height: 340px;
+  grid-template-columns: minmax(180px, 0.72fr) minmax(0, 1.5fr);
+  overflow: hidden;
+  border: 1px solid rgb(251 191 36 / 50%);
+  border-radius: 1.5rem;
+  background:
+    radial-gradient(ellipse at 15% 0%, rgb(168 85 247 / 18%), transparent 48%),
+    linear-gradient(135deg, #171020 0%, #100b18 65%, #130c22 100%);
+  box-shadow:
+    0 36px 100px rgb(0 0 0 / 65%),
+    0 0 48px rgb(168 85 247 / 16%),
+    inset 0 1px rgb(255 255 255 / 5%);
+  color: #fff;
+  transform-origin: center;
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1;
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 9999px;
+  background: rgb(9 5 17 / 60%);
+  color: #d8cee6;
+  transition:
+    color 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease;
+}
+
+.closeButton:hover {
+  border-color: rgb(251 191 36 / 60%);
+  background: #1b1130;
+  color: #fbbf24;
+}
+
+.closeButton:focus-visible,
+.profileLinks a:focus-visible {
+  outline: 2px solid #fbbf24;
+  outline-offset: 3px;
+}
+
+.dialogProfile {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  padding: 1.4rem;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  transform: rotateY(180deg);
-  border-color: rgb(251 191 36 / 45%);
-  background:
-    radial-gradient(ellipse at top right, rgb(168 85 247 / 14%), transparent 50%),
-    #100b18;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid rgb(76 42 102 / 45%);
+  background: rgb(9 5 17 / 22%);
+  padding: 2.5rem 1.5rem;
+  text-align: center;
 }
 
-.backName {
-  margin-top: 1rem;
-  font-size: 1.375rem;
-  font-weight: 700;
-  line-height: 1.3;
+.dialogPortrait {
+  position: relative;
+  display: grid;
+  width: min(100%, 11rem);
+  aspect-ratio: 1;
+  place-items: center;
+  overflow: hidden;
+  border: 2px solid rgb(251 191 36 / 72%);
+  border-radius: 50%;
+  background: #090511;
+  box-shadow: 0 0 38px rgb(251 191 36 / 14%), 0 0 70px rgb(168 85 247 / 14%);
 }
 
-.backRole {
-  margin-top: 0.4rem;
+.dialogGroup {
+  margin-top: 1.5rem;
+}
+
+.dialogRole {
+  margin-top: 0.5rem;
   color: #fbbf24;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   line-height: 1.5;
 }
 
-.bioSection,
+.dialogDetails {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2.5rem 3.25rem 2.5rem 2.25rem;
+}
+
+.dialogName {
+  margin-top: 0.8rem;
+  color: #fff;
+  font-size: clamp(1.6rem, 4vw, 2.3rem);
+  font-weight: 750;
+  line-height: 1.15;
+}
+
+.dialogDescription {
+  margin-top: 1rem;
+  color: #d8cee6;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
 .achievementsSection {
   width: 100%;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
 }
 
 .sectionLabel {
@@ -138,17 +245,12 @@
   text-transform: uppercase;
 }
 
-.bio,
 .achievements {
-  margin-top: 0.4rem;
+  margin-top: 0.6rem;
+  padding-left: 1.1rem;
   color: #d8cee6;
-  font-size: 0.8rem;
-  line-height: 1.55;
-  overflow-wrap: anywhere;
-}
-
-.achievements {
-  padding-left: 1rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
   list-style: disc;
 }
 
@@ -156,106 +258,78 @@
   margin-top: 0.25rem;
 }
 
-.details {
-  display: grid;
-  width: 100%;
-  gap: 0.85rem;
-  margin-top: 1.4rem;
-  border-top: 1px solid rgb(76 42 102 / 50%);
-  padding-top: 1rem;
-}
-
-.details dt {
-  color: #9e92b0;
-  font-family: var(--font-mono-jb), monospace;
-  font-size: 0.625rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.details dd {
-  margin-top: 0.25rem;
-  color: #d8cee6;
-  font-size: 0.85rem;
-  line-height: 1.45;
-}
-
 .profileLinks {
-  margin-top: 1.1rem;
-}
-
-.links {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
-  margin-top: 0.5rem;
+  margin-top: 1.5rem;
 }
 
-.links a {
+.profileLinks a {
+  border: 1px solid rgb(168 85 247 / 35%);
+  border-radius: 9999px;
+  background: rgb(19 12 34 / 70%);
+  padding: 0.5rem 0.8rem;
   color: #fbbf24;
-  font-size: 0.8rem;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.noLinks {
-  margin-top: 0.5rem;
-  color: #9e92b0;
   font-size: 0.75rem;
+  text-decoration: none;
+  transition:
+    border-color 180ms ease,
+    background 180ms ease;
 }
 
-.backButton {
-  margin-top: auto;
-  padding-top: 1.2rem;
-  color: #d8cee6;
-  font-size: 0.75rem;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  cursor: pointer;
-}
-
-.front:focus-visible,
-.backButton:focus-visible,
-.links a:focus-visible {
-  outline: 2px solid #fbbf24;
-  outline-offset: -4px;
-}
-
-.card[data-flipped='true'] .cardInner {
-  transform: rotateY(180deg) scale(1.015);
-}
-
-.card[data-flipped='true'] .back {
-  border-color: rgb(251 191 36 / 65%);
-  box-shadow: 0 0 32px rgb(168 85 247 / 12%), inset 0 0 28px rgb(251 191 36 / 3%);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .front:hover {
-    border-color: rgb(251 191 36 / 60%);
-    box-shadow: 0 0 28px rgb(251 191 36 / 10%);
-  }
-
-  .front:hover .image {
-    transform: scale(1.04);
-  }
+.profileLinks a:hover {
+  border-color: rgb(251 191 36 / 60%);
+  background: #1b1130;
 }
 
 @media (max-width: 640px) {
-  .card {
-    min-height: 360px;
+  .profileTrigger {
+    min-height: 260px;
   }
 
-  .back {
-    padding: 1.15rem;
+  .portrait {
+    width: min(76%, 8rem);
+  }
+
+  .dialogContent {
+    width: min(92vw, 440px);
+  }
+
+  .dialogCard {
+    max-height: min(86vh, 760px);
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+    border-radius: 1.25rem;
+  }
+
+  .dialogProfile {
+    border-right: 0;
+    border-bottom: 1px solid rgb(76 42 102 / 45%);
+    padding: 2rem 1.25rem 1.5rem;
+  }
+
+  .dialogPortrait {
+    width: min(38vw, 8.5rem);
+  }
+
+  .dialogGroup {
+    margin-top: 1rem;
+  }
+
+  .dialogDetails {
+    padding: 1.5rem 1.4rem 1.75rem;
+  }
+
+  .dialogDescription {
+    font-size: 0.875rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cardInner,
-  .front,
-  .image,
-  .face {
+  .profileTrigger,
+  .closeButton,
+  .profileLinks a {
     transition-duration: 0.01ms;
   }
 }
