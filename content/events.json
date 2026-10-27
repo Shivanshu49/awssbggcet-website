@@ -17,6 +17,37 @@
     ]
   },
   {
+    "slug": "security-in-iot-and-edge-computing-apr-2026",
+    "title": "Security in IoT & Edge Computing",
+    "date": "2026-04-06T11:00:00+05:30",
+    "mode": "offline",
+    "venue": "Seminar Hall, A-Block, GCET",
+    "description": "Technical seminar by Mr. Ayush Kumar (Senior Security Analyst, CSRBOX & Former Officer, Cyber Cell Delhi Police) exploring IoT architecture vulnerabilities, edge computing security challenges, and real-world cybercrime case studies for 150+ ECE and EC-VLSI students.",
+    "registrationUrl": "",
+    "coverImage": "/events/iot-edge-security-memento.webp",
+    "gallery": [
+      "/events/iot-edge-security-memento.webp",
+      "/events/iot-edge-security-speaker.webp",
+      "/events/iot-edge-security-audience.webp",
+      "/events/iot-edge-security-poster.webp"
+    ]
+  },
+  {
+    "slug": "aws-cloud-catalyst-workshop-mar-2026",
+    "title": "AWS Cloud Catalyst Workshop",
+    "date": "2026-03-29T11:00:00+05:30",
+    "mode": "online",
+    "venue": "Google Meet (Online)",
+    "description": "Hands-on online workshop led by Ms. Kajol Mittal (AWS Educator) for 62 GCET students, covering cloud computing fundamentals, scalability, pay-as-you-go pricing models, and live demonstrations of Amazon EC2 and Amazon S3.",
+    "registrationUrl": "",
+    "coverImage": "/events/cloud-catalyst-cover.webp",
+    "gallery": [
+      "/events/cloud-catalyst-cover.webp",
+      "/events/cloud-catalyst-ec2-s3-demo.webp",
+      "/events/cloud-catalyst-participants.webp"
+    ]
+  },
+  {
     "slug": "velocity-inaugural-event-feb-2026",
     "title": "VELOCITY: Inaugural Event",
     "date": "2026-02-21T10:30:00+05:30",
