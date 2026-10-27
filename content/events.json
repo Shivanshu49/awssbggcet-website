@@ -38,13 +38,11 @@
     "date": "2026-03-29T11:00:00+05:30",
     "mode": "online",
     "venue": "Google Meet (Online)",
-    "description": "Hands-on online workshop for 62 GCET students covering cloud computing fundamentals, scalability, pay-as-you-go pricing, and live demonstrations of Amazon EC2 and Amazon S3.",
+    "description": "Hands-on online workshop for 62 GCET students covering cloud computing fundamentals, scalability, pay-as-you-go pricing models, and live demonstrations of Amazon EC2 and Amazon S3.",
     "registrationUrl": "",
     "coverImage": "/events/cloud-catalyst-cover.webp",
     "gallery": [
-      "/events/cloud-catalyst-cover.webp",
-      "/events/cloud-catalyst-ec2-s3-demo.webp",
-      "/events/cloud-catalyst-participants.webp"
+      "/events/cloud-catalyst-cover.webp"
     ]
   },
   {
