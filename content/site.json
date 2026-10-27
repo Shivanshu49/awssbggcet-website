@@ -4,11 +4,8 @@
   "email": "awsbuildercenter.gcet@gmail.com",
   "joinFormUrl": "https://forms.gle/awsbcgcet-join",
   "socials": {
-    "linkedin": "https://www.linkedin.com/company/awsbuildercenter-gcet",
     "instagram": "https://www.instagram.com/awsbuildercenter.gcet",
-    "x": "https://x.com/awsbc_gcet",
-    "github": "https://github.com/awsbuildercenter-gcet",
-    "discord": "https://discord.gg/awsbcgcet"
+    "meetup": "https://www.meetup.com/aws-sbg-at-galgotias-college-of-engineer-and-technology/?eventOrigin=home_groups_you_organize"
   },
   "stats": {
     "members": 150,
