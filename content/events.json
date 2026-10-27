@@ -22,7 +22,7 @@
     "date": "2026-04-06T11:00:00+05:30",
     "mode": "offline",
     "venue": "Seminar Hall, A-Block, GCET",
-    "description": "Technical seminar by Mr. Ayush Kumar (Senior Security Analyst, CSRBOX & Former Officer, Cyber Cell Delhi Police) exploring IoT architecture vulnerabilities, edge computing security challenges, and real-world cybercrime case studies for 150+ ECE and EC-VLSI students.",
+    "description": "Technical seminar exploring IoT architecture vulnerabilities, edge computing security challenges, and real-world cybercrime case studies for 150+ ECE and EC-VLSI students.",
     "registrationUrl": "",
     "coverImage": "/events/iot-edge-security-memento.webp",
     "gallery": [
@@ -38,7 +38,7 @@
     "date": "2026-03-29T11:00:00+05:30",
     "mode": "online",
     "venue": "Google Meet (Online)",
-    "description": "Hands-on online workshop led by Ms. Kajol Mittal (AWS Educator) for 62 GCET students, covering cloud computing fundamentals, scalability, pay-as-you-go pricing models, and live demonstrations of Amazon EC2 and Amazon S3.",
+    "description": "Hands-on online workshop for 62 GCET students covering cloud computing fundamentals, scalability, pay-as-you-go pricing, and live demonstrations of Amazon EC2 and Amazon S3.",
     "registrationUrl": "",
     "coverImage": "/events/cloud-catalyst-cover.webp",
     "gallery": [
