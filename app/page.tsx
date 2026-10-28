@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Calendar, UserPlus, Sparkles, BookOpen, ExternalLink } from 'lucide-react';
+import { Calendar, UserPlus, Sparkles, BookOpen, ExternalLink, ArrowRight } from 'lucide-react';
 import site from '@/content/site.json';
 import team from '@/content/team.json';
 import events from '@/content/events.json';
@@ -12,6 +12,20 @@ import resources from '@/content/resources.json';
 import { PhotoGrid } from '@/components/sections/PhotoGrid';
 import { LeadershipProfileCard } from '@/components/sections/LeadershipProfileCard';
 import { prefersReducedMotion, watchVisibility } from '@/lib/motion';
+import {
+  FeaturedPaths,
+  PathExplorer,
+  LearningCategories,
+  OfficialResources,
+  LearningRoadmap,
+  WorkshopsSection,
+  ProjectIdeas,
+  LearningCta,
+  LEARNING_CATEGORIES,
+  OFFICIAL_RESOURCES,
+  PROJECT_IDEAS,
+  ROADMAP_STAGES,
+} from '@/components/learning';
 
 /* ============================================================================
    WEBGL2 INTERACTIVE CURSOR GRID (HOME HERO)
@@ -766,11 +780,14 @@ export default function FullySynchronizedPage() {
               <p className="mt-7 max-w-2xl mx-auto text-base text-[#CFC5DC]">
                 Galgotias College of Engineering &amp; Technology&apos;s official student cloud engineering community.
               </p>
-              <div className="mt-12 flex gap-5">
-                <Link href="/#events" className="px-7 py-3.5 rounded-full bg-[#FBBF24] text-[#0B0714] font-bold text-xs uppercase">
+              <div className="mt-12 flex flex-wrap justify-center gap-4">
+                <Link href="/#events" className="px-7 py-3.5 rounded-full bg-[#FBBF24] text-[#0B0714] font-bold text-xs uppercase transition-all hover:bg-amber-300">
                   Explore Events
                 </Link>
-                <Link href="/#contact" className="px-7 py-3.5 rounded-xl bg-[#130C22] text-white border border-[#5B3285] font-semibold text-xs uppercase">
+                <Link href="/#learning" className="px-7 py-3.5 rounded-full border border-[#FBBF24]/40 bg-[#130C22] text-[#FBBF24] font-bold text-xs uppercase transition-all hover:border-[#FBBF24] hover:bg-[#FBBF24]/10">
+                  Learning Hub
+                </Link>
+                <Link href="/#contact" className="px-7 py-3.5 rounded-xl bg-[#130C22] text-white border border-[#5B3285] font-semibold text-xs uppercase transition-all hover:border-[#A855F7]">
                   Join Community
                 </Link>
               </div>
@@ -983,9 +1000,103 @@ export default function FullySynchronizedPage() {
       </div>
 
       {/* ====================================================
-         4. RESOURCES SECTION
+         4. LEARNING SECTION
          ==================================================== */}
-      <div id="resources" className="scroll-mt-24 py-16 border-t border-[#4C2A66]/30 bg-[#090511]">
+      <div id="learning" className="scroll-mt-24 py-16 border-t border-[#4C2A66]/30 bg-[#090511]">
+        <div className="text-center mb-8">
+          <span className="text-[10px] font-mono uppercase px-4 py-1 rounded-full bg-[#130C22] text-[#A855F7] border border-[#A855F7]/30">
+            Navigation Component: Learning Section
+          </span>
+        </div>
+        <div className="mx-auto max-w-6xl space-y-16 px-4 sm:px-6 sm:space-y-20 md:space-y-24">
+          {/* Header */}
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="mb-4 inline-flex items-center space-x-2 rounded-full border border-amber-300/40 bg-[#171020] px-3.5 py-1.5 shadow-[0_0_12px_rgba(253,230,138,0.15)]">
+              <span className="h-2 w-2 rounded-full bg-amber-300" />
+              <span className="font-mono text-xs text-amber-200">
+                GCET CLOUD LEARNING HUB
+              </span>
+            </div>
+
+            <h2 className="text-3xl font-black tracking-tight text-balance text-white sm:text-4xl md:text-5xl">
+              Learn AWS the Builder Way
+            </h2>
+
+            <p className="mx-auto mt-4 max-w-2xl text-xs leading-relaxed text-[#A89DB5] sm:text-sm">
+              A structured cloud curriculum for GCET students — start with fundamentals,
+              progress through guided roadmap stages, practice with official labs, and prepare for certification.
+              Every milestone links straight to official AWS documentation, workshops, and training.
+            </p>
+
+            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+              <a
+                href="#explore-paths"
+                className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 px-6 py-3 text-sm font-bold tracking-wide text-slate-950 shadow-[0_0_18px_rgba(251,191,36,0.25)] transition-all hover:from-amber-300 hover:to-amber-400"
+              >
+                Browse Learning Paths
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </a>
+
+              <Link
+                href="/learning"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#4C2A66]/60 bg-[#171020] px-6 py-3 text-sm font-semibold text-[#F8FAFC] transition-all hover:border-amber-300/50 hover:bg-[#1d1428]"
+              >
+                Explore Full Learning Hub
+                <ExternalLink className="h-3.5 w-3.5 text-[#A89DB5]" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Stats strip */}
+          <dl className="mx-auto grid max-w-4xl grid-cols-2 gap-4 sm:grid-cols-4">
+            {[
+              { value: LEARNING_CATEGORIES.length, label: "Core cloud domains" },
+              { value: ROADMAP_STAGES.length, label: "Roadmap stages" },
+              { value: OFFICIAL_RESOURCES.length, label: "Official AWS platforms" },
+              { value: PROJECT_IDEAS.length, label: "Hands-on project labs" },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                className="flex flex-col-reverse rounded-2xl border border-[#4C2A66]/50 bg-[#100B18] p-5 text-center shadow-[0_8px_30px_rgba(0,0,0,0.2)]"
+              >
+                <dt className="mt-1 text-[11px] leading-relaxed text-[#A89DB5] sm:text-xs">
+                  {stat.label}
+                </dt>
+                <dd className="text-2xl font-black text-amber-300">{stat.value}</dd>
+              </div>
+            ))}
+          </dl>
+
+          {/* Featured spotlight tracks */}
+          <FeaturedPaths />
+
+          {/* Topic navigation + learning-path catalog */}
+          <PathExplorer />
+
+          {/* Learning domains */}
+          <LearningCategories />
+
+          {/* Official AWS learning platforms */}
+          <OfficialResources />
+
+          {/* Recommended learning roadmap */}
+          <LearningRoadmap />
+
+          {/* Hands-on workshops & guided tutorials */}
+          <WorkshopsSection />
+
+          {/* Hands-on project ideas */}
+          <ProjectIdeas />
+
+          {/* Call to action */}
+          <LearningCta />
+        </div>
+      </div>
+
+      {/* ====================================================
+         5. RESOURCES SECTION
+         ==================================================== */}
+      <div id="resources" className="scroll-mt-24 py-16 border-t border-[#4C2A66]/30 bg-[#0B0713]">
         <div className="text-center mb-8">
           <span className="text-[10px] font-mono uppercase px-4 py-1 rounded-full bg-[#130C22] text-[#FBBF24] border border-[#FBBF24]/30">
             Navigation Component: Resources Section
@@ -1062,9 +1173,9 @@ export default function FullySynchronizedPage() {
       </div>
 
       {/* ====================================================
-         5. CONTACT SECTION
+         6. CONTACT SECTION
          ==================================================== */}
-      <div id="contact" className="scroll-mt-24 py-16 border-t border-[#4C2A66]/30 bg-[#0B0713]">
+      <div id="contact" className="scroll-mt-24 py-16 border-t border-[#4C2A66]/30 bg-[#090511]">
         <div className="text-center mb-8">
           <span className="text-[10px] font-mono uppercase px-4 py-1 rounded-full bg-[#130C22] text-[#A855F7] border border-[#A855F7]/30">
             Navigation Component: Contact Section

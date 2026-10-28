@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="80px" height="80px" viewBox="0 0 80 80" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>Icon-Architecture/64/Arch_AWS-Workshops_64</title>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g fill="#FF9900">
+            <rect x="0" y="0" width="80" height="80" rx="8"></rect>
+        </g>
+        <g transform="translate(16, 16)" fill="#FFFFFF">
+            <path d="M41.2,6.8 L37.2,2.8 C35.6,1.2 33,1.2 31.4,2.8 L23.4,10.8 L21.4,8.8 C20.6,8 19.4,8 18.6,8.8 L15.2,12.2 C14.4,13 14.4,14.2 15.2,15 L17.2,17 L3.4,30.8 C1.8,32.4 1.8,35 3.4,36.6 L7.4,40.6 C9,42.2 11.6,42.2 13.2,40.6 L27,26.8 L29,28.8 C29.8,29.6 31,29.6 31.8,28.8 L35.2,25.4 C36,24.6 36,23.4 35.2,22.6 L33.2,20.6 L41.2,12.6 C42.8,11 42.8,8.4 41.2,6.8 Z M10.4,37.8 L6.2,33.6 L19.4,20.4 L23.6,24.6 L10.4,37.8 Z M26.4,17.6 L22.2,13.4 L27.4,8.2 L31.6,12.4 L26.4,17.6 Z"></path>
+        </g>
+    </g>
+</svg>
