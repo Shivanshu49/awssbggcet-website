@@ -61,5 +61,18 @@
       "/events/velocity-faculty-discussion.webp",
       "/events/velocity-team-audience.webp"
     ]
+  },
+  {
+    "slug": "aws-student-community-day-2026",
+    "title": "AWS Student Community Day 2026",
+    "date": "2026-11-21T10:00:00+05:30",
+    "mode": "offline",
+    "venue": "Galgotias College of Engineering and Technology, Greater Noida",
+    "description": "The flagship gathering by AWS Student Builder Group GCET under the theme 'A bigger cloud. A brighter tomorrow.' Featuring keynotes, hands-on labs, builder showcases, sponsor pavilions, breakfast & networking lunch buffet, and exclusive AWS community swags.",
+    "registrationUrl": "https://lu.ma/sample-scd-gcet-2026",
+    "coverImage": "/events/aws-community-day-banner.webp",
+    "gallery": [
+      "/events/aws-community-day-banner.webp"
+    ]
   }
 ]
