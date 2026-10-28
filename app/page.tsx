@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Calendar, UserPlus, Sparkles, BookOpen, ExternalLink } from 'lucide-react';
+import { Calendar, UserPlus, Sparkles, BookOpen, ExternalLink, Clock, MapPin } from 'lucide-react';
 import site from '@/content/site.json';
 import team from '@/content/team.json';
 import events from '@/content/events.json';
@@ -11,7 +11,23 @@ import gallery from '@/content/gallery.json';
 import resources from '@/content/resources.json';
 import { PhotoGrid } from '@/components/sections/PhotoGrid';
 import { LeadershipProfileCard } from '@/components/sections/LeadershipProfileCard';
+import {
+  SocialPlatformIcon,
+  type SocialPlatform,
+} from '@/components/ui/SocialPlatformIcon';
 import { prefersReducedMotion, watchVisibility } from '@/lib/motion';
+
+const SOCIAL_LINKS: {
+  platform: SocialPlatform;
+  label: string;
+  href: string;
+}[] = [
+  { platform: 'linkedin', label: 'LinkedIn', href: site.socials.linkedin },
+  { platform: 'instagram', label: 'Instagram', href: site.socials.instagram },
+  { platform: 'x', label: 'X', href: site.socials.x },
+  { platform: 'github', label: 'GitHub', href: site.socials.github },
+  { platform: 'discord', label: 'Discord', href: site.socials.discord },
+];
 
 /* ============================================================================
    WEBGL2 INTERACTIVE CURSOR GRID (HOME HERO)
@@ -233,7 +249,7 @@ function CursorGrid({
     let introClock = intro && !reduced ? 0 : 1;
     let raf = 0;
     let wake = 0;
-    let visible = false;
+    let visible = true;
     let last = 0;
     let dirty = true;
 
@@ -399,7 +415,10 @@ function CursorGrid({
         pointer.y = y;
         energize(x, y);
       }
-      if (pointer.inside || wasInside) start();
+      if (pointer.inside || wasInside) {
+        visible = true;
+        start();
+      }
     };
 
     const onResize = () => {
@@ -409,17 +428,14 @@ function CursorGrid({
 
     rebuild();
     draw();
+    start();
     window.addEventListener('resize', onResize);
-    // Reduced motion: keep the static frame above and never start the loop.
-    let unwatch = () => {};
-    if (!reduced) {
-      window.addEventListener('pointermove', onMove, { passive: true });
-      unwatch = watchVisibility(container, (v) => {
-        visible = v;
-        if (v) start();
-        else stop();
-      });
-    }
+    window.addEventListener('pointermove', onMove, { passive: true });
+    const unwatch = watchVisibility(container, (v) => {
+      visible = v;
+      if (v) start();
+      else stop();
+    });
 
     return () => {
       stop();
@@ -458,6 +474,7 @@ function CursorGrid({
 }
 
 const TICKER_ITEMS = [
+  'AWS Student Community Day 2026 – Nov 21',
   'AWS Cloud Foundations Bootcamp – Oct 12',
   'Hack-Cloud GCET 2026: 24h Sprint – Oct 26',
   'Generative AI with Amazon Bedrock Masterclass – Nov 8',
@@ -466,6 +483,14 @@ const TICKER_ITEMS = [
 ];
 
 const EVENT_CARDS = [
+  {
+    title: 'AWS Student Community Day 2026',
+    date: '2026-11-21',
+    time: '10:00 AM – 4:00 PM IST',
+    venue: 'Galgotias College of Engineering & Technology, Greater Noida',
+    format: 'Flagship Conference · Learn | Build | Connect',
+    description: 'A bigger cloud, a brighter tomorrow. Join AWS Student Builder Group GCET for the premier flagship student cloud engineering conference featuring keynote sessions, hands-on cloud labs, architect showcases, and community networking.',
+  },
   {
     title: 'AWS Cloud Foundations Bootcamp',
     date: '2026-10-12',
@@ -501,6 +526,7 @@ const EVENT_CARDS = [
 type TimelineEvent = {
   key: string;
   date: string;
+  time?: string;
   title: string;
   description: string;
   format: string;
@@ -741,7 +767,7 @@ export default function FullySynchronizedPage() {
           lineWidth={1}
           maxOpacity={0.68}
           fillOpacity={0.06}
-          gridOpacity={0.095}
+          gridOpacity={0.12}
           gridStyle="lines"
           spotlight={0.52}
           ambient={0.08}
@@ -750,6 +776,14 @@ export default function FullySynchronizedPage() {
           className="min-h-[86vh] flex items-center justify-center"
         >
           <section className="relative w-full min-h-[86vh] flex flex-col items-center justify-center px-4 sm:px-6 pt-10 pb-24">
+            <div
+              className="absolute inset-0 pointer-events-none z-0"
+              style={{
+                background:
+                  'radial-gradient(ellipse 42% 32% at 50% 40%, rgba(9, 5, 17, 0.72) 0%, rgba(9, 5, 17, 0.35) 55%, transparent 100%)',
+              }}
+              aria-hidden="true"
+            />
             <canvas
               ref={strandsCanvasRef}
               className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-[46%] w-full opacity-95 sm:h-[48%]"
@@ -872,9 +906,21 @@ export default function FullySynchronizedPage() {
                           <Calendar className="size-3.5" aria-hidden="true" />
                           {formatEventDate(event.date)}
                         </span>
+                        {event.time && (
+                          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#A855F7]/30 bg-[#150D24] px-3 py-1.5 font-mono-jb text-[10px] text-[#E9D5FF]">
+                            <Clock className="size-3 text-[#FBBF24]" aria-hidden="true" />
+                            {event.time}
+                          </span>
+                        )}
+                        {event.venue && (
+                          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#4C2A66]/50 bg-[#150D24] px-3 py-1.5 font-mono-jb text-[10px] text-[#CFC5DC]">
+                            <MapPin className="size-3 text-[#FBBF24]" aria-hidden="true" />
+                            <span className="truncate max-w-[200px] sm:max-w-none">{event.venue}</span>
+                          </span>
+                        )}
                         {index === 0 && (
                           <span className="rounded-full border border-[#FBBF24]/30 bg-[#FBBF24]/10 px-3 py-1.5 font-mono-jb text-[10px] uppercase tracking-wide text-[#FBBF24]">
-                            Next up
+                            Flagship Event
                           </span>
                         )}
                       </div>
@@ -1058,21 +1104,25 @@ export default function FullySynchronizedPage() {
           <p className="mx-auto mb-8 max-w-2xl text-sm leading-relaxed text-[#9E92B0]">
             Join a learning cohort, take part in workshops and hackathons, collaborate on cloud projects, or follow our channels for chapter announcements and community updates.
           </p>
-          <a href={`mailto:${site.email}`} className="inline-flex items-center gap-2 rounded-xl bg-[#FBBF24] px-8 py-4 text-sm font-bold uppercase text-[#0B0714] transition-colors hover:bg-amber-300">
-            {site.email}
+          <a
+            href={`mailto:${site.email.toLowerCase()}`}
+            className="inline-flex items-center gap-2 rounded-full border border-[#FBBF24]/50 bg-[#130C22] px-6 py-3 text-sm font-semibold lowercase text-[#FBBF24] transition-colors hover:border-[#FBBF24] hover:bg-[#1B1130]"
+          >
+            {site.email.toLowerCase()}
           </a>
           <div className="mt-12">
             <h3 className="font-mono-jb text-xs uppercase tracking-[0.2em] text-[#A855F7]">Find us on</h3>
             <div className="mt-5 flex flex-wrap justify-center gap-3">
-              {Object.entries(site.socials).map(([platform, url]) => (
+              {SOCIAL_LINKS.map(({ platform, label, href }) => (
                 <a
                   key={platform}
-                  href={url}
+                  href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-full border border-[#4C2A66]/50 bg-[#130C22] px-5 py-2.5 text-xs font-semibold capitalize text-[#D8CEE6] transition-colors hover:border-[#FBBF24]/60 hover:text-[#FBBF24]"
+                  className="inline-flex items-center gap-2.5 rounded-full border border-[#4C2A66]/50 bg-[#130C22] px-5 py-2.5 text-xs font-semibold text-[#D8CEE6] transition-colors hover:border-[#FBBF24]/60 hover:text-[#FBBF24]"
                 >
-                  {platform}
+                  <SocialPlatformIcon platform={platform} className="size-4" />
+                  <span>{label}</span>
                 </a>
               ))}
             </div>
@@ -1081,7 +1131,7 @@ export default function FullySynchronizedPage() {
             href={site.joinFormUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-10 inline-flex items-center gap-2 rounded-full border border-[#FBBF24]/50 px-6 py-3 text-xs font-bold uppercase tracking-wide text-[#FBBF24] transition-colors hover:bg-[#FBBF24]/10"
+            className="mt-10 inline-flex items-center gap-2 rounded-xl bg-[#FBBF24] px-8 py-4 text-sm font-bold uppercase tracking-wide text-[#0B0714] shadow-[0_0_20px_rgba(251,191,36,0.25)] transition-colors hover:bg-amber-300"
           >
             <UserPlus className="size-4" aria-hidden="true" />
             Join the Builder Group
