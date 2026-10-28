@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Sora } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 
 import site from "@/content/site.json";
 import { cn } from "@/lib/utils";
@@ -44,6 +45,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );
