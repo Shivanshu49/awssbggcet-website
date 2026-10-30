@@ -16,7 +16,13 @@ import {
 import { Dialog as DialogPrimitive } from "radix-ui";
 import { NavLink } from "./NavLink";
 
-export function MobileNav({ joinFormUrl }: { joinFormUrl: string }) {
+export function MobileNav({
+  joinFormUrl,
+  onOpenBanner,
+}: {
+  joinFormUrl: string;
+  onOpenBanner?: () => void;
+}) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -60,6 +66,19 @@ export function MobileNav({ joinFormUrl }: { joinFormUrl: string }) {
                   </DialogClose>
                 </li>
               ))}
+              {onOpenBanner && (
+                <li>
+                  <DialogClose asChild>
+                    <button
+                      type="button"
+                      onClick={onOpenBanner}
+                      className="flex w-full items-center gap-2 rounded-lg border-l-4 border-aws-orange bg-amber-500/10 px-3 py-3 text-left text-base font-semibold text-aws-navy hover:bg-amber-500/20"
+                    >
+                      <span>🎉 Community Day &apos;26 Banner</span>
+                    </button>
+                  </DialogClose>
+                </li>
+              )}
             </ul>
           </nav>
 
