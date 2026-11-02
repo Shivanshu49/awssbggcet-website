@@ -1,4 +1,4 @@
-import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
+import { sql, type InferInsertModel, type InferSelectModel } from "drizzle-orm";
 import {
   bigserial,
   boolean,
@@ -10,6 +10,7 @@ import {
   text,
   timestamp,
   unique,
+  uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
 
@@ -38,6 +39,21 @@ export const submissionType = pgEnum("submission_type", [
   "contact",
   "problem",
   "membership",
+]);
+export const registrationStatus = pgEnum("registration_status", [
+  "pending",
+  "approved",
+  "waitlisted",
+  "rejected",
+  "cancelled",
+]);
+export const mealPref = pgEnum("meal_pref", ["veg", "non_veg", "jain"]);
+export const yearOfStudy = pgEnum("year_of_study", [
+  "1st",
+  "2nd",
+  "3rd",
+  "4th",
+  "other",
 ]);
 
 const createdAt = () =>
@@ -74,6 +90,7 @@ export const events = pgTable(
     venue: text("venue"),
     coverKey: text("cover_key"),
     capacity: integer("capacity"),
+    seatsTaken: integer("seats_taken").notNull().default(0), // = pending + approved, changed atomically
     registrationOpen: boolean("registration_open").notNull().default(true),
     published: boolean("published").notNull().default(false),
     createdAt: createdAt(),
@@ -90,18 +107,43 @@ export const registrations = pgTable(
       .references(() => events.id, { onDelete: "cascade" }),
     name: text("name").notNull(),
     email: text("email").notNull(),
-    phone: text("phone"),
+    phone: text("phone").notNull(),
+    college: text("college").notNull(),
     branch: text("branch"),
-    year: integer("year"),
+    yearOfStudy: yearOfStudy("year_of_study").notNull(),
     admissionNo: text("admission_no"),
-    attended: boolean("attended").notNull().default(false),
     certificateKey: text("certificate_key"),
+    status: registrationStatus("status").notNull().default("pending"),
+    passCode: text("pass_code").notNull().unique(), // randomBytes(16) base64url; opens /pass/<code>
+    checkinCode: text("checkin_code").notNull().unique(), // randomBytes(16) base64url; inside the QR
+    ticketNo: text("ticket_no").notNull().unique(), // 6 chars, A–Z/2–9 minus look-alikes; help desk
+    mealPref: mealPref("meal_pref"),
+    interests: text("interests").array().notNull().default([]),
+    interestsNote: text("interests_note"),
+    builderId: text("builder_id"), // Builder Center alias, lowercase; required before approval
+    consentVersion: text("consent_version").notNull(),
+    consentedAt: timestamp("consented_at", { withTimezone: true }).notNull(),
+    approvedAt: timestamp("approved_at", { withTimezone: true }),
+    approvedBy: text("approved_by"),
+    checkedInAt: timestamp("checked_in_at", { withTimezone: true }),
+    checkedInBy: text("checked_in_by"),
+    linkSentAt: timestamp("link_sent_at", { withTimezone: true }), // rate limit for "find my pass"
+    remindedAt: timestamp("reminded_at", { withTimezone: true }), // rate limit for the Builder ID reminder
     createdAt: createdAt(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (t) => [
-    // Kills duplicate signups — the register route relies on this. Its index
+    // Kills duplicate signups — the register action relies on this. Its index
     // also serves event_id lookups (leftmost column), so no separate index.
     unique("registrations_event_id_email_key").on(t.eventId, t.email),
+    index("registrations_event_id_status_idx").on(t.eventId, t.status),
+    // One Builder ID, one pass. Saving one relies on this to refuse duplicates.
+    uniqueIndex("registrations_event_id_builder_id_key")
+      .on(t.eventId, t.builderId)
+      .where(sql`${t.builderId} IS NOT NULL`),
   ],
 ).enableRLS();
 
