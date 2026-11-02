@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Calendar, Clock, MapPin } from "lucide-react";
 
+import { EventFaq, EventSchedule } from "@/components/registration/EventInfo";
 import site from "@/content/site.json";
 import { formatEventDate, formatEventTime, getEventBySlug } from "@/lib/events";
 
@@ -76,6 +77,8 @@ export default function CommunityDayPage() {
           <p className="mt-4 text-sm leading-relaxed text-[#CFC5DC] sm:text-base">
             {event.description}
           </p>
+          <EventSchedule className="mt-8" />
+          <EventFaq className="mt-8" />
         </div>
       </section>
     </div>
