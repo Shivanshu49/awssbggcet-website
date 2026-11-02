@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
-import { User, LogOut, Sparkles, ExternalLink, ShieldCheck, ChevronRight, Award } from 'lucide-react';
+import { User, LogOut, ShieldCheck } from 'lucide-react';
 
 export function ProfileDropdown() {
   const { user, logout } = useAuth();
@@ -67,7 +67,7 @@ export function ProfileDropdown() {
         />
       </button>
 
-      {/* Popover Card (Matches Screenshot 2 & 3) */}
+      {/* Popover Card (Exact Clean Recreation of AWS Profile) */}
       {isOpen && (
         <div className="absolute right-0 mt-3 w-80 sm:w-88 rounded-2xl border border-[#4C2A66]/70 bg-gradient-to-b from-[#180E29]/98 via-[#130C22]/98 to-[#090511]/98 p-5 backdrop-blur-3xl shadow-[0_16px_48px_rgba(0,0,0,0.85),inset_0_1px_1px_rgba(255,255,255,0.15)] ring-1 ring-inset ring-white/[0.05] z-50 animate-in fade-in-0 zoom-in-95 duration-150">
           {/* Apple Specular Top Rim */}
@@ -75,7 +75,7 @@ export function ProfileDropdown() {
 
           {!user ? (
             /* ============================================================== */
-            /* STATE A: NOT SIGNED IN (Exact Inspiration from AWS Screenshots) */
+            /* STATE A: NOT SIGNED IN (Exact Match of Screenshot)            */
             /* ============================================================== */
             <div>
               <div className="flex items-center gap-2 mb-2">
@@ -89,47 +89,18 @@ export function ProfileDropdown() {
                 Your profile helps improve your interactions with select AWS experiences.
               </p>
 
-              {/* Primary Action Button (Matches Screenshot 2 & 3) */}
+              {/* Primary Action Button */}
               <Link
                 href="/login"
                 onClick={() => setIsOpen(false)}
                 className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#241738] hover:bg-[#301F4B] border border-[#A855F7]/40 hover:border-[#FBBF24]/60 py-3 px-4 text-xs sm:text-sm font-semibold text-white hover:text-[#FBBF24] transition-all duration-200 shadow-md active:scale-[0.98] group"
               >
                 <span>Create profile or sign in</span>
-                <ChevronRight className="w-4 h-4 text-[#C084FC] group-hover:text-[#FBBF24] group-hover:translate-x-0.5 transition-all" />
               </Link>
-
-              {/* Helper Links */}
-              <div className="mt-4 pt-3.5 border-t border-[#4C2A66]/35 space-y-2">
-                <Link
-                  href="/community-day"
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-between text-xs text-[#9E92B0] hover:text-[#FBBF24] transition-colors py-1"
-                >
-                  <span className="flex items-center gap-2">
-                    <Sparkles className="w-3.5 h-3.5 text-[#FBBF24]" />
-                    Community Day &apos;26 Pass
-                  </span>
-                  <ChevronRight className="w-3.5 h-3.5 text-[#4C2A66]" />
-                </Link>
-
-                <a
-                  href="https://aws.amazon.com/free/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between text-xs text-[#9E92B0] hover:text-[#FBBF24] transition-colors py-1"
-                >
-                  <span className="flex items-center gap-2">
-                    <ShieldCheck className="w-3.5 h-3.5 text-[#A855F7]" />
-                    AWS Free Tier &amp; Educate
-                  </span>
-                  <ExternalLink className="w-3 h-3 text-[#9E92B0]" />
-                </a>
-              </div>
             </div>
           ) : (
             /* ============================================================== */
-            /* STATE B: SIGNED IN BUILDER PROFILE                            */
+            /* STATE B: SIGNED IN AWS PROFILE                                */
             /* ============================================================== */
             <div>
               {/* Profile Card Header */}
@@ -160,27 +131,15 @@ export function ProfileDropdown() {
                 <span className="text-[#C084FC] font-semibold">{user.role}</span>
               </div>
 
-              {/* Quick Profile Navigation */}
-              <div className="py-2.5 space-y-1">
-                <Link
-                  href="/community-day"
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs text-[#CFC5DC] hover:text-[#FBBF24] hover:bg-[#1C122C] transition-colors"
-                >
-                  <Award className="w-4 h-4 text-[#FBBF24]" />
-                  <span>My Summit Registration</span>
-                </Link>
-              </div>
-
               {/* Sign Out Action */}
-              <div className="pt-2.5 border-t border-[#4C2A66]/35">
+              <div className="pt-3">
                 <button
                   type="button"
                   onClick={() => {
                     logout();
                     setIsOpen(false);
                   }}
-                  className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-[#150D24] hover:bg-[#201335] border border-[#4C2A66]/50 text-xs font-mono text-[#F87171] hover:text-red-300 transition-colors cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-[#150D24] hover:bg-[#201335] border border-[#4C2A66]/50 text-xs font-mono text-[#F87171] hover:text-red-300 transition-colors cursor-pointer"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                   <span>Sign Out of AWS ID</span>
