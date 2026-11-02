@@ -18,6 +18,9 @@
   --color-surface-alt: #f7f8fa;
   --color-ink: #16191f;
   --color-ink-muted: #5f6b7a;
+  --color-deep-purple: #3C2A91;
+  --color-vibrant-pink: #A30097;
+  --color-gold: #F4A300;
   /* Provisional status color for the UI owner to override. White text on it passes AA. */
   --color-success: #0f7b55;
 }
