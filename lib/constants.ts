@@ -1,5 +1,10 @@
 import site from "@/content/site.json";
 
+// Used in emails and the QR code. The fallback keeps those links working if the
+// env var is ever missing, instead of pointing people at localhost.
+export const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://www.awssbggcet.com";
+
 export const NAV_ITEMS = [
   { label: "Home", href: "/#home" },
   { label: "About", href: "/#about" },
