@@ -4,7 +4,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Calendar, Clock, MapPin, Sparkles, ExternalLink, ArrowRight, QrCode } from 'lucide-react';
+import { X, Calendar, Clock, MapPin, Sparkles, ExternalLink, ArrowRight } from 'lucide-react';
 
 interface RolledLetterBannerProps {
   isOpen: boolean;
@@ -130,7 +130,7 @@ export const RolledLetterBanner: React.FC<RolledLetterBannerProps> = ({
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${dates}`;
   }, []);
 
-  const registrationUrl = '/events/aws-student-community-day-2026/register';
+  const registrationUrl = '/community-day/register';
 
   return (
     <AnimatePresence>
@@ -267,7 +267,7 @@ export const RolledLetterBanner: React.FC<RolledLetterBannerProps> = ({
                 </motion.div>
 
                 {/* =========================================================================
-                    PROGRESSIVE POSTER REVEAL USING ANIMATED CLIPPING MASK + INTEGRATED QR CODE OVERLAY
+                    PROGRESSIVE POSTER REVEAL USING ANIMATED CLIPPING MASK
                     ========================================================================= */}
                 <motion.div
                   initial={
@@ -331,27 +331,6 @@ export const RolledLetterBanner: React.FC<RolledLetterBannerProps> = ({
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 95vw, 1024px"
                       className="object-contain w-full h-full block group-hover/poster:scale-[1.01] transition-transform duration-300"
                     />
-
-                    {/* Integrated Scannable Registration QR Badge on Poster */}
-                    <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-20 bg-[#090511]/90 backdrop-blur-md p-1.5 sm:p-2 rounded-xl border border-amber-400/80 shadow-[0_0_20px_rgba(251,191,36,0.4)] flex items-center gap-2 group-hover/poster:border-amber-300 transition-colors">
-                      <div className="bg-white p-1 rounded-lg">
-                        <Image
-                          src="/events/community-day-register-qr.png"
-                          alt="Scan to Register QR Code"
-                          width={44}
-                          height={44}
-                          className="w-9 h-9 sm:w-11 sm:h-11 object-contain block"
-                        />
-                      </div>
-                      <div className="text-left pr-1.5 hidden sm:block">
-                        <span className="text-[9px] font-mono uppercase tracking-widest text-amber-300 font-bold block">
-                          Scan to Register
-                        </span>
-                        <span className="text-[8px] font-mono text-[#C4B5DA] block">
-                          Instant Pass
-                        </span>
-                      </div>
-                    </div>
                   </Link>
                 </motion.div>
 
@@ -359,6 +338,7 @@ export const RolledLetterBanner: React.FC<RolledLetterBannerProps> = ({
                     3. DETAILS PANEL & BUTTONS — Prominent "REGISTER NOW" CTA
                     ========================================================================= */}
                 <motion.div
+                  inert={!isInteractive} // These links navigate: no invisible tap targets while unrolling.
                   initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   animate={isInteractive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   transition={{ duration: 0.5, ease: 'easeOut' }}
@@ -382,8 +362,8 @@ export const RolledLetterBanner: React.FC<RolledLetterBannerProps> = ({
                     </div>
                   </div>
 
-                  {/* Actions: Add to Calendar & PROMINENT REGISTER NOW BUTTON */}
-                  <div className="flex items-center gap-2.5 self-end md:self-auto w-full md:w-auto">
+                  {/* Actions: Add to Calendar, Event Details & Register Now (own row on phones) */}
+                  <div className="flex flex-wrap items-center gap-2.5 self-end md:self-auto w-full md:w-auto">
                     <a
                       href={calendarUrl}
                       target="_blank"
@@ -396,9 +376,17 @@ export const RolledLetterBanner: React.FC<RolledLetterBannerProps> = ({
                     </a>
 
                     <Link
+                      href="/community-day"
+                      onClick={onClose}
+                      className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#3B1C0B] border border-[#FDE68A]/60 text-xs font-semibold text-[#FEF08A] hover:bg-[#522710] transition-all duration-200 shadow-[0_0_12px_rgba(251,191,36,0.25)] hover:scale-105 active:scale-95"
+                    >
+                      Event Details
+                    </Link>
+
+                    <Link
                       href={registrationUrl}
                       onClick={onClose}
-                      className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black text-xs font-extrabold uppercase tracking-wider shadow-[0_0_25px_rgba(251,191,36,0.7)] hover:scale-105 active:scale-95 transition-all cursor-pointer font-mono"
+                      className="order-first md:order-none basis-full md:basis-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black text-xs font-extrabold uppercase tracking-wider shadow-[0_0_25px_rgba(251,191,36,0.7)] hover:scale-105 active:scale-95 transition-all cursor-pointer font-mono"
                     >
                       <span>Register Now</span>
                       <ArrowRight className="w-4 h-4" />
