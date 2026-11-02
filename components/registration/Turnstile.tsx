@@ -3,8 +3,8 @@
 import Script from 'next/script';
 import { useCallback, useEffect, useRef } from 'react';
 
-// Cloudflare's documented always-pass test key, for dev and CI only. In production the pages
-// never render this widget without real keys (see turnstileReady).
+// Cloudflare's documented always-pass test key, for `next dev` only. A production build never
+// renders this widget without both keys (see turnstileReady).
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA';
 
 declare global {
