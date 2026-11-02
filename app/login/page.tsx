@@ -8,15 +8,10 @@ import { useAuth } from '@/lib/auth-context';
 import {
   ArrowRight,
   Sparkles,
-  ShieldCheck,
   CheckCircle2,
   HelpCircle,
-  ChevronDown,
   Lock,
-  Mail,
-  ArrowLeft,
-  KeyRound,
-  ExternalLink
+  ArrowLeft
 } from 'lucide-react';
 
 export default function LoginPage() {
