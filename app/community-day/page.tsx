@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import communityDayData from '@/content/community-day.json';
 import site from '@/content/site.json';
 import { formatEventDate, formatEventTime, getEventBySlug } from '@/lib/events';
-import { StickyNav } from '@/components/community-day/StickyNav';
 import { HeroSection } from '@/components/community-day/HeroSection';
 import { AboutSection } from '@/components/community-day/AboutSection';
 import { PillarsSection } from '@/components/community-day/PillarsSection';
@@ -35,9 +34,6 @@ export const metadata: Metadata = {
 export default function CommunityDayPage() {
   return (
     <div className="relative min-h-screen bg-[#090511] text-[#F8FAFC]">
-      {/* Sticky Secondary Navigation Bar */}
-      <StickyNav registrationUrl={communityDayData.registrationUrl} />
-
       {/* Hero Section */}
       <HeroSection
         eyebrow={communityDayData.hero.eyebrow}
