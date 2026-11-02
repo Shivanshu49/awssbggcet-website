@@ -1,0 +1,24 @@
+{
+  "registration": {
+    "open": false,
+    "capacity": 0,
+    "collectMeal": true,
+    "builderIdRequired": true,
+    "builderIdSignupUrl": "",
+    "consentVersion": "2026-11-v1"
+  },
+  "allowOtherColleges": true,
+  "colleges": ["Galgotias College of Engineering and Technology"],
+  "branches": ["CSE", "IT", "CSE (AI & ML)", "CSE (Data Science)", "ECE", "ME", "Other"],
+  "workshops": [],
+  "schedule": [],
+  "faqs": [],
+  "journey": [
+    { "phase": "before", "step": "registered", "title": "Register on this site" },
+    { "phase": "before", "step": "builder_id", "title": "Create your AWS Builder ID" },
+    { "phase": "before", "step": "builder_id", "title": "Add it to your pass" },
+    { "phase": "before", "step": "approved", "title": "Pass issued — QR here and in your email" },
+    { "phase": "venue", "step": "checked_in", "title": "Check in with your QR and college ID" },
+    { "phase": "venue", "step": null, "title": "Workshops and sessions" }
+  ]
+}

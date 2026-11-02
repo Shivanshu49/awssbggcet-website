@@ -11,9 +11,10 @@ const globalForDb = globalThis as unknown as {
 };
 
 // prepare: false — Supabase's transaction pooler (6543) can't hold prepared statements.
+// max: 3 — every Vercel function instance opens its own pool.
 const client =
   globalForDb.pgClient ??
-  postgres(process.env.DATABASE_URL!, { prepare: false });
+  postgres(process.env.DATABASE_URL!, { prepare: false, max: 3 });
 
 if (process.env.NODE_ENV !== "production") globalForDb.pgClient = client;
 
