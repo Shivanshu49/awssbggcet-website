@@ -33,7 +33,7 @@ function getInitials(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-// Generate an authentic AWS Builder ID string
+// Generate an authentic AWS ID string
 function generateBuilderId(): string {
   const randomChars = Math.random().toString(36).substring(2, 8).toUpperCase();
   return `GCET-${randomChars}`;
@@ -119,7 +119,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       id: 'usr_' + Math.random().toString(36).substring(2, 10),
       email: target.email,
       name: target.name,
-      role: 'Verified AWS Builder ID',
+      role: 'Verified AWS ID',
       builderId: generateBuilderId(),
       initials: getInitials(target.name),
       provider,

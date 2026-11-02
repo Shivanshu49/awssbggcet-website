@@ -148,7 +148,7 @@ export function ProfileDropdown() {
                     {user.email}
                   </p>
                   <div className="mt-1.5 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#1E1133] border border-[#4C2A66]/60 text-[10px] font-mono text-[#FDE68A]">
-                    <span>ID:</span>
+                    <span>AWS ID:</span>
                     <span className="text-[#FBBF24] font-bold">{user.builderId}</span>
                   </div>
                 </div>
@@ -191,7 +191,7 @@ export function ProfileDropdown() {
                   className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-[#150D24] hover:bg-[#201335] border border-[#4C2A66]/50 text-xs font-mono text-[#F87171] hover:text-red-300 transition-colors cursor-pointer"
                 >
                   <LogOut className="w-3.5 h-3.5" />
-                  <span>Sign Out of Builder ID</span>
+                  <span>Sign Out of AWS ID</span>
                 </button>
               </div>
             </div>

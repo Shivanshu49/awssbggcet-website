@@ -107,7 +107,7 @@ export function MobileNav({
                 href="/login"
                 className="flex items-center justify-center gap-2 rounded-xl bg-[#180E29] border border-[#4C2A66]/70 py-3 text-sm font-semibold text-white hover:text-[#FBBF24] transition-all"
               >
-                <span>AWS Builder ID Sign In</span>
+                <span>AWS ID Sign In</span>
               </NavLink>
             </DialogClose>
 

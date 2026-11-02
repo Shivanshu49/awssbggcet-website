@@ -133,7 +133,7 @@ export default function LoginPage() {
             <h2 className="text-xl font-bold text-white mb-1">{user.name}</h2>
             <p className="text-xs font-mono text-[#9E92B0] mb-3">{user.email}</p>
             <div className="inline-block px-3 py-1 rounded-lg bg-[#150D24] border border-[#4C2A66]/60 text-xs font-mono text-[#FDE68A] mb-6">
-              AWS Builder ID: <span className="font-bold text-[#FBBF24]">{user.builderId}</span>
+              AWS ID: <span className="font-bold text-[#FBBF24]">{user.builderId}</span>
             </div>
 
             <div className="space-y-3">
@@ -149,7 +149,7 @@ export default function LoginPage() {
                 onClick={logout}
                 className="w-full py-2.5 rounded-full bg-[#150D24] hover:bg-[#201335] border border-[#4C2A66]/50 text-xs font-mono text-[#F87171] hover:text-red-300 transition-colors cursor-pointer"
               >
-                Sign out of this Builder ID
+                Sign out of this AWS ID
               </button>
             </div>
           </div>
@@ -169,7 +169,7 @@ export default function LoginPage() {
                     Get started
                   </h1>
                   <p className="text-xs text-[#9E92B0] mt-1">
-                    Sign in with your AWS Builder ID
+                    Sign in with your AWS ID
                   </p>
                 </div>
                 <div className="w-8 h-8 rounded-full bg-[#150D24] border border-[#4C2A66]/60 flex items-center justify-center text-[#FBBF24] shadow-inner">
@@ -259,7 +259,7 @@ export default function LoginPage() {
                     disabled={isSubmitting}
                     className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#FBBF24] via-[#F59E0B] to-[#FBBF24] bg-[length:200%_auto] hover:bg-right text-[#090511] font-heading font-extrabold text-sm uppercase tracking-wider transition-all duration-300 shadow-[0_0_25px_rgba(251,191,36,0.45),inset_0_1px_1px_rgba(255,255,255,0.6)] hover:shadow-[0_0_35px_rgba(251,191,36,0.65)] hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer disabled:opacity-50"
                   >
-                    {isSubmitting ? 'Authenticating...' : 'Sign In to AWS Builder ID'}
+                    {isSubmitting ? 'Authenticating...' : 'Sign In to AWS ID'}
                   </button>
                 </form>
               )}
@@ -325,7 +325,7 @@ export default function LoginPage() {
                   AWS Privacy Notice
                 </a>
                 . By continuing, you will create an{' '}
-                <span className="text-[#60A5FA] font-medium">AWS Builder ID</span>.
+                <span className="text-[#60A5FA] font-medium">AWS ID</span>.
               </p>
 
               {/* Fast 1-Click Demo Shortcut for Reviewers */}
@@ -366,14 +366,14 @@ export default function LoginPage() {
               <span>Trouble Signing In?</span>
             </h3>
             <p className="text-xs text-[#CFC5DC] mb-4 leading-relaxed">
-              Here are common solutions for GCET students and builders signing into their AWS Builder ID:
+              Here are common solutions for GCET students and builders signing into their AWS ID:
             </p>
 
             <div className="space-y-3 text-xs font-mono text-[#D8CEE6]">
               <div className="p-3 rounded-xl bg-[#150D24] border border-[#4C2A66]/50">
                 <span className="text-[#FBBF24] font-semibold block mb-1">Using Galgotias College Email?</span>
                 <p className="text-[11px] text-[#9E92B0]">
-                  You can sign in using your official <code className="text-[#E9D5FF]">@galgotiacollege.edu</code> or personal email address. Both support AWS Builder ID creation.
+                  You can sign in using your official <code className="text-[#E9D5FF]">@galgotiacollege.edu</code> or personal email address. Both support AWS ID creation.
                 </p>
               </div>
 
