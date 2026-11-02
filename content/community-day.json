@@ -1,0 +1,239 @@
+{
+  "slug": "aws-student-community-day-2026",
+  "title": "AWS Student Community Day 2026",
+  "theme": "Learn. Build. Connect.",
+  "status": "published",
+  "registrationOpen": true,
+  "date": "2026-11-21T10:00:00+05:30",
+  "endDate": "2026-11-21T16:00:00+05:30",
+  "timezone": "Asia/Kolkata",
+  "venue": {
+    "name": "Galgotias College of Engineering and Technology",
+    "shortName": "GCET Greater Noida",
+    "hall": "Main Auditorium & Tech Labs, D-Block",
+    "city": "Greater Noida",
+    "state": "Uttar Pradesh",
+    "address": "1, Knowledge Park II, Greater Noida, Uttar Pradesh 201306"
+  },
+  "capacity": 500,
+  "fee": "Free of Cost",
+  "registrationUrl": "/community-day/register",
+  "hero": {
+    "eyebrow": "Flagship Community Conference",
+    "headline": "BUILD. LEARN. CONNECT.",
+    "subheading": "Bringing Student Builders & Cloud Innovators Together",
+    "description": "A premier community-led tech conference by AWS Student Builder Group GCET. Dive deep into cloud computing, modern architecture, Generative AI, and hands-on workshops with industry leaders and fellow builders.",
+    "factCards": [
+      {
+        "label": "Date & Time",
+        "value": "21 Nov 2026",
+        "subvalue": "10:00 AM – 4:00 PM IST",
+        "icon": "Calendar"
+      },
+      {
+        "label": "Venue",
+        "value": "GCET Auditorium",
+        "subvalue": "Knowledge Park II, Greater Noida",
+        "icon": "MapPin"
+      },
+      {
+        "label": "Participation",
+        "value": "Free Entry",
+        "subvalue": "Pre-registration mandatory",
+        "icon": "Ticket"
+      },
+      {
+        "label": "Tracks & Sessions",
+        "value": "4+ Hands-on Tracks",
+        "subvalue": "Keynotes, Workshops & Quizzes",
+        "icon": "Cpu"
+      }
+    ]
+  },
+  "aboutEvent": {
+    "badge": "About The Flagship Event",
+    "heading": "ONE DAY. ONE COMMUNITY. MORE WAYS TO GROW.",
+    "paragraphs": [
+      "AWS Student Community Day 2026 is organized by the AWS Student Builder Group at Galgotias College of Engineering and Technology (GCET). It is crafted for student developers, aspiring cloud practitioners, and tech enthusiasts looking to build practical cloud skills.",
+      "From serverless architectures and containerization to generative AI workflows and full-stack cloud applications, this conference bridges the gap between academic theory and real-world engineering.",
+      "Experience technical masterclasses, live peer coding challenges, industry keynote interactions, and network with high-energy developers from across Delhi NCR."
+    ]
+  },
+  "communityPillars": [
+    {
+      "key": "LEARN",
+      "title": "Practical Cloud Skills",
+      "description": "Gain direct insights from cloud architects, community leaders, and certified practitioners on modern cloud engineering and DevOps.",
+      "badge": "Masterclasses"
+    },
+    {
+      "key": "BUILD",
+      "title": "Hands-On Implementation",
+      "description": "Move beyond passive tutorials. Deploy real-world infrastructure, experiment in guided labs, and build live solutions.",
+      "badge": "Workshops"
+    },
+    {
+      "key": "CONNECT",
+      "title": "Peer & Industry Network",
+      "description": "Meet passionate students, alumni, and tech mentors. Exchange ideas, find hackathon teammates, and spark collaborative projects.",
+      "badge": "Community"
+    }
+  ],
+  "highlights": [
+    {
+      "id": "h-1",
+      "category": "Keynote",
+      "title": "Opening Keynote: Cloud Evolution",
+      "description": "Exploring how modern cloud architectures and AI acceleration are reshaping software development for students.",
+      "badge": "Main Stage",
+      "icon": "Sparkles"
+    },
+    {
+      "id": "h-2",
+      "category": "Workshop",
+      "title": "Hands-on Cloud Lab",
+      "description": "Interactive technical workshop demonstrating containerized deployments and serverless functions.",
+      "badge": "Tech Lab",
+      "icon": "Terminal"
+    },
+    {
+      "id": "h-3",
+      "category": "AI/ML",
+      "title": "Generative AI on AWS",
+      "description": "Practical patterns for leveraging foundational models and retrieval-augmented generation (RAG).",
+      "badge": "Deep Dive",
+      "icon": "Brain"
+    },
+    {
+      "id": "h-4",
+      "category": "Career",
+      "title": "Certifications & Career Paths",
+      "description": "Actionable advice on preparing for AWS certifications, student scholarships, and cloud internships.",
+      "badge": "Guidance",
+      "icon": "Award"
+    },
+    {
+      "id": "h-5",
+      "category": "Interactive",
+      "title": "Cloud Architecture Trivia & Swag",
+      "description": "Live quizzes and interactive challenges with exclusive community swags, stickers, and goodies.",
+      "badge": "Interactive",
+      "icon": "Gift"
+    },
+    {
+      "id": "h-6",
+      "category": "Networking",
+      "title": "Community Mixer & Project Demos",
+      "description": "Showcase what you've built, exchange GitHub profiles, and connect with fellow student developers.",
+      "badge": "Networking",
+      "icon": "Users"
+    }
+  ],
+  "agenda": [
+    {
+      "time": "09:30 AM – 10:15 AM",
+      "title": "Attendee Check-in & Morning Refreshments",
+      "description": "QR pass verification at the registration desk, badge collection, and welcome kit distribution.",
+      "tag": "Entry & Registration",
+      "type": "logistics"
+    },
+    {
+      "time": "10:15 AM – 10:45 AM",
+      "title": "Welcome Address & Community Vision",
+      "description": "Inaugural ceremony, faculty welcome, and roadmap of AWS Student Builder Group GCET.",
+      "tag": "Opening Ceremony",
+      "type": "keynote"
+    },
+    {
+      "time": "10:45 AM – 11:45 AM",
+      "title": "Session 1: Architecting Resilient Cloud Systems",
+      "description": "Deep-dive into microservices, scalable databases, and cloud security essentials for developers.",
+      "tag": "Architecture Deep Dive",
+      "type": "technical"
+    },
+    {
+      "time": "11:45 AM – 01:00 PM",
+      "title": "Session 2: Hands-on Cloud Workshop",
+      "description": "Guided walkthrough deploying a resilient full-stack application with automated CI/CD.",
+      "tag": "Hands-on Lab",
+      "type": "workshop"
+    },
+    {
+      "time": "01:00 PM – 02:00 PM",
+      "title": "Lunch Break & Networking Hub",
+      "description": "Lunch, project showcase walkthrough, and informal community interactions.",
+      "tag": "Networking & Refreshments",
+      "type": "break"
+    },
+    {
+      "time": "02:00 PM – 03:00 PM",
+      "title": "Session 3: Applied Generative AI & Vector Search",
+      "description": "Understanding generative models, embeddings, and prompt engineering in enterprise apps.",
+      "tag": "AI Track",
+      "type": "technical"
+    },
+    {
+      "time": "03:00 PM – 03:45 PM",
+      "title": "Interactive Cloud Quiz & Lightning Showcases",
+      "description": "Fast-paced tech trivia competition with prizes, followed by student project lightning talks.",
+      "tag": "Quiz & Competition",
+      "type": "interactive"
+    },
+    {
+      "time": "03:45 PM – 04:00 PM",
+      "title": "Closing Remarks & Swag Distribution",
+      "description": "Vote of thanks, group photograph, attendee certificates, and distribution of event swags.",
+      "tag": "Valedictory",
+      "type": "closing"
+    }
+  ],
+  "attendeeJourney": [
+    {
+      "step": "01",
+      "title": "Explore Event",
+      "description": "Review confirmed technical tracks, hands-on workshops, and prerequisites on the event page."
+    },
+    {
+      "step": "02",
+      "title": "Register Online",
+      "description": "Fill out the 2-step registration form with your personal and academic details."
+    },
+    {
+      "step": "03",
+      "title": "Get Digital Pass",
+      "description": "Receive your instant registration confirmation and unique digital QR entry pass."
+    },
+    {
+      "step": "04",
+      "title": "Check In & Build",
+      "description": "Present your digital QR pass and college ID at the GCET registration desk on event morning."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "What is AWS Student Community Day 2026?",
+      "answer": "It is an in-person, community-organized technical conference hosted by the AWS Student Builder Group at Galgotias College of Engineering and Technology (GCET). It brings together students, faculty, and cloud engineers for a full day of hands-on learning, workshops, and networking."
+    },
+    {
+      "question": "Is registration free of charge?",
+      "answer": "Yes, registration and participation are completely free. However, seats are limited to venue capacity, so pre-registration is required."
+    },
+    {
+      "question": "Who can attend this event?",
+      "answer": "The event is open to all university and college students (all branches and years of study), recent graduates, and tech enthusiasts interested in software engineering, cloud computing, and AI."
+    },
+    {
+      "question": "How will I receive my entry pass?",
+      "answer": "Upon completing the online registration form, you will immediately receive your unique Digital QR Entry Pass on the confirmation screen, which you can save and bookmark."
+    },
+    {
+      "question": "What do I need to bring on event day?",
+      "answer": "Please bring a valid college/student physical photo ID card along with your digital QR pass on your mobile device. If you plan to follow along with the hands-on lab, bringing a laptop is recommended."
+    },
+    {
+      "question": "Where is the event venue located?",
+      "answer": "The event takes place at Galgotias College of Engineering and Technology (GCET), 1, Knowledge Park II, Greater Noida, Uttar Pradesh 201306. The venue is easily accessible via the Knowledge Park II Metro Station (Aqua Line)."
+    }
+  ]
+}
+
