@@ -100,13 +100,25 @@ export function MobileNav({
             </ul>
           </nav>
 
-          {joinFormUrl && (
+          {/* Profile / Sign In Link for Mobile */}
+          <div className="mt-auto flex flex-col gap-2.5">
+            <DialogClose asChild>
+              <NavLink
+                href="/login"
+                className="flex items-center justify-center gap-2 rounded-xl bg-[#180E29] border border-[#4C2A66]/70 py-3 text-sm font-semibold text-white hover:text-[#FBBF24] transition-all"
+              >
+                <span>AWS Builder ID Sign In</span>
+              </NavLink>
+            </DialogClose>
+
+            {joinFormUrl && (
             <Button asChild variant="brand" size="lg" className="mt-auto h-11">
               <a href={joinFormUrl} target="_blank" rel="noopener noreferrer">
                 Join Club
               </a>
             </Button>
           )}
+          </div>
         </DialogPrimitive.Content>
       </DialogPortal>
     </Dialog>

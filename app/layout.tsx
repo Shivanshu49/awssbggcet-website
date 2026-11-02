@@ -5,6 +5,7 @@ import site from "@/content/site.json";
 import { cn } from "@/lib/utils";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { AuthProvider } from "@/lib/auth-context";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -33,17 +34,19 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn(inter.variable, sora.variable)}>
       <body className="flex min-h-dvh flex-col bg-[#090511] antialiased">
-        <a
-          href="#main"
-          className="sr-only rounded-md bg-aws-navy px-4 py-2 text-surface focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50"
-        >
-          Skip to content
-        </a>
-        <Header />
-        <main id="main" className="flex-1 pt-24">
-          {children}
-        </main>
-        <Footer />
+        <AuthProvider>
+          <a
+            href="#main"
+            className="sr-only rounded-md bg-aws-navy px-4 py-2 text-surface focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50"
+          >
+            Skip to content
+          </a>
+          <Header />
+          <main id="main" className="flex-1 pt-24">
+            {children}
+          </main>
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );

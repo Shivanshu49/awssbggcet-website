@@ -10,6 +10,7 @@ import site from '@/content/site.json';
 import { NAV_ITEMS } from '@/lib/constants';
 import { MobileNav } from './MobileNav';
 import { NavLink } from './NavLink';
+import { ProfileDropdown } from './ProfileDropdown';
 
 // Not rendered until first opened, so framer-motion stays out of every page's JS.
 const RolledLetterBanner = dynamic(
@@ -118,6 +119,9 @@ export function Header() {
                 Join Club
               </Link>
             )}
+            {/* AWS Builder Profile Dropdown (Screenshots 2 & 3) */}
+            <ProfileDropdown />
+
             <MobileNav joinFormUrl={site.joinFormUrl} onOpenBanner={handleOpenBanner} />
           </div>
         </div>
