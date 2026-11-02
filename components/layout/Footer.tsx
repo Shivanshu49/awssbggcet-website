@@ -9,7 +9,7 @@ export function Footer() {
           {/* Left: Logo & Email */}
           <div className="space-y-2">
             <div className="flex items-center gap-3">
-              <div className="relative w-8 h-8 rounded-xl overflow-hidden bg-[#160F24] border border-[#A855F7]/40 flex items-center justify-center shadow-[0_0_12px_rgba(168,85,247,0.25)]">
+              <div className="relative w-8 h-8 rounded-xl overflow-hidden bg-[#160F24] border border-[#A855F7]/40 flex items-center justify-center shadow-[0_0_12px_rgba(168,85,247,0.25)] shrink-0">
                 <Image
                   src="/logo/awslogo.png"
                   alt="AWS Builder Center GCET Logo"

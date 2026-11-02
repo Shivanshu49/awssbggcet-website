@@ -489,11 +489,8 @@ function CursorGrid({
 
 const TICKER_ITEMS = [
   'AWS Student Community Day 2026 – Nov 21',
-  'AWS Cloud Foundations Bootcamp – Oct 12',
-  'Hack-Cloud GCET 2026: 24h Sprint – Oct 26',
-  'Generative AI with Amazon Bedrock Masterclass – Nov 8',
-  'Serverless Microservices Architecture Challenge – Nov 24',
-  'AWS Certified Cloud Practitioner Study Cohort – Dec 5',
+  'Galgotias College of Engineering & Technology, Greater Noida',
+  'Registrations Open Now',
 ];
 
 const EVENT_CARDS = [
@@ -504,36 +501,6 @@ const EVENT_CARDS = [
     venue: 'Galgotias College of Engineering & Technology, Greater Noida',
     format: 'Flagship Conference · Learn | Build | Connect',
     description: 'A bigger cloud, a brighter tomorrow. Join AWS Student Builder Group GCET for the premier flagship student cloud engineering conference featuring keynote sessions, hands-on cloud labs, architect showcases, and community networking.',
-  },
-  {
-    title: 'AWS Cloud Foundations Bootcamp',
-    date: '2026-10-12',
-    format: 'Hands-on workshop',
-    description: 'A hands-on bootcamp introducing cloud foundations and AWS services.',
-  },
-  {
-    title: 'Hack-Cloud GCET 2026: 24h Sprint',
-    date: '2026-10-26',
-    format: '24-hour hackathon',
-    description: 'A 24-hour hands-on cloud hackathon building scalable serverless solutions on AWS.',
-  },
-  {
-    title: 'Generative AI with Amazon Bedrock Masterclass',
-    date: '2026-11-08',
-    format: 'Technical masterclass',
-    description: 'Build enterprise-grade LLM applications using Amazon Bedrock and Claude.',
-  },
-  {
-    title: 'Serverless Microservices Architecture Challenge',
-    date: '2026-11-24',
-    format: 'Architecture challenge',
-    description: 'Design and build event-driven microservices using AWS serverless services.',
-  },
-  {
-    title: 'AWS Certified Cloud Practitioner Study Cohort',
-    date: '2026-12-05',
-    format: 'Guided study cohort',
-    description: 'Prepare for the AWS Certified Cloud Practitioner exam with a guided study cohort.',
   },
 ];
 
@@ -946,9 +913,7 @@ export default function FullySynchronizedPage() {
                       <p className={`relative mt-4 max-w-xl text-sm leading-relaxed text-[#CFC5DC] ${index % 2 === 0 ? 'lg:ml-auto lg:text-right' : ''}`}>{event.description}</p>
                       <div className={`relative mt-6 flex ${index % 2 === 0 ? 'lg:justify-end' : ''}`}>
                         <Link
-                          href={site.joinFormUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                          href="/events/aws-student-community-day-2026/register"
                           className="inline-flex items-center gap-2 rounded-full bg-[#FBBF24] px-5 py-2.5 text-xs font-bold text-[#090511] shadow-[0_0_20px_rgba(251,191,36,0.2)] transition hover:bg-amber-300"
                         >
                           <UserPlus className="size-4" aria-hidden="true" />

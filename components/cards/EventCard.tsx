@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 import type { Event } from '@/lib/events';
 
@@ -60,27 +61,48 @@ export const EventCard: React.FC<{ event: EventItem }> = ({ event }) => {
       {/* Action / Registration CTA */}
       <div className="pt-6 mt-4 border-t border-[#4C2A66]/30">
         {!event.isPast && event.registrationUrl ? (
-          <a
-            href={event.registrationUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-[#6B21A8] hover:bg-[#7E22CE] text-white border border-purple-400/30 hover:border-amber-400/60 shadow-[0_0_15px_rgba(107,33,168,0.25)] transition-all"
-          >
-            <span>Register Now</span>
-            <svg
-              className="w-3.5 h-3.5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              viewBox="0 0 24 24"
+                    event.registrationUrl.startsWith('/') ? (
+            <Link
+              href={event.registrationUrl}
+              className="w-full flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-[#6B21A8] hover:bg-[#7E22CE] text-white border border-purple-400/30 hover:border-amber-400/60 shadow-[0_0_15px_rgba(107,33,168,0.25)] transition-all"
             >
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-              <polyline points="15 3 21 3 21 9" />
-              <line x1="10" y1="14" x2="21" y2="3" />
-            </svg>
-          </a>
+              <span>Register Now</span>
+              <svg
+                className="w-3.5 h-3.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
+            </Link>
+          ) : (
+            <a
+              href={event.registrationUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-[#6B21A8] hover:bg-[#7E22CE] text-white border border-purple-400/30 hover:border-amber-400/60 shadow-[0_0_15px_rgba(107,33,168,0.25)] transition-all"
+            >
+              <span>Register Now</span>
+              <svg
+                className="w-3.5 h-3.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+            </a>
+          )
         ) : (
           <div className="w-full text-center py-2 text-xs font-mono text-[#A89DB5]/60 bg-[#171020]/50 rounded-xl border border-purple-900/20">
             {event.isPast ? 'Event Concluded' : 'Registration Opening Soon'}
@@ -90,3 +112,4 @@ export const EventCard: React.FC<{ event: EventItem }> = ({ event }) => {
     </Card>
   );
 };
+

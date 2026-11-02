@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Calendar, Clock, MapPin, Sparkles, ExternalLink, ArrowRight } from 'lucide-react';
+import { X, Calendar, Clock, MapPin, Sparkles, ExternalLink, ArrowRight, QrCode } from 'lucide-react';
 
 interface RolledLetterBannerProps {
   isOpen: boolean;
@@ -30,36 +31,24 @@ function RoyalScrollRod({ isTop = true }: { isTop?: boolean }) {
     <div className="relative z-30 w-[104%] max-w-[calc(100%+2.5rem)] flex items-center justify-center pointer-events-none select-none">
       {/* Left Golden Knob (Sphere + Stepped Collar) */}
       <div className="flex items-center shrink-0">
-        {/* Spherical Golden Ball */}
         <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-[radial-gradient(circle_at_35%_35%,_#FFFBEB_0%,_#FDE68A_28%,_#F59E0B_62%,_#78350F_100%)] shadow-[0_4px_12px_rgba(0,0,0,0.7)] ring-1 ring-amber-200/90" />
-        {/* Stepped Collar Ring */}
         <div className="w-2 sm:w-3.5 h-5 sm:h-7 bg-[linear-gradient(to_bottom,_#FFFBEB_0%,_#FDE68A_25%,_#D97706_50%,_#78350F_100%)] rounded-sm shadow-sm border-x border-amber-300/70" />
       </div>
 
       {/* Main Brownish-Walnut Roller Cylinder */}
       <div
-        className={`relative flex-1 h-5 sm:h-7 rounded-sm shadow-[0_6px_16px_rgba(0,0,0,0.85)] border-y border-amber-300/80 overflow-hidden flex items-center justify-between px-3 ${
+        className={`flex-1 h-5 sm:h-7 rounded-full shadow-[0_8px_25px_rgba(0,0,0,0.9),0_2px_10px_rgba(120,53,15,0.8)] border-y border-amber-300/60 relative overflow-hidden ${
           isTop
-            ? 'bg-[linear-gradient(to_bottom,_#FDE68A_0%,_#D97706_15%,_#92400E_42%,_#451A03_78%,_#1C0A00_100%)]'
-            : 'bg-[linear-gradient(to_top,_#FDE68A_0%,_#D97706_15%,_#92400E_42%,_#451A03_78%,_#1C0A00_100%)]'
+            ? 'bg-[linear-gradient(to_bottom,_#54250C_0%,_#78350F_18%,_#9A3412_36%,_#D97706_50%,_#78350F_68%,_#451A03_100%)]'
+            : 'bg-[linear-gradient(to_bottom,_#451A03_0%,_#78350F_22%,_#9A3412_40%,_#D97706_50%,_#78350F_72%,_#381402_100%)]'
         }`}
       >
-        {/* Specular golden light sweep */}
-        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-amber-100/95 to-transparent opacity-90" />
-        {/* Bottom shadow trim */}
-        <div className="absolute inset-x-0 bottom-0 h-0.5 bg-black/60" />
-        {/* Warm gold inscription in cylinder */}
-        <span className="relative z-10 text-[8px] sm:text-[10px] font-mono font-bold tracking-widest text-[#FEF08A] uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
-          ✦ AWS STUDENT COMMUNITY DAY 2026 ✦
-        </span>
-        <span className="relative z-10 hidden sm:inline-block text-[8px] font-mono text-[#FDE68A]/95 tracking-wider uppercase drop-shadow">
-          GCET GREATER NOIDA
-        </span>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(254,240,138,0.35)_0%,_transparent_70%)]" />
+        <div className="absolute top-1 sm:top-1.5 inset-x-4 h-0.5 sm:h-1 bg-white/45 blur-[0.6px] rounded-full pointer-events-none" />
       </div>
 
       {/* Right Golden Knob (Stepped Collar + Sphere) */}
       <div className="flex items-center shrink-0">
-        {/* Stepped Collar Ring */}
         <div className="w-2 sm:w-3.5 h-5 sm:h-7 bg-[linear-gradient(to_bottom,_#FFFBEB_0%,_#FDE68A_25%,_#D97706_50%,_#78350F_100%)] rounded-sm shadow-sm border-x border-amber-300/70" />
         <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-[radial-gradient(circle_at_35%_35%,_#FFFBEB_0%,_#FDE68A_28%,_#F59E0B_62%,_#78350F_100%)] shadow-[0_4px_12px_rgba(0,0,0,0.7)] ring-1 ring-amber-200/90" />
       </div>
@@ -67,228 +56,189 @@ function RoyalScrollRod({ isTop = true }: { isTop?: boolean }) {
   );
 }
 
-export function RolledLetterBanner({ isOpen, onClose }: RolledLetterBannerProps) {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+export const RolledLetterBanner: React.FC<RolledLetterBannerProps> = ({
+  isOpen,
+  onClose,
+}) => {
+  const [scrollProgress, setScrollProgress] = useState(0);
   const [isFullyUnrolled, setIsFullyUnrolled] = useState(false);
   const [isInteractive, setIsInteractive] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setPrefersReducedMotion(mq.matches);
-
-    const listener = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
-    mq.addEventListener('change', listener);
-    return () => mq.removeEventListener('change', listener);
+    if (typeof window !== 'undefined') {
+      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      setPrefersReducedMotion(mediaQuery.matches);
+    }
   }, []);
 
-  // Multi-stage timeline:
-  // 0.0s - 0.6s: Closed scroll pause
-  // 0.6s - 3.2s: Unrolling vertically with progressive clipping reveal
-  // 3.2s: Transition into floating poster (flowing in air)
-  // 3.8s: Reveal details panel & interactive controls
   useEffect(() => {
     if (!isOpen) {
+      setScrollProgress(0);
       setIsFullyUnrolled(false);
       setIsInteractive(false);
       return;
     }
 
     if (prefersReducedMotion) {
+      setScrollProgress(100);
       setIsFullyUnrolled(true);
       setIsInteractive(true);
       return;
     }
 
-    setIsFullyUnrolled(false);
-    setIsInteractive(false);
-
-    const unrollTimer = setTimeout(() => {
+    const timer1 = setTimeout(() => setScrollProgress(25), 250);
+    const timer2 = setTimeout(() => setScrollProgress(60), 750);
+    const timer3 = setTimeout(() => setScrollProgress(90), 1300);
+    const timer4 = setTimeout(() => {
+      setScrollProgress(100);
       setIsFullyUnrolled(true);
-    }, 3200);
-
-    const interactiveTimer = setTimeout(() => {
+    }, 1850);
+    const timer5 = setTimeout(() => {
       setIsInteractive(true);
-    }, 3800);
+    }, 2100);
 
     return () => {
-      clearTimeout(unrollTimer);
-      clearTimeout(interactiveTimer);
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+      clearTimeout(timer4);
+      clearTimeout(timer5);
     };
   }, [isOpen, prefersReducedMotion]);
 
-  // Lock body scroll and listen for Escape key
   useEffect(() => {
-    if (isOpen) {
-      const prevOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
+    if (!isOpen) return;
 
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
-          onClose();
-        }
-      };
-      window.addEventListener('keydown', handleKeyDown);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
 
-      return () => {
-        document.body.style.overflow = prevOverflow;
-        window.removeEventListener('keydown', handleKeyDown);
-      };
-    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  // Google Calendar URL
-  const calendarUrl = useMemo(
-    () =>
-      `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
-        'AWS Student Community Day 2026 – GCET'
-      )}&dates=20261121T043000Z/20261121T103000Z&details=${encodeURIComponent(
-        'AWS Student Community Day organized by AWS Student Builder Group at Galgotias College of Engineering & Technology. Learn | Build | Connect. 10:00 AM - 4:00 PM.'
-      )}&location=${encodeURIComponent(
-        'Galgotias College of Engineering and Technology, Knowledge Park II, Greater Noida, Uttar Pradesh 201310'
-      )}`,
-    []
-  );
+  const calendarUrl = useMemo(() => {
+    const title = encodeURIComponent('AWS Student Community Day 2026 - GCET');
+    const details = encodeURIComponent(
+      'Join AWS Student Builder Group GCET for the premier flagship student cloud engineering conference featuring keynote sessions, hands-on cloud labs, architect showcases, and community networking.'
+    );
+    const location = encodeURIComponent('Galgotias College of Engineering & Technology, Greater Noida');
+    const dates = '20261121T043000Z/20261121T103000Z'; // 10:00 AM - 4:00 PM IST
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${dates}`;
+  }, []);
 
-  const handleBackdropClick = () => {
-    if (isInteractive) {
-      onClose();
-    }
-  };
+  const registrationUrl = '/events/aws-student-community-day-2026/register';
 
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          key="brown-royal-scroll-backdrop"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.38, ease: 'easeInOut' } }}
-          className="fixed inset-0 z-[140] flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-y-auto bg-black/92 backdrop-blur-xl"
-          onClick={handleBackdropClick}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
           role="dialog"
           aria-modal="true"
-          aria-label="AWS Student Community Day 2026 Royal Proclamation"
+          aria-label="AWS Student Community Day 2026 Royal Announcement"
         >
-          {/* =========================================================================
-              1. DARK SCREEN WITH SUBTLE GOLDEN PARTICLES & WARM AMBIENT GLOW
-              ========================================================================= */}
-          <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-            {/* Ambient warm brownish amber and purple atmospheric glow */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[650px] rounded-full bg-gradient-to-r from-[#7E22CE]/20 via-[#92400E]/22 to-[#451A03]/25 blur-[140px]" />
+          {/* Deep Dark Royal Space Backdrop with Blur */}
+          <div
+            onClick={onClose}
+            className="fixed inset-0 bg-[#050209]/92 backdrop-blur-xl transition-opacity"
+          />
 
-            {/* Subtle floating golden particles */}
-            {GOLDEN_PARTICLES.map((particle) => (
+          {/* Ambient Warm Golden Particles */}
+          <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
+            {GOLDEN_PARTICLES.map((p) => (
               <motion.div
-                key={particle.id}
-                initial={{ opacity: 0, y: 0 }}
+                key={p.id}
+                initial={{ opacity: 0.2, scale: 0.8 }}
                 animate={{
-                  opacity: [0.15, 0.75, 0.15],
-                  y: [0, -18, 0],
+                  opacity: [0.2, 0.85, 0.2],
+                  scale: [0.8, 1.25, 0.8],
+                  y: ['0px', '-20px', '0px'],
                 }}
                 transition={{
-                  duration: particle.duration,
+                  duration: p.duration,
+                  delay: p.delay,
                   repeat: Infinity,
-                  delay: particle.delay,
                   ease: 'easeInOut',
                 }}
                 style={{
-                  left: particle.x,
-                  top: particle.y,
-                  width: particle.size,
-                  height: particle.size,
+                  left: p.x,
+                  top: p.y,
+                  width: `${p.size}px`,
+                  height: `${p.size}px`,
                 }}
-                className="absolute rounded-full bg-[#FEF08A] shadow-[0_0_8px_#FBBF24]"
+                className="absolute rounded-full bg-[#FDE68A] shadow-[0_0_12px_#FBBF24]"
               />
             ))}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] h-[520px] bg-amber-600/10 blur-[130px] rounded-full pointer-events-none" />
           </div>
 
           {/* =========================================================================
-              2. THE ROYAL SCROLL ASSEMBLY (BROWNISH PARCHMENT)
-              Starts closed, unrolls vertically, then floats gently flowing in the air!
+              ROYAL SCROLL ASSEMBLY WRAPPER
               ========================================================================= */}
-          <motion.div
-            animate={
-              isFullyUnrolled && !prefersReducedMotion
-                ? {
-                    y: [0, -12, 3, -12, 0], // Subtle vertical floating levitation
-                    rotateZ: [0, 0.8, -0.6, 0.8, 0], // Organic gentle air tilt
-                    rotateX: [0, 2, -1.5, 2, 0], // 3D depth in the air
-                  }
-                : { y: 0, rotateZ: 0, rotateX: 0 }
-            }
-            transition={{
-              repeat: Infinity,
-              duration: 5.2,
-              ease: 'easeInOut',
-            }}
-            style={{ transformStyle: 'preserve-3d', perspective: 1200 }}
-            className="relative w-full max-w-4xl my-auto py-2 sm:py-4 flex flex-col items-center z-40 select-none"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="relative z-10 w-full max-w-4xl mx-auto flex flex-col items-center my-auto py-4">
             {/* TOP BROWNISH ROYAL SCROLL ROD */}
             <motion.div
               initial={
                 prefersReducedMotion
                   ? { opacity: 1, y: 0 }
-                  : { opacity: 0, y: 20 } // Starts centered with bottom rod (closed state)
+                  : { opacity: 0, y: 20 }
               }
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              exit={{ opacity: 0, y: 20 }}
-              transition={{
-                delay: prefersReducedMotion ? 0 : 0.1,
-                duration: prefersReducedMotion ? 0.2 : 0.5,
-                ease: 'easeOut',
-              }}
-              className="relative z-30 w-full flex items-center justify-center"
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full flex justify-center -mb-2 z-30"
             >
               <RoyalScrollRod isTop={true} />
             </motion.div>
 
-            {/* UNROLLING ROYAL BROWN PARCHMENT & POSTER CANVAS */}
+            {/* UNROLLING SCROLL BODY */}
             <motion.div
               initial={
                 prefersReducedMotion
                   ? { height: 'auto', opacity: 1 }
-                  : { height: 0, opacity: 1 } // Completely closed initially: poster hidden!
+                  : { height: 0, opacity: 0.3 }
               }
-              animate={{
-                height: 'auto',
-                opacity: 1,
-              }}
-              exit={{
-                height: 0,
-                opacity: 0.2,
-                transition: { duration: 0.45, ease: 'easeInOut' },
-              }}
+              animate={
+                prefersReducedMotion
+                  ? { height: 'auto', opacity: 1 }
+                  : {
+                      height: scrollProgress === 0 ? 0 : 'auto',
+                      opacity: scrollProgress === 0 ? 0.3 : 1,
+                    }
+              }
               transition={{
-                delay: prefersReducedMotion ? 0 : 0.6, // Holds closed scroll for suspense
-                duration: prefersReducedMotion ? 0.2 : 2.5, // Majestic vertical unroll
+                duration: prefersReducedMotion ? 0.1 : 1.7,
                 ease: [0.16, 1, 0.3, 1],
               }}
-              style={{ transformOrigin: 'top center' }}
-              className="relative z-20 w-full overflow-hidden shadow-[0_25px_60px_-10px_rgba(0,0,0,0.95),0_0_35px_rgba(168,85,247,0.35),0_0_20px_rgba(251,191,36,0.25)] -my-0.5"
+              className="relative w-full rounded-2xl overflow-hidden shadow-[0_25px_60px_rgba(0,0,0,0.9),0_0_40px_rgba(180,83,9,0.35)]"
+              style={{
+                background:
+                  'radial-gradient(circle at 50% 20%, #451A03 0%, #2A1105 45%, #180903 100%)',
+              }}
             >
-              {/* Royal Brownish-Amber Parchment Body */}
-              <div className="relative w-full border-x-4 border-[#B45309] bg-[linear-gradient(to_right,_#1C0D05_0%,_#2A1408_8%,_#3B1C0B_25%,_#4C240E_50%,_#3B1C0B_75%,_#2A1408_92%,_#1C0D05_100%)] p-4 sm:p-6 md:p-8 shadow-[inset_0_0_50px_rgba(0,0,0,0.85),inset_15px_0_30px_-10px_rgba(0,0,0,0.8),inset_-15px_0_30px_-10px_rgba(0,0,0,0.8)]">
-                
-                {/* Inset Gold Pinstripe Margins on Left and Right */}
-                <div className="pointer-events-none absolute inset-y-0 left-2.5 sm:left-4 w-0.5 bg-gradient-to-b from-[#FEF08A] via-[#FBBF24] to-[#B45309] shadow-[0_0_8px_#FBBF24] opacity-90" />
-                <div className="pointer-events-none absolute inset-y-0 right-2.5 sm:right-4 w-0.5 bg-gradient-to-b from-[#FEF08A] via-[#FBBF24] to-[#B45309] shadow-[0_0_8px_#FBBF24] opacity-90" />
+              {/* Outer Golden Border Filigree */}
+              <div className="pointer-events-none absolute inset-0 rounded-2xl border-2 border-amber-300/80 z-20 shadow-[inset_0_0_30px_rgba(251,191,36,0.2)]" />
 
+              {/* Inner Parchment Content Frame */}
+              <div className="relative z-10 p-3.5 sm:p-6 md:p-7 flex flex-col justify-between">
                 {/* Subtle parchment silk sheen watermark */}
                 <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(254,240,138,0.08)_0%,_transparent_75%)]" />
 
-                {/* CLOSE 'X' BUTTON - Revealed smoothly once scroll has unrolled */}
+                {/* CLOSE 'X' BUTTON */}
                 <motion.button
                   type="button"
                   onClick={onClose}
                   initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, scale: 0.8 }}
                   animate={isInteractive ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
                   transition={{ duration: 0.35 }}
-                  aria-label="Close announcement and access website"
+                  aria-label="Close announcement and view website"
                   title="Close (Esc)"
                   className="group absolute top-3 right-3 sm:top-5 sm:right-6 z-50 flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-[#2A1308]/95 text-white border-2 border-[#FDE68A] shadow-[0_0_15px_rgba(251,191,36,0.6)] hover:bg-[#FBBF24] hover:text-[#090511] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer backdrop-blur-md"
                 >
@@ -317,14 +267,13 @@ export function RolledLetterBanner({ isOpen, onClose }: RolledLetterBannerProps)
                 </motion.div>
 
                 {/* =========================================================================
-                    PROGRESSIVE POSTER REVEAL USING ANIMATED CLIPPING MASK
-                    Reveals top-to-bottom as the royal rods pull apart, then transforms into floating poster
+                    PROGRESSIVE POSTER REVEAL USING ANIMATED CLIPPING MASK + INTEGRATED QR CODE OVERLAY
                     ========================================================================= */}
                 <motion.div
                   initial={
                     prefersReducedMotion
                       ? { clipPath: 'inset(0% 0% 0% 0%)', opacity: 1, scale: 1 }
-                      : { clipPath: 'inset(0% 0% 100% 0%)', opacity: 0.85, scale: 0.98 } // Clipped completely initially!
+                      : { clipPath: 'inset(0% 0% 100% 0%)', opacity: 0.85, scale: 0.98 }
                   }
                   animate={
                     prefersReducedMotion
@@ -339,7 +288,7 @@ export function RolledLetterBanner({ isOpen, onClose }: RolledLetterBannerProps)
                   }
                   transition={{
                     delay: prefersReducedMotion ? 0 : 0.65,
-                    duration: prefersReducedMotion ? 0.2 : 2.4, // Realistic animated clipping matching unroll
+                    duration: prefersReducedMotion ? 0.2 : 2.4,
                     ease: [0.16, 1, 0.3, 1],
                   }}
                   className="relative w-full rounded-xl overflow-hidden bg-[#07030A] border-2 border-[#FDE68A] shadow-[0_20px_50px_rgba(0,0,0,0.85),0_0_35px_rgba(251,191,36,0.35)]"
@@ -367,33 +316,52 @@ export function RolledLetterBanner({ isOpen, onClose }: RolledLetterBannerProps)
                     />
                   )}
 
-                  {/* 100% COMPLETE POSTER: Exact Aspect Ratio (1024/576) with Zero Cropping */}
-                  <div className="relative w-full aspect-[1024/576]">
+                  {/* 100% COMPLETE POSTER: Exact Aspect Ratio (1024/576) */}
+                  <Link
+                    href={registrationUrl}
+                    onClick={onClose}
+                    className="group/poster relative w-full aspect-[1024/576] block cursor-pointer"
+                    title="Click to Open Community Day Registration Page"
+                  >
                     <Image
                       src="/events/aws-community-day-banner.jpg"
                       alt="AWS Student Community Day 2026 - Galgotias College of Engineering and Technology"
                       fill
                       priority
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 95vw, 1024px"
-                      className="object-contain w-full h-full block"
+                      className="object-contain w-full h-full block group-hover/poster:scale-[1.01] transition-transform duration-300"
                     />
-                  </div>
+
+                    {/* Integrated Scannable Registration QR Badge on Poster */}
+                    <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-20 bg-[#090511]/90 backdrop-blur-md p-1.5 sm:p-2 rounded-xl border border-amber-400/80 shadow-[0_0_20px_rgba(251,191,36,0.4)] flex items-center gap-2 group-hover/poster:border-amber-300 transition-colors">
+                      <div className="bg-white p-1 rounded-lg">
+                        <Image
+                          src="/events/community-day-register-qr.png"
+                          alt="Scan to Register QR Code"
+                          width={44}
+                          height={44}
+                          className="w-9 h-9 sm:w-11 sm:h-11 object-contain block"
+                        />
+                      </div>
+                      <div className="text-left pr-1.5 hidden sm:block">
+                        <span className="text-[9px] font-mono uppercase tracking-widest text-amber-300 font-bold block">
+                          Scan to Register
+                        </span>
+                        <span className="text-[8px] font-mono text-[#C4B5DA] block">
+                          Instant Pass
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
                 </motion.div>
 
                 {/* =========================================================================
-                    3. DETAILS PANEL & BUTTONS (Brownish-Amber Theme)
+                    3. DETAILS PANEL & BUTTONS — Prominent "REGISTER NOW" CTA
                     ========================================================================= */}
                 <motion.div
                   initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                  animate={
-                    isInteractive
-                      ? { opacity: 1, y: 0 }
-                      : { opacity: 0, y: 20 }
-                  }
-                  transition={{
-                    duration: 0.5,
-                    ease: 'easeOut',
-                  }}
+                  animate={isInteractive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                  transition={{ duration: 0.5, ease: 'easeOut' }}
                   className="mt-4 pt-3.5 border-t border-amber-400/30 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4"
                 >
                   {/* Metadata Chips on Brownish-Amber background */}
@@ -414,27 +382,27 @@ export function RolledLetterBanner({ isOpen, onClose }: RolledLetterBannerProps)
                     </div>
                   </div>
 
-                  {/* Actions: Add to Calendar & Access Website */}
+                  {/* Actions: Add to Calendar & PROMINENT REGISTER NOW BUTTON */}
                   <div className="flex items-center gap-2.5 self-end md:self-auto w-full md:w-auto">
                     <a
                       href={calendarUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#3B1C0B] border border-[#FDE68A]/60 text-xs font-semibold text-[#FEF08A] hover:bg-[#522710] transition-all duration-200 shadow-[0_0_12px_rgba(251,191,36,0.25)] hover:scale-105 active:scale-95"
+                      className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-[#3B1C0B] border border-[#FDE68A]/60 text-xs font-semibold text-[#FEF08A] hover:bg-[#522710] transition-all duration-200 shadow-[0_0_12px_rgba(251,191,36,0.25)] hover:scale-105 active:scale-95"
                     >
                       <Calendar className="w-3.5 h-3.5 text-[#FDE68A]" />
                       <span>Add to Calendar</span>
                       <ExternalLink className="w-3 h-3 text-[#FDE68A]" />
                     </a>
 
-                    <button
-                      type="button"
+                    <Link
+                      href={registrationUrl}
                       onClick={onClose}
-                      className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#FBBF24] via-[#F59E0B] to-[#FBBF24] text-[#090511] text-xs font-bold uppercase tracking-wider shadow-[0_0_20px_rgba(251,191,36,0.5)] hover:bg-[#F59E0B] hover:-translate-y-0.5 active:scale-95 transition-all cursor-pointer font-mono"
+                      className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black text-xs font-extrabold uppercase tracking-wider shadow-[0_0_25px_rgba(251,191,36,0.7)] hover:scale-105 active:scale-95 transition-all cursor-pointer font-mono"
                     >
-                      <span>Access Website</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
+                      <span>Register Now</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
                   </div>
                 </motion.div>
 
@@ -454,25 +422,27 @@ export function RolledLetterBanner({ isOpen, onClose }: RolledLetterBannerProps)
               initial={
                 prefersReducedMotion
                   ? { opacity: 1, y: 0 }
-                  : { opacity: 0, y: -20 } // Starts centered touching top rod (closed state)
+                  : { opacity: 0, y: -20 }
               }
               animate={{
                 opacity: 1,
-                y: 0,
+                y: prefersReducedMotion
+                  ? 0
+                  : scrollProgress === 0
+                  ? -20
+                  : 0,
               }}
-              exit={{ opacity: 0, y: -20 }}
               transition={{
-                delay: prefersReducedMotion ? 0 : 0.6,
-                duration: prefersReducedMotion ? 0.2 : 2.5, // Follows unrolling bottom edge
+                duration: prefersReducedMotion ? 0.1 : 1.7,
                 ease: [0.16, 1, 0.3, 1],
               }}
-              className="relative z-30 w-full flex items-center justify-center"
+              className="w-full flex justify-center -mt-2 z-30"
             >
               <RoyalScrollRod isTop={false} />
             </motion.div>
-          </motion.div>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
   );
-}
+};

@@ -10,7 +10,7 @@ type NavLinkProps = React.ComponentProps<typeof Link> & { href: string };
 export function NavLink({ href, ...props }: NavLinkProps) {
   const pathname = usePathname();
   const active =
-    href === "/"
+    href === "/" || href === "/#home"
       ? pathname === "/"
       : pathname === href || pathname.startsWith(`${href}/`);
 

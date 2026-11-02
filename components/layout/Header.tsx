@@ -38,7 +38,7 @@ export function Header() {
         <div className="mx-auto flex h-16 items-center justify-between px-3 sm:px-6">
           {/* Brand Logo & Name */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative w-9 h-9 rounded-xl overflow-hidden bg-[#150E22] border border-[#A855F7]/40 flex items-center justify-center shadow-[0_0_15px_rgba(168,85,247,0.3)] transition-transform group-hover:scale-105">
+            <div className="relative w-9 h-9 rounded-xl overflow-hidden bg-[#150E22] border border-[#A855F7]/40 flex items-center justify-center shadow-[0_0_15px_rgba(168,85,247,0.3)] transition-transform group-hover:scale-105 shrink-0">
               <Image
                 src="/logo/awslogo.png"
                 alt="AWS Builder Center GCET Logo"
@@ -46,7 +46,7 @@ export function Header() {
                 className="object-cover"
               />
             </div>
-            <div className="hidden flex-col sm:flex">
+            <div className="flex flex-col">
               <span className="text-sm font-bold text-white tracking-tight group-hover:text-[#FBBF24] transition-colors">
                 AWS Builder Center GCET
               </span>

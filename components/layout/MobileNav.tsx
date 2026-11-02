@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
 
 import { NAV_ITEMS } from "@/lib/constants";
@@ -40,7 +41,19 @@ export function MobileNav({
         {/* Raw Content: shadcn's DialogContent is a centred modal, this is a right-side sheet. */}
         <DialogPrimitive.Content className="fixed inset-y-0 right-0 z-50 flex w-full max-w-xs flex-col gap-6 bg-surface p-6 text-ink shadow-xl outline-none lg:hidden data-open:animate-in data-open:slide-in-from-right data-closed:animate-out data-closed:slide-out-to-right">
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-lg font-semibold">Menu</DialogTitle>
+            <div className="flex items-center gap-2.5">
+              <div className="relative w-7 h-7 rounded-lg overflow-hidden bg-[#150E22] border border-[#A855F7]/40 flex items-center justify-center shadow-sm shrink-0">
+                <Image
+                  src="/logo/awslogo.png"
+                  alt="AWS Builder Center GCET Logo"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <DialogTitle className="text-sm font-bold text-ink">
+                AWS Builder Center
+              </DialogTitle>
+            </div>
             <DialogClose asChild>
               <Button variant="ghost" size="icon-lg" aria-label="Close menu">
                 <X className="size-5" />

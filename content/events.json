@@ -6,7 +6,7 @@
     "mode": "offline",
     "venue": "Galgotias College of Engineering and Technology, Greater Noida",
     "description": "AWS Student Community Day – Learn, Build, Connect. A bigger cloud, a brighter tomorrow.",
-    "registrationUrl": "",
+    "registrationUrl": "/events/aws-student-community-day-2026/register",
     "coverImage": "/events/aws-community-day-banner.jpg",
     "gallery": [
       "/events/aws-community-day-banner.jpg"
@@ -47,3 +47,4 @@
     ]
   }
 ]
+
