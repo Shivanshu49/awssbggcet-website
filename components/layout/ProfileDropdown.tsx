@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
-import { User, LogOut, Sparkles, ExternalLink, ShieldCheck, ChevronRight, Bookmark, Award } from 'lucide-react';
+import { User, LogOut, Sparkles, ExternalLink, ShieldCheck, ChevronRight, Award } from 'lucide-react';
 
 export function ProfileDropdown() {
   const { user, logout } = useAuth();
@@ -169,14 +169,6 @@ export function ProfileDropdown() {
                 >
                   <Award className="w-4 h-4 text-[#FBBF24]" />
                   <span>My Summit Registration</span>
-                </Link>
-                <Link
-                  href="/#learning"
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs text-[#CFC5DC] hover:text-[#FBBF24] hover:bg-[#1C122C] transition-colors"
-                >
-                  <Bookmark className="w-4 h-4 text-[#A855F7]" />
-                  <span>Zero-to-Architect Tracks</span>
                 </Link>
               </div>
 
