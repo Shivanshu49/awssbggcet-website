@@ -4,6 +4,7 @@ export const NAV_ITEMS = [
   { label: "Home", href: "/#home" },
   { label: "About", href: "/#about" },
   { label: "Events", href: "/#events" },
+  { label: "Community Day", href: "/community-day" },
   { label: "Learning", href: "/#learning" },
   { label: "Resources", href: "/#resources" },
   { label: "Contact", href: "/#contact" },

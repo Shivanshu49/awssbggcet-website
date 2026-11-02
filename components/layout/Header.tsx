@@ -1,27 +1,48 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { Sparkles } from 'lucide-react';
 import site from '@/content/site.json';
 import { NAV_ITEMS } from '@/lib/constants';
 import { MobileNav } from './MobileNav';
 import { NavLink } from './NavLink';
-import { RolledLetterBanner } from './RolledLetterBanner';
+
+// Not rendered until first opened, so framer-motion stays out of every page's JS.
+const RolledLetterBanner = dynamic(
+  () => import('./RolledLetterBanner').then((mod) => mod.RolledLetterBanner),
+  { ssr: false },
+);
+
+const BANNER_AUTO_OPENED_KEY = 'scd-banner-auto-opened';
 
 export function Header() {
+  const pathname = usePathname();
   const [isBannerOpen, setIsBannerOpen] = useState(false);
   const [bannerKey, setBannerKey] = useState(0);
 
-  // Automatically trigger the cinematic announcement sequence on initial page load
+  // Auto-open on the home page only, at most once per browser session. The flag
+  // is written when the timer fires, so React's dev double-run of this effect
+  // can't set it and then cancel the open.
   useEffect(() => {
+    if (pathname !== '/') return;
+
     const timer = setTimeout(() => {
+      try {
+        if (sessionStorage.getItem(BANNER_AUTO_OPENED_KEY)) return;
+        sessionStorage.setItem(BANNER_AUTO_OPENED_KEY, '1');
+      } catch {
+        return; // Storage blocked: can't honour "once", so leave it to the manual button.
+      }
+      setBannerKey((prev) => prev + 1);
       setIsBannerOpen(true);
     }, 450);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [pathname]);
 
   const handleOpenBanner = () => {
     setBannerKey((prev) => prev + 1);
@@ -40,7 +61,7 @@ export function Header() {
           <Link href="/" className="flex items-center gap-3 group">
             <div className="relative w-9 h-9 rounded-xl overflow-hidden bg-[#150E22] border border-[#A855F7]/40 flex items-center justify-center shadow-[0_0_15px_rgba(168,85,247,0.3)] transition-transform group-hover:scale-105 shrink-0">
               <Image
-                src="/logo/awslogo.png"
+                src="/logo/sbg-logo.png"
                 alt="AWS Builder Center GCET Logo"
                 fill
                 className="object-cover"
@@ -62,7 +83,11 @@ export function Header() {
               <NavLink
                 key={item.href}
                 href={item.href}
-                className="px-4 py-1.5 rounded-full text-xs font-medium text-[#CFC5DC] hover:text-[#FBBF24] transition-all"
+                className={
+                  item.href === '/community-day'
+                    ? 'px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap text-[#FBBF24] border border-[#FBBF24]/60 bg-[#FBBF24]/10 shadow-[0_0_12px_rgba(251,191,36,0.25)] hover:bg-[#FBBF24]/20 transition-all'
+                    : 'px-4 py-1.5 rounded-full text-xs font-medium text-[#CFC5DC] hover:text-[#FBBF24] transition-all'
+                }
               >
                 {item.label}
               </NavLink>
@@ -79,29 +104,33 @@ export function Header() {
               title="Open AWS Student Community Day 2026 Announcement"
             >
               <Sparkles className="w-3.5 h-3.5 text-[#FBBF24] animate-pulse" />
-              <span className="hidden sm:inline font-mono">Community Day &apos;26</span>
-              <span className="sm:hidden font-mono">Event</span>
+              <span className="hidden sm:inline lg:hidden xl:inline font-mono">Community Day &apos;26</span>
+              <span className="sm:hidden lg:inline xl:hidden font-mono">Event</span>
             </button>
 
-            <Link
-              href={site.joinFormUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-full bg-[#FBBF24] px-3.5 sm:px-4 py-2 font-mono text-xs font-bold uppercase tracking-wider text-[#090511] shadow-[0_0_15px_rgba(251,191,36,0.3)] transition-all hover:-translate-y-0.5 hover:bg-[#F59E0B]"
-            >
-              Join Club
-            </Link>
+            {site.joinFormUrl && (
+              <Link
+                href={site.joinFormUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center rounded-full bg-[#FBBF24] px-3.5 sm:px-4 py-2 font-mono text-xs font-bold uppercase tracking-wider text-[#090511] shadow-[0_0_15px_rgba(251,191,36,0.3)] transition-all hover:-translate-y-0.5 hover:bg-[#F59E0B]"
+              >
+                Join Club
+              </Link>
+            )}
             <MobileNav joinFormUrl={site.joinFormUrl} onOpenBanner={handleOpenBanner} />
           </div>
         </div>
       </header>
 
       {/* CINEMATIC EVENT PORTAL ANNOUNCEMENT */}
-      <RolledLetterBanner
-        key={bannerKey}
-        isOpen={isBannerOpen}
-        onClose={handleCloseBanner}
-      />
+      {bannerKey > 0 && (
+        <RolledLetterBanner
+          key={bannerKey}
+          isOpen={isBannerOpen}
+          onClose={handleCloseBanner}
+        />
+      )}
     </>
   );
 }

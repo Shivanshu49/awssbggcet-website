@@ -487,10 +487,10 @@ function CursorGrid({
   );
 }
 
-const TICKER_ITEMS = [
-  'AWS Student Community Day 2026 – Nov 21',
-  'Galgotias College of Engineering & Technology, Greater Noida',
-  'Registrations Open Now',
+const TICKER_ITEMS: { label: string; href?: string }[] = [
+  { label: 'AWS Student Community Day 2026 – Nov 21', href: '/community-day' },
+  { label: 'Galgotias College of Engineering & Technology, Greater Noida' },
+  { label: 'Registration opens soon' },
 ];
 
 const EVENT_CARDS = [
@@ -500,6 +500,7 @@ const EVENT_CARDS = [
     time: '10:00 AM – 4:00 PM IST',
     venue: 'Galgotias College of Engineering & Technology, Greater Noida',
     format: 'Flagship Conference · Learn | Build | Connect',
+    registrationUrl: '/community-day/register',
     description: 'A bigger cloud, a brighter tomorrow. Join AWS Student Builder Group GCET for the premier flagship student cloud engineering conference featuring keynote sessions, hands-on cloud labs, architect showcases, and community networking.',
   },
 ];
@@ -724,10 +725,16 @@ export default function FullySynchronizedPage() {
       {/* Ticker */}
       <div id="home" className="scroll-mt-24 w-full bg-[#0D0718] border-b border-[#4C2A66]/40 py-2.5 overflow-hidden">
         <div className="flex items-center whitespace-nowrap animate-marquee">
-          {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, idx) => (
+          {[...TICKER_ITEMS, ...TICKER_ITEMS].map(({ label, href }, idx) => (
             <div key={idx} className="inline-flex items-center mx-6">
               <span className="w-1.5 h-1.5 rounded-full bg-[#FBBF24] mr-3 shadow-[0_0_6px_#FBBF24]" />
-              <span className="font-mono-jb text-xs tracking-wide text-[#D8CEE6]">{item}</span>
+              {href ? (
+                <Link href={href} className="font-mono-jb text-xs tracking-wide text-[#FBBF24] hover:underline">
+                  {label}
+                </Link>
+              ) : (
+                <span className="font-mono-jb text-xs tracking-wide text-[#D8CEE6]">{label}</span>
+              )}
             </div>
           ))}
         </div>
@@ -778,14 +785,17 @@ export default function FullySynchronizedPage() {
               <p className="mt-7 max-w-2xl mx-auto text-base text-[#CFC5DC]">
                 Galgotias College of Engineering &amp; Technology&apos;s official student cloud engineering community.
               </p>
-              <div className="mt-12 flex flex-wrap justify-center gap-4">
-                <Link href="/#events" className="px-7 py-3.5 rounded-full bg-[#FBBF24] text-[#0B0714] font-bold text-xs uppercase transition-all hover:bg-amber-300">
+              <Link href="/community-day/register" className="mt-10 px-7 sm:px-9 py-4 rounded-full bg-[#FBBF24] text-[#0B0714] font-bold text-xs sm:text-sm uppercase shadow-[0_0_30px_rgba(251,191,36,0.45)] transition-all hover:bg-amber-300">
+                Register for Community Day · 21 Nov
+              </Link>
+              <div className="mt-5 flex flex-wrap justify-center gap-3">
+                <Link href="/#events" className="px-7 py-3.5 rounded-full border border-[#FBBF24]/40 bg-[#130C22] text-[#FBBF24] font-bold text-xs uppercase transition-all hover:border-[#FBBF24] hover:bg-[#FBBF24]/10">
                   Explore Events
                 </Link>
                 <Link href="/#learning" className="px-7 py-3.5 rounded-full border border-[#FBBF24]/40 bg-[#130C22] text-[#FBBF24] font-bold text-xs uppercase transition-all hover:border-[#FBBF24] hover:bg-[#FBBF24]/10">
                   Learning Hub
                 </Link>
-                <Link href="/#contact" className="px-7 py-3.5 rounded-xl bg-[#FBBF24] text-[#090511] font-semibold text-xs uppercase shadow-[0_0_20px_rgba(251,191,36,0.25)] transition-colors hover:bg-amber-300">
+                <Link href="/#contact" className="px-7 py-3.5 rounded-full border border-[#FBBF24]/40 bg-[#130C22] text-[#FBBF24] font-bold text-xs uppercase transition-all hover:border-[#FBBF24] hover:bg-[#FBBF24]/10">
                   Join Community
                 </Link>
               </div>
@@ -911,16 +921,19 @@ export default function FullySynchronizedPage() {
                       <h4 className={`relative mt-5 text-xl font-bold text-white sm:text-2xl ${index % 2 === 0 ? 'lg:text-right' : ''}`}>{event.title}</h4>
                       <p className={`relative mt-2 font-mono-jb text-xs text-[#C4A5FD] ${index % 2 === 0 ? 'lg:text-right' : ''}`}>{event.format} · All levels welcome</p>
                       <p className={`relative mt-4 max-w-xl text-sm leading-relaxed text-[#CFC5DC] ${index % 2 === 0 ? 'lg:ml-auto lg:text-right' : ''}`}>{event.description}</p>
-                      <div className={`relative mt-6 flex ${index % 2 === 0 ? 'lg:justify-end' : ''}`}>
-                        <Link
-                          href="/events/aws-student-community-day-2026/register"
-                          className="inline-flex items-center gap-2 rounded-full bg-[#FBBF24] px-5 py-2.5 text-xs font-bold text-[#090511] shadow-[0_0_20px_rgba(251,191,36,0.2)] transition hover:bg-amber-300"
-                        >
-                          <UserPlus className="size-4" aria-hidden="true" />
-                          Register Now
-                          <ExternalLink className="size-3.5" aria-hidden="true" />
-                        </Link>
-                      </div>
+                      {event.registrationUrl && (
+                        <div className={`relative mt-6 flex ${index % 2 === 0 ? 'lg:justify-end' : ''}`}>
+                          <Link
+                            href={event.registrationUrl}
+                            {...(event.registrationUrl.startsWith('/') ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
+                            className="inline-flex items-center gap-2 rounded-full bg-[#FBBF24] px-5 py-2.5 text-xs font-bold text-[#090511] shadow-[0_0_20px_rgba(251,191,36,0.2)] transition hover:bg-amber-300"
+                          >
+                            <UserPlus className="size-4" aria-hidden="true" />
+                            Register Now
+                            {!event.registrationUrl.startsWith('/') && <ExternalLink className="size-3.5" aria-hidden="true" />}
+                          </Link>
+                        </div>
+                      )}
                     </article>
                   </div>
                 ))}
@@ -1208,16 +1221,18 @@ export default function FullySynchronizedPage() {
               ))}
             </div>
           </div>
-          <Link
-            href={site.joinFormUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-10 inline-flex items-center gap-2 rounded-xl bg-[#FBBF24] px-8 py-4 text-sm font-bold uppercase tracking-wide text-[#0B0714] shadow-[0_0_20px_rgba(251,191,36,0.25)] transition-colors hover:bg-amber-300"
-          >
-            <UserPlus className="size-4" aria-hidden="true" />
-            Join the Builder Group
-            <ExternalLink className="size-3.5" aria-hidden="true" />
-          </Link>
+          {site.joinFormUrl && (
+            <Link
+              href={site.joinFormUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-10 inline-flex items-center gap-2 rounded-xl bg-[#FBBF24] px-8 py-4 text-sm font-bold uppercase tracking-wide text-[#0B0714] shadow-[0_0_20px_rgba(251,191,36,0.25)] transition-colors hover:bg-amber-300"
+            >
+              <UserPlus className="size-4" aria-hidden="true" />
+              Join the Builder Group
+              <ExternalLink className="size-3.5" aria-hidden="true" />
+            </Link>
+          )}
         </section>
       </div>
 

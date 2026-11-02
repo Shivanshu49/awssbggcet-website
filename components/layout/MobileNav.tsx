@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Menu, X } from "lucide-react";
 
 import { NAV_ITEMS } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -44,7 +45,7 @@ export function MobileNav({
             <div className="flex items-center gap-2.5">
               <div className="relative w-7 h-7 rounded-lg overflow-hidden bg-[#150E22] border border-[#A855F7]/40 flex items-center justify-center shadow-sm shrink-0">
                 <Image
-                  src="/logo/awslogo.png"
+                  src="/logo/sbg-logo.png"
                   alt="AWS Builder Center GCET Logo"
                   fill
                   className="object-cover"
@@ -72,7 +73,11 @@ export function MobileNav({
                   <DialogClose asChild>
                     <NavLink
                       href={item.href}
-                      className="block rounded-lg border-l-4 border-transparent px-3 py-3 text-base font-medium text-ink-muted hover:bg-surface-alt hover:text-ink aria-[current=page]:border-aws-orange aria-[current=page]:bg-surface-alt aria-[current=page]:text-ink"
+                      className={cn(
+                        "block rounded-lg border-l-4 border-transparent px-3 py-3 text-base font-medium text-ink-muted hover:bg-surface-alt hover:text-ink aria-[current=page]:border-aws-orange aria-[current=page]:bg-surface-alt aria-[current=page]:text-ink",
+                        item.href === "/community-day" &&
+                          "border-[#FBBF24] bg-amber-500/10 font-semibold text-aws-navy hover:bg-amber-500/20 aria-[current=page]:border-[#FBBF24] aria-[current=page]:bg-amber-500/10",
+                      )}
                     >
                       {item.label}
                     </NavLink>
@@ -95,11 +100,13 @@ export function MobileNav({
             </ul>
           </nav>
 
-          <Button asChild variant="brand" size="lg" className="mt-auto h-11">
-            <a href={joinFormUrl} target="_blank" rel="noopener noreferrer">
-              Join Club
-            </a>
-          </Button>
+          {joinFormUrl && (
+            <Button asChild variant="brand" size="lg" className="mt-auto h-11">
+              <a href={joinFormUrl} target="_blank" rel="noopener noreferrer">
+                Join Club
+              </a>
+            </Button>
+          )}
         </DialogPrimitive.Content>
       </DialogPortal>
     </Dialog>

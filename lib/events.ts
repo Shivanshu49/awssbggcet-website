@@ -41,6 +41,23 @@ export function formatEventDate(date: string) {
   return eventDateFormat.format(new Date(date));
 }
 
+const eventTimeFormat = new Intl.DateTimeFormat("en-US", {
+  hour: "numeric",
+  minute: "2-digit",
+  timeZone: "Asia/Kolkata",
+});
+
+export function formatEventTime({ date, endDate }: Event) {
+  const start = eventTimeFormat.format(new Date(date));
+  return endDate
+    ? `${start} – ${eventTimeFormat.format(new Date(endDate))} IST`
+    : `${start} IST`;
+}
+
+export function getEventBySlug(slug: string) {
+  return events.find((event) => event.slug === slug);
+}
+
 export function getUpcoming(now = new Date()): Event[] {
   return events
     .filter((event) => endsAt(event) >= now.getTime())
