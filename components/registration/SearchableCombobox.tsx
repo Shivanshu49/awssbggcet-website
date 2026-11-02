@@ -106,7 +106,7 @@ export const SearchableCombobox: React.FC<SearchableComboboxProps> = ({
     }
   };
 
-  const handleClear = (e: React.MouseEvent) => {
+  const handleClear = (e: React.SyntheticEvent) => {
     e.stopPropagation();
     onChange('');
   };
@@ -134,7 +134,11 @@ export const SearchableCombobox: React.FC<SearchableComboboxProps> = ({
               role="button"
               tabIndex={0}
               onClick={handleClear}
-              onKeyDown={(e) => e.key === 'Enter' && handleClear(e as any)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  handleClear(e);
+                }
+              }}
               className="text-gray-400 hover:text-white p-0.5 rounded transition-colors"
               title="Clear selection"
             >
