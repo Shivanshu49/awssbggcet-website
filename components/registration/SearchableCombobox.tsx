@@ -122,7 +122,7 @@ export const SearchableCombobox: React.FC<SearchableComboboxProps> = ({
         onClick={() => !disabled && setIsOpen(!isOpen)}
         className={`w-full bg-[#1A0E2A]/70 border ${
           error ? 'border-red-500/80' : isOpen ? 'border-amber-400' : 'border-[#4C2A66]/60'
-        } rounded-xl px-4 py-2.5 text-sm text-left flex items-center justify-between transition focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed`}
+        } rounded-xl px-4 py-3 text-sm text-left flex items-center justify-between transition focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed`}
       >
         <span className={`truncate ${selectedOption ? 'text-white' : 'text-white/30'}`}>
           {selectedOption ? selectedOption.label : placeholder}

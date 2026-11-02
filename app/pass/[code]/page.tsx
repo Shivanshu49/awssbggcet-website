@@ -176,6 +176,7 @@ export default async function PassPage({ params }: { params: Promise<{ code: str
   const badge = BADGES[reg.status];
   const missingBuilderId = registration.builderIdRequired && !reg.builderId;
   const builderIdEditable = reg.status === 'pending' || reg.status === 'waitlisted';
+  const notApproved = reg.status === 'rejected' || reg.status === 'cancelled';
   const hasSideColumn = schedule.length > 0;
 
   const builderIdForm = (
@@ -237,7 +238,7 @@ export default async function PassPage({ params }: { params: Promise<{ code: str
 
         <QrBlock code={code.data} reg={reg} missingBuilderId={missingBuilderId} />
 
-        {workshops.length > 0 && (
+        {workshops.length > 0 && !notApproved && (
           <InterestsForm
             code={code.data}
             workshops={workshops}

@@ -41,5 +41,5 @@ export function journeyStates(
 }
 
 export function interestsEditable(status: Registration['status'], startsAt: Date, now = new Date()) {
-  return (status !== 'pending' && status !== 'approved') || now < startsAt;
+  return (status === 'pending' || status === 'approved' || status === 'waitlisted') && now < startsAt;
 }

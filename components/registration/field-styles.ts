@@ -1,6 +1,6 @@
 export const FIELD_LABEL = 'mb-1.5 block font-mono text-xs text-[#C4B5DA]';
 export const FIELD_INPUT =
-  'w-full rounded-xl border bg-[#1A0E2A]/70 px-4 py-2.5 text-sm text-white placeholder-white/30 transition focus:border-amber-400 focus:outline-none';
+  'w-full rounded-xl border bg-[#1A0E2A]/70 px-4 py-3 text-sm text-white placeholder-white/30 transition focus:border-amber-400 focus:outline-none';
 export const FIELD_ERROR = 'mt-1 text-[11px] text-red-400';
 export const FIELD_HINT = 'mt-1 text-[11px] text-[#A89DB5]';
 

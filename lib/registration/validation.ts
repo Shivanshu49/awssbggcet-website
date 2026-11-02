@@ -43,6 +43,15 @@ const PASS_CODE_PATTERN = /^[\w-]{22}$/; // randomBytes(16) in base64url
 
 export const passCodeSchema = z.string().regex(PASS_CODE_PATTERN);
 
+// Pasted numbers often carry +91 or a leading 0. Slicing to 10 digits instead would save
+// "919812345210" as "9198123452": wrong, but valid.
+export function normalizePhone(value: string) {
+  const digits = value.replace(/\D/g, '');
+  if (digits.length === 12 && digits.startsWith('91')) return digits.slice(2);
+  if (digits.length === 11 && digits.startsWith('0')) return digits.slice(1);
+  return digits;
+}
+
 export const builderIdSchema = z
   .string(BUILDER_ID_ERROR)
   .trim()
@@ -86,7 +95,10 @@ export const detailsSchema = z.object({
 // Step 2: Contact & confirm
 export const contactSchema = z.object({
   email: emailSchema,
-  phone: z.string(PHONE_ERROR).trim().regex(/^[6-9]\d{9}$/, PHONE_ERROR),
+  phone: z
+    .string(PHONE_ERROR)
+    .transform(normalizePhone)
+    .pipe(z.string().regex(/^[6-9]\d{9}$/, PHONE_ERROR)),
   consent: z.literal(true, { error: CONSENT_ERROR }),
 });
 
@@ -95,12 +107,18 @@ export type RegistrationInput = z.output<typeof registrationSchema>;
 
 export const NONE_OF_THE_ABOVE = 'none';
 
-export const interestsSchema = z.object({
-  interests: z
-    .array(z.string())
-    .refine((list) => list.every((item) => item === NONE_OF_THE_ABOVE || workshops.includes(item))),
-  note: z.string().trim().max(500, 'Keep this under 500 characters'),
-});
+export function interestsSchemaFor(options: string[]) {
+  return z.object({
+    interests: z
+      .array(z.string())
+      .max(options.length + 1) // every workshop, plus "None of the above"
+      .refine((list) => list.every((item) => item === NONE_OF_THE_ABOVE || options.includes(item)))
+      .transform((list) => [...new Set(list)]),
+    note: z.string().trim().max(500, 'Keep this under 500 characters'),
+  });
+}
+
+export const interestsSchema = interestsSchemaFor(workshops);
 
 export function firstErrors(error: z.ZodError): Record<string, string> {
   const errors: Record<string, string> = {};

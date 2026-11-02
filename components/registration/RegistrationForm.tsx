@@ -1,6 +1,7 @@
 'use client';
 
 import { ArrowLeft, ArrowRight, Check, Loader2 } from 'lucide-react';
+import Link from 'next/link';
 import { useEffect, useRef, useState, useTransition, type ComponentProps, type FormEvent } from 'react';
 import type { z } from 'zod';
 
@@ -12,6 +13,7 @@ import {
   contactSchema,
   detailsSchema,
   firstErrors,
+  normalizePhone,
   registrationSchema,
 } from '@/lib/registration/validation';
 
@@ -29,7 +31,10 @@ import {
 import { SeatCounter } from './SeatCounter';
 import { Turnstile } from './Turnstile';
 
-const STEPS = ['Your details', 'Contact & confirm'];
+const STEPS = [
+  { label: 'Your details', description: "Tell us who's coming." },
+  { label: 'Contact & confirm', description: "We'll email your pass link to this address." },
+];
 const DETAILS_FIELDS = Object.keys(detailsSchema.shape);
 
 const errorsFor = (schema: z.ZodType, values: unknown) => {
@@ -162,36 +167,42 @@ export function RegistrationForm() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-xl text-left">
+    <div className="mx-auto w-full max-w-3xl text-left">
       <SeatCounter />
 
-      <ol className="mb-6 flex items-center gap-3" aria-label="Registration steps">
-        {STEPS.map((label, index) => {
-          const number = index + 1;
-          const done = number < step;
-          const current = number === step;
-          return (
-            <li
-              key={label}
-              aria-current={current ? 'step' : undefined}
-              className={`flex items-center gap-2 text-xs font-semibold ${current || done ? 'text-[#FBBF24]' : 'text-[#A89DB5]'}`}
-            >
-              <span
-                className={`flex size-6 shrink-0 items-center justify-center rounded-full border text-[11px] ${
-                  current || done
-                    ? 'border-[#FBBF24] bg-[#FBBF24] text-[#090511]'
-                    : 'border-[#4C2A66]/60 bg-[#150D24]'
-                }`}
+      <form ref={form} onSubmit={handleSubmit} noValidate aria-busy={isPending} className={`${CARD} flex flex-col gap-5 sm:p-10`}>
+        <ol className="flex items-center gap-3" aria-label="Registration steps">
+          {STEPS.map(({ label }, index) => {
+            const number = index + 1;
+            const done = number < step;
+            const current = number === step;
+            return (
+              <li
+                key={label}
+                aria-current={current ? 'step' : undefined}
+                className={`flex min-w-0 items-center gap-2 text-xs font-semibold not-last:flex-1 ${current || done ? 'text-[#FBBF24]' : 'text-[#A89DB5]'}`}
               >
-                {done ? <Check className="size-3.5" aria-hidden="true" /> : number}
-              </span>
-              {label}
-            </li>
-          );
-        })}
-      </ol>
+                <span
+                  className={`flex size-6 shrink-0 items-center justify-center rounded-full border text-[11px] ${
+                    current || done
+                      ? 'border-[#FBBF24] bg-[#FBBF24] text-[#090511]'
+                      : 'border-[#4C2A66]/60 bg-[#150D24]'
+                  }`}
+                >
+                  {done ? <Check className="size-3.5" aria-hidden="true" /> : number}
+                </span>
+                {label}
+                {number < STEPS.length && <span aria-hidden="true" className="ml-1 h-px min-w-4 flex-1 bg-[#4C2A66]/70" />}
+              </li>
+            );
+          })}
+        </ol>
 
-      <form ref={form} onSubmit={handleSubmit} noValidate aria-busy={isPending} className={`${CARD} flex flex-col gap-5`}>
+        <div>
+          <h2 className="text-xl font-bold text-white sm:text-2xl">{STEPS[step - 1].label}</h2>
+          <p className="mt-1 text-sm text-[#CFC5DC]">{STEPS[step - 1].description}</p>
+        </div>
+
         {step === 1 ? (
           <>
             <Field
@@ -289,10 +300,12 @@ export function RegistrationForm() {
               error={errors.builderId}
               hint="Don't have one yet? Add it later on your pass page — your pass can't be issued without it."
             />
-            <button type="submit" className={`${PRIMARY_BUTTON} self-end`}>
-              Next
-              <ArrowRight className="size-4" aria-hidden="true" />
-            </button>
+            <div className="flex justify-end border-t border-[#4C2A66]/40 pt-6">
+              <button type="submit" className={PRIMARY_BUTTON}>
+                Next
+                <ArrowRight className="size-4" aria-hidden="true" />
+              </button>
+            </div>
           </>
         ) : (
           <>
@@ -318,11 +331,11 @@ export function RegistrationForm() {
                   type="tel"
                   inputMode="numeric"
                   autoComplete="tel-national"
-                  maxLength={10}
+                  maxLength={16}
                   value={values.phone}
-                  onChange={(e) => update('phone', e.target.value.replace(/\D/g, ''))}
+                  onChange={(e) => update('phone', normalizePhone(e.target.value))}
                   aria-invalid={Boolean(errors.phone)}
-                  aria-describedby={errors.phone ? 'phone-error' : undefined}
+                  aria-describedby={errors.phone ? 'phone-error phone-hint' : 'phone-hint'}
                   className={`${FIELD_INPUT} ${fieldBorder(errors.phone)}`}
                 />
               </div>
@@ -331,7 +344,14 @@ export function RegistrationForm() {
                   {errors.phone}
                 </p>
               )}
+              <p id="phone-hint" className={FIELD_HINT}>
+                10 digits, no country code — we add +91.
+              </p>
             </div>
+            <p className="text-xs leading-relaxed text-[#A89DB5]">
+              Every registration is confirmed by our team before your pass is issued. Once it&apos;s approved, your QR
+              pass appears on your pass page and arrives by email. There&apos;s no need to register twice.
+            </p>
             <div>
               <label className="flex items-start gap-2.5 text-xs leading-relaxed text-[#CFC5DC]">
                 <input
@@ -372,7 +392,7 @@ export function RegistrationForm() {
                 {formError}
               </p>
             )}
-            <div className="flex flex-wrap justify-between gap-3">
+            <div className="flex flex-wrap justify-between gap-3 border-t border-[#4C2A66]/40 pt-6">
               <button type="button" onClick={() => setStep(1)} disabled={isPending} className={SECONDARY_BUTTON}>
                 <ArrowLeft className="size-4" aria-hidden="true" />
                 Back
@@ -385,6 +405,14 @@ export function RegistrationForm() {
           </>
         )}
       </form>
+
+      <p className="mt-4 text-center text-xs text-[#A89DB5]">
+        Already registered?{' '}
+        <Link href="/pass" className="font-semibold text-[#FBBF24] underline-offset-2 hover:underline">
+          Find my pass
+        </Link>
+        .
+      </p>
     </div>
   );
 }
