@@ -8,6 +8,7 @@ import postgres from 'postgres';
 
 import eventsData from '../content/events.json';
 import { events } from '../lib/db/schema';
+import { dbSsl } from '../lib/db/ssl';
 
 if (existsSync('.env.local')) process.loadEnvFile('.env.local');
 
@@ -37,7 +38,7 @@ const values = {
 };
 
 async function main(databaseUrl: string, eventSlug: string) {
-  const client = postgres(databaseUrl, { prepare: false, max: 1 });
+  const client = postgres(databaseUrl, { prepare: false, max: 1, ssl: dbSsl(databaseUrl) });
   const [row] = await drizzle(client)
     .insert(events)
     .values({ slug: eventSlug, ...values })

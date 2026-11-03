@@ -2,6 +2,7 @@
 // The rules that are easy to break silently: section 3a's validation, masking and journey progress.
 import assert from 'node:assert/strict';
 
+import { dbCredentials, dbSsl } from '../lib/db/ssl';
 import { eventPage } from '../lib/registration/content';
 import { interestsEditable, journeyStates, maskEmail, maskPhone } from '../lib/registration/format';
 import {
@@ -93,5 +94,30 @@ for (const status of ['pending', 'approved', 'waitlisted'] as const) {
 for (const status of ['rejected', 'cancelled'] as const) {
   assert.equal(interestsEditable(status, eventStart, before), false, status);
 }
+
+const POOLER = 'aws-0-eu-west-1.pooler.supabase.com:6543/postgres';
+assert.equal(dbSsl(`postgresql://u:p@${POOLER}`), 'require');
+assert.equal(dbSsl(`postgresql://u:p@${POOLER}?sslmode=disable`), 'require', "a URL can't turn TLS off");
+assert.equal(dbSsl(`postgresql://localhost:127.0.0.1@${POOLER}`), 'require', 'localhost in the credentials');
+assert.equal(dbSsl(undefined), 'require', 'CI builds with no URL');
+assert.equal(dbSsl('port 6543'), 'require', 'not a URL');
+assert.equal(dbSsl('postgres://postgres@127.0.0.1:55432/scd'), false);
+assert.equal(dbSsl('postgres://localhost/scd'), false);
+
+const PASSWORD = 'p@ss/w#rd%20 x:y?z';
+assert.deepEqual(
+  dbCredentials(`postgresql://postgres.ref:${encodeURIComponent(PASSWORD)}@x.pooler.supabase.com:5432/postgres`),
+  { host: 'x.pooler.supabase.com', port: 5432, user: 'postgres.ref', password: PASSWORD, database: 'postgres', ssl: 'require' },
+);
+assert.deepEqual(dbCredentials('postgres://postgres@127.0.0.1:55432/scd'), {
+  host: '127.0.0.1',
+  port: 55432,
+  user: 'postgres',
+  password: undefined,
+  database: 'scd',
+  ssl: false,
+});
+assert.equal(dbCredentials(undefined).host, '', 'no URL: migrate stops on the empty host');
+assert.equal(dbCredentials(undefined).ssl, 'require');
 
 console.log('Registration rules OK');
