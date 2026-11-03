@@ -55,7 +55,7 @@ Layout follows the reference; colours and type follow our site.
 | Header card: initials, name, college, event date, ticket no, status badge | `PENDING APPROVAL` | `PASS ISSUED` | `WAITLISTED` / `NOT APPROVED` |
 | AWS Builder ID | **missing → first block on the page:** "Add your AWS Builder ID — your pass can't be issued without it", input + Save + "Create one" link (`builderIdSignupUrl`). Present → shown, editable. | read-only | editable / hidden |
 | QR pass | locked placeholder: "Add your Builder ID" (if missing) or "Your QR appears here once approved" | QR + ticket no + **Download QR** | hidden; status message + contact email |
-| Workshop interests: toggle, checkbox grid, "None of the above", free text, Save | editable until the event | editable until the event | editable |
+| Workshop interests: toggle, checkbox grid, "None of the above", free text, Save | editable until the event | editable until the event | editable until the event / hidden |
 | Event schedule (side column) | ✓ | ✓ | ✓ |
 | FAQ | ✓ | ✓ | ✓ |
 | Your journey: steps tagged BEFORE THE DAY / AT THE VENUE; done / current / upcoming worked out from status + whether a Builder ID is saved | ✓ | ✓ | ✓ |
@@ -280,7 +280,7 @@ Migration 0001, seed script, event content file, `/community-day/register` (§3a
 *Done:* register end to end → lands on a pending pass page and gets the email; same email again creates nothing and shows no link; with capacity = 2 the third person is waitlisted and the counter says "Waitlist open"; registering without a Builder ID lands on a pass page whose first block asks for it, and saving it moves the journey on; a Builder ID already used by someone else is refused with the §7 message; flipping a row to `approved` in Drizzle Studio shows the QR and Download works; build passes without `DATABASE_URL`.
 
 **PR B — admin + approvals**
-Supabase Auth for admins, `requireAdmin`, `/admin/scd` (counts by status, capacity, meal counts, search/filter, bulk approve / waitlist / reject, CSV), pass-issued email.
+Supabase Auth for admins, `requireAdmin`, `/admin/scd` (counts by status, capacity, meal counts, search/filter, bulk approve / waitlist / reject, CSV), pass-issued email. Approve only if `builder_id` still equals what the admin saw. CSV export prefixes cells starting with `=` `+` `-` `@` with `'`.
 *Done:* status changes move `seats_taken` exactly as in §7's table; rows without a Builder ID can't be approved and bulk approve reports them as skipped; the Builder ID reminder skips anyone reminded in the last 24 h; approved people get the QR email; non-admins get 404 on every `/admin` route.
 
 **PR C — check-in**
@@ -291,13 +291,16 @@ Target: PR A merged and registration open by ~5 Nov; PR B by ~7 Nov; PR C by ~15
 
 ## 11. Launch checklist
 
-- [ ] Privacy notice and event policies live and reviewed
+- [ ] Privacy notice and event policies text written before opening, live and reviewed (then remove their `noindex`)
+- [ ] Turnstile keys in Vercel before the build that opens registration (the register and find-my-pass pages decide open/closed at build time)
+- [ ] Turnstile hostnames: only `awssbggcet.com` and `www.awssbggcet.com`
 - [ ] Resend domain verified; test emails reach Gmail, Outlook and a college inbox (not spam)
 - [ ] Email volume plan settled (free 100/day vs paid for November)
 - [ ] Vercel region `bom1`; every env var set for Production
 - [ ] Seed script run; capacity correct; `registration.open` true
 - [ ] Dry run: register → pending page → approve → QR email → scan → second scan shows "already checked in"
 - [ ] Night before: export CSV and print it as the desk's offline fallback
+- [ ] Once registration opens, .env.local never points at production. PR B/C testing uses a local Postgres.
 
 ## 12. Inputs still needed
 

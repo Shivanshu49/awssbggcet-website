@@ -8,6 +8,7 @@ export default defineConfig({
   schema: "./lib/db/schema.ts",
   out: "./drizzle",
   dialect: "postgresql",
-  // Direct connection (5432): the transaction pooler breaks on DDL.
+  // Session pooler (5432): the transaction pooler breaks on DDL, and the
+  // Direct connection is IPv6-only.
   dbCredentials: { url: process.env.DIRECT_URL! },
 });

@@ -22,11 +22,14 @@ async function send(to: string, subject: string, paragraphs: string[], passCode:
     return;
   }
   const link = `${SITE_URL}/pass/${passCode}`;
+  const port = Number(SMTP_PORT) || 587;
   try {
     await nodemailer
       .createTransport({
         host: SMTP_HOST,
-        port: Number(SMTP_PORT) || 587,
+        port,
+        secure: port === 465,
+        requireTLS: port !== 465,
         auth: SMTP_USER ? { user: SMTP_USER, pass: SMTP_PASS } : undefined,
       })
       .sendMail({
