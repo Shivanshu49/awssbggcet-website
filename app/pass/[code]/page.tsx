@@ -34,6 +34,7 @@ export const metadata: Metadata = {
 
 const BADGES: Record<Registration['status'], { label: string; className: string }> = {
   pending: { label: 'PENDING APPROVAL', className: 'border-[#FBBF24]/50 bg-[#FBBF24]/10 text-[#FBBF24]' },
+  payment_submitted: { label: 'PAYMENT SUBMITTED', className: 'border-[#FBBF24]/50 bg-[#FBBF24]/10 text-[#FBBF24]' },
   approved: { label: 'PASS ISSUED', className: 'border-emerald-400/50 bg-emerald-400/10 text-emerald-300' },
   waitlisted: { label: 'WAITLISTED', className: 'border-[#A855F7]/60 bg-[#A855F7]/10 text-[#D8B4FE]' },
   rejected: { label: 'NOT APPROVED', className: 'border-red-500/50 bg-red-950/40 text-red-300' },

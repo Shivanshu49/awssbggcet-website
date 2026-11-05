@@ -13,6 +13,9 @@ type EventPage = {
   registration: {
     open: boolean;
     capacity: number; // 0 = not set yet: the seed script writes NULL
+    fee: number; // whole rupees; the only place the amount is stored
+    upiId: string;
+    upiQr: string; // path under public/, a QR with no preset amount
     collectMeal: boolean;
     builderIdRequired: boolean;
     builderIdSignupUrl: string;

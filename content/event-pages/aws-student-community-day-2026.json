@@ -2,6 +2,9 @@
   "registration": {
     "open": false,
     "capacity": 0,
+    "fee": 45,
+    "upiId": "",
+    "upiQr": "",
     "collectMeal": true,
     "builderIdRequired": true,
     "builderIdSignupUrl": "",

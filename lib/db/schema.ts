@@ -42,9 +42,10 @@ export const submissionType = pgEnum("submission_type", [
 ]);
 export const registrationStatus = pgEnum("registration_status", [
   "pending",
+  "payment_submitted",
   "approved",
   "waitlisted",
-  "rejected",
+  "rejected", // Unused since PR B. Postgres can't drop an enum value without rebuilding the type.
   "cancelled",
 ]);
 export const mealPref = pgEnum("meal_pref", ["veg", "non_veg", "jain"]);
@@ -90,7 +91,7 @@ export const events = pgTable(
     venue: text("venue"),
     coverKey: text("cover_key"),
     capacity: integer("capacity"),
-    seatsTaken: integer("seats_taken").notNull().default(0), // = pending + approved, changed atomically
+    seatsTaken: integer("seats_taken").notNull().default(0), // = pending + payment_submitted + approved, changed atomically
     registrationOpen: boolean("registration_open").notNull().default(true),
     published: boolean("published").notNull().default(false),
     createdAt: createdAt(),
@@ -120,7 +121,7 @@ export const registrations = pgTable(
     mealPref: mealPref("meal_pref"),
     interests: text("interests").array().notNull().default([]),
     interestsNote: text("interests_note"),
-    builderId: text("builder_id"), // Builder Center alias, lowercase; required before approval
+    builderId: text("builder_id"), // Builder Center alias, lowercase; required before the Pay box appears
     consentVersion: text("consent_version").notNull(),
     consentedAt: timestamp("consented_at", { withTimezone: true }).notNull(),
     approvedAt: timestamp("approved_at", { withTimezone: true }),
@@ -129,6 +130,11 @@ export const registrations = pgTable(
     checkedInBy: text("checked_in_by"),
     linkSentAt: timestamp("link_sent_at", { withTimezone: true }), // rate limit for "find my pass"
     remindedAt: timestamp("reminded_at", { withTimezone: true }), // rate limit for the Builder ID reminder
+    utr: text("utr"), // exactly 12 digits; from the Pay box
+    payerName: text("payer_name"), // payer's UPI name, for the manual check
+    utrSubmittedAt: timestamp("utr_submitted_at", { withTimezone: true }),
+    seatHeldAt: timestamp("seat_held_at", { withTimezone: true }), // when the seat was gained; starts the 48-hour clock
+    deadlineRemindedAt: timestamp("deadline_reminded_at", { withTimezone: true }), // sends the 24-hour reminder once per seat hold
     createdAt: createdAt(),
     updatedAt: timestamp("updated_at", { withTimezone: true })
       .notNull()
@@ -144,6 +150,10 @@ export const registrations = pgTable(
     uniqueIndex("registrations_event_id_builder_id_key")
       .on(t.eventId, t.builderId)
       .where(sql`${t.builderId} IS NOT NULL`),
+    // One UTR, one pass. Submitting one relies on this to refuse duplicates.
+    uniqueIndex("registrations_event_id_utr_key")
+      .on(t.eventId, t.utr)
+      .where(sql`${t.utr} IS NOT NULL`),
   ],
 ).enableRLS();
 
