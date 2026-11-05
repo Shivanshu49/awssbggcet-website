@@ -1,10 +1,10 @@
 {
   "registration": {
-    "open": false,
-    "capacity": 0,
+    "open": true,
+    "capacity": 200,
     "fee": 45,
-    "upiId": "",
-    "upiQr": "",
+    "upiId": "9289850019@ptaxis",
+    "upiQr": "/scd/upi-qr.png",
     "collectMeal": true,
     "builderIdRequired": true,
     "builderIdSignupUrl": "",
