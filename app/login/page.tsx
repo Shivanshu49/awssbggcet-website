@@ -35,7 +35,7 @@ export default function LoginPage() {
         {/* Action Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Card 1: Already Registered */}
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 sm:p-8 flex flex-col justify-between hover:border-purple-500/40 transition-colors backdrop-blur-sm">
+          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 sm:p-8 flex flex-col justify-between hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)] hover:-translate-y-1 transition-all duration-300 backdrop-blur-sm">
             <div className="space-y-4">
               <div className="h-12 w-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
                 <Ticket className="w-6 h-6" />
@@ -52,7 +52,7 @@ export default function LoginPage() {
             <div className="pt-6">
               <Link
                 href="/pass"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-medium px-5 py-3 transition-colors text-sm shadow-lg shadow-purple-600/20 group"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-medium px-5 py-3 transition-all duration-200 text-sm shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:shadow-[0_0_25px_rgba(168,85,247,0.65)] hover:scale-[1.02] active:scale-[0.98] border border-purple-400/30 hover:border-purple-300 group cursor-pointer"
               >
                 <span>Find My Pass</span>
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -61,7 +61,7 @@ export default function LoginPage() {
           </div>
 
           {/* Card 2: Not Registered Yet */}
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 sm:p-8 flex flex-col justify-between hover:border-amber-500/50 hover:shadow-[0_0_30px_rgba(251,191,36,0.12)] transition-all duration-300 backdrop-blur-sm relative">
+          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 sm:p-8 flex flex-col justify-between hover:border-amber-500/60 hover:shadow-[0_0_30px_rgba(251,191,36,0.2)] hover:-translate-y-1 transition-all duration-300 backdrop-blur-sm relative">
             <div className="absolute top-4 right-4 sm:top-5 sm:right-5">
               <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-extrabold tracking-wider uppercase px-3.5 py-1.5 rounded-full bg-[#090c15]/95 border-2 border-amber-400 text-white shadow-[0_0_16px_rgba(251,191,36,0.75),inset_0_0_8px_rgba(251,191,36,0.25)]">
                 <span>₹45 ONLY</span>
@@ -93,7 +93,7 @@ export default function LoginPage() {
             <div className="pt-6">
               <Link
                 href="/community-day/register"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-semibold px-5 py-3 transition-colors text-sm shadow-lg shadow-amber-400/10 group"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-bold px-5 py-3 transition-all duration-200 text-sm shadow-[0_0_18px_rgba(251,191,36,0.35)] hover:shadow-[0_0_30px_rgba(251,191,36,0.7)] hover:scale-[1.02] active:scale-[0.98] border border-amber-300/60 hover:border-amber-200 group cursor-pointer"
               >
                 <span>Register for Community Day</span>
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
