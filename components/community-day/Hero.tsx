@@ -79,13 +79,12 @@ export function Hero() {
         </div>
 
         {/* Nominal Fee Callout */}
-        <div className="pt-1">
-          <span className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full bg-slate-900/90 border border-amber-400/30 text-amber-300 shadow-sm">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400" />
-            </span>
-            <span>Registration Fee: {hero.fee} • Auditorium Pass</span>
+        <div className="pt-2">
+          <span className="inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold tracking-wider uppercase px-4 py-1.5 rounded-full bg-[#090c15]/95 border-2 border-amber-400 text-white shadow-[0_0_16px_rgba(251,191,36,0.75),inset_0_0_8px_rgba(251,191,36,0.25)]">
+            <span className="text-amber-400">₹45 ONLY</span>
+            <span className="text-slate-500">•</span>
+            <span className="text-slate-200 tracking-normal font-medium">Auditorium Pass</span>
+            <span className="text-amber-300 text-xs">✦</span>
           </span>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles, Ticket } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import data from "@/content/community-day.json";
 
 export function FinalCTA() {
@@ -29,9 +29,11 @@ export function FinalCTA() {
 
         {/* Highlighted Price Tag */}
         <div className="pt-2">
-          <span className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold px-4 py-1.5 rounded-full bg-amber-400/15 border border-amber-400/40 text-amber-300">
-            <Ticket className="w-4 h-4 text-amber-400" />
-            <span>{finalCTA.fee} • Auditorium Pass</span>
+          <span className="inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold tracking-wider uppercase px-4 py-1.5 rounded-full bg-[#090c15]/95 border-2 border-amber-400 text-white shadow-[0_0_16px_rgba(251,191,36,0.75),inset_0_0_8px_rgba(251,191,36,0.25)]">
+            <span className="text-amber-400">₹45 ONLY</span>
+            <span className="text-slate-500">•</span>
+            <span className="text-slate-200 tracking-normal font-medium">Auditorium Entry Pass</span>
+            <span className="text-amber-300 text-xs">✦</span>
           </span>
         </div>
 

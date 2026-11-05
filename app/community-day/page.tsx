@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/community-day/Hero";
-import { SubNav } from "@/components/community-day/SubNav";
 import { InfoCards } from "@/components/community-day/InfoCards";
 import { About } from "@/components/community-day/About";
 import { Highlights } from "@/components/community-day/Highlights";
@@ -21,7 +20,6 @@ export default function CommunityDayPage() {
   return (
     <main className="min-h-screen bg-[#07090e] text-slate-100 overflow-x-hidden selection:bg-amber-400 selection:text-black">
       <Hero />
-      <SubNav />
       <InfoCards />
       <About />
       <Highlights />
