@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Ticket, UserPlus, Mail, ArrowRight } from "lucide-react";
+import { Ticket, UserPlus, Mail, ArrowRight, Sparkles } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Pass Access & Registration | AWS Student Community Day 2026",
@@ -61,10 +61,11 @@ export default function LoginPage() {
           </div>
 
           {/* Card 2: Not Registered Yet */}
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 sm:p-8 flex flex-col justify-between hover:border-amber-500/40 transition-colors backdrop-blur-sm relative">
-            <div className="absolute top-4 right-4">
-              <span className="text-[11px] font-bold tracking-wide uppercase px-2.5 py-0.5 rounded-full bg-amber-400 text-black">
-                ₹45 only
+          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 sm:p-8 flex flex-col justify-between hover:border-amber-500/50 hover:shadow-[0_0_30px_rgba(251,191,36,0.12)] transition-all duration-300 backdrop-blur-sm relative">
+            <div className="absolute top-4 right-4 sm:top-5 sm:right-5">
+              <span className="inline-flex items-center gap-1.5 text-xs font-extrabold tracking-wider uppercase px-3 py-1 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-[0_0_18px_rgba(251,191,36,0.45)] ring-2 ring-amber-300/40">
+                <Sparkles className="w-3.5 h-3.5 fill-slate-950 text-slate-950" />
+                <span>₹45 ONLY</span>
               </span>
             </div>
             <div className="space-y-4">
@@ -75,9 +76,13 @@ export default function LoginPage() {
                 <h2 className="text-xl font-bold text-white">
                   Not registered yet?
                 </h2>
-                <span className="text-xs font-semibold text-amber-400">
-                  ₹45 per participant
-                </span>
+                <div className="inline-flex items-center gap-2 mt-2 px-2.5 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-400 text-xs font-semibold">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400" />
+                  </span>
+                  <span>₹45 per participant</span>
+                </div>
               </div>
               <p className="text-sm text-slate-400 leading-relaxed">
                 Reserve your seat for keynote sessions, hands-on workshops,
