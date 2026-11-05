@@ -1,0 +1,29 @@
+name: Release SCD seats
+
+# Hourly: releases unpaid seats past 48 hours and sends the 24-hour reminder. See
+# docs/scd-registration-plan.md section 7. GitHub only runs schedules from the default branch,
+# so this does nothing until it's merged, and nothing after that until CRON_SECRET is set.
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  release-seats:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Call the release job
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SITE_URL: https://www.awssbggcet.com
+        run: |
+          if [ -z "$CRON_SECRET" ]; then
+            echo "::notice::CRON_SECRET isn't set, so the release job was skipped."
+            exit 0
+          fi
+          curl --fail-with-body --silent --show-error --max-time 120 \
+            -X POST -H "Authorization: Bearer $CRON_SECRET" \
+            "$SITE_URL/api/cron/release-seats"

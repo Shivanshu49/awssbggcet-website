@@ -13,6 +13,7 @@ import { events, registrations } from '@/lib/db/schema';
 import { EVENT_SLUG, eventPage } from './content';
 import { sendPassLink, sendRegistrationReceived } from './email';
 import { interestsEditable } from './format';
+import { submitUtr, takeSeat } from './seats';
 import { verifyTurnstile } from './turnstile';
 import {
   BUILDER_ID_TAKEN,
@@ -21,7 +22,9 @@ import {
   firstErrors,
   interestsSchema,
   passCodeSchema,
+  paymentSchema,
   registrationSchema,
+  UTR_TAKEN,
   type RegistrationInput,
 } from './validation';
 
@@ -40,6 +43,7 @@ const CODE_CONSTRAINTS = [
   'registrations_checkin_code_unique',
 ];
 const BUILDER_ID_INDEX = 'registrations_event_id_builder_id_key';
+const UTR_INDEX = 'registrations_event_id_utr_key';
 
 // Drizzle wraps the driver's error, so the Postgres details sit on `cause`.
 function pgError(err: unknown): { code?: string; constraint_name?: string } {
@@ -57,7 +61,7 @@ const getEvent = async () =>
       .limit(1)
   )[0];
 
-// Returns the new pass code, or null if this email is already registered.
+// Returns the new pass, or null if this email is already registered.
 async function insertRegistration(eventId: string, input: RegistrationInput) {
   for (let attempt = 1; ; attempt++) {
     try {
@@ -85,25 +89,14 @@ async function insertRegistration(eventId: string, input: RegistrationInput) {
           .returning({ id: registrations.id, passCode: registrations.passCode });
         if (!row) return null;
 
-        // One conditional UPDATE is atomic, so a rush of sign-ups can't pass capacity,
-        // and a duplicate attempt (above) never touches a seat.
-        const [seat] = await tx
-          .update(events)
-          .set({ seatsTaken: sql`${events.seatsTaken} + 1` })
-          .where(
-            and(
-              eq(events.id, eventId),
-              or(isNull(events.capacity), lt(events.seatsTaken, events.capacity)),
-            ),
-          )
-          .returning({ id: events.id });
-        if (!seat) {
-          await tx
-            .update(registrations)
-            .set({ status: 'waitlisted' })
-            .where(eq(registrations.id, row.id));
-        }
-        return row.passCode;
+        // A duplicate attempt (above) never touches a seat.
+        const hasSeat = await takeSeat(tx, eventId);
+        const [held] = await tx
+          .update(registrations)
+          .set(hasSeat ? { seatHeldAt: sql`now()` } : { status: 'waitlisted' })
+          .where(eq(registrations.id, row.id))
+          .returning({ seatHeldAt: registrations.seatHeldAt });
+        return { passCode: row.passCode, seatHeldAt: held.seatHeldAt };
       });
     } catch (err) {
       if (attempt >= 5 || !CODE_CONSTRAINTS.includes(pgError(err).constraint_name ?? '')) throw err;
@@ -143,14 +136,14 @@ export async function register(input: unknown, turnstileToken: unknown): Promise
   if (!parsed.success) return { fieldErrors: firstErrors(parsed.error) };
   const data = parsed.data;
 
-  let passCode: string | null;
+  let created: Awaited<ReturnType<typeof insertRegistration>>;
   try {
     const event = await getEvent();
     if (!eventPage.registration.open || !event?.registrationOpen) {
       return { formError: "Registration isn't open right now." };
     }
-    passCode = await insertRegistration(event.id, data);
-    if (passCode === null) {
+    created = await insertRegistration(event.id, data);
+    if (created === null) {
       await emailPassLink(event.id, data.email);
       return { notice: "This email is already registered — we've emailed your pass link." };
     }
@@ -161,9 +154,9 @@ export async function register(input: unknown, turnstileToken: unknown): Promise
     return { formError: GENERIC_ERROR };
   }
 
-  const newPassCode = passCode;
-  after(() => sendRegistrationReceived(data.email, data.name, newPassCode));
-  redirect(`/pass/${newPassCode}`);
+  const { passCode, seatHeldAt } = created;
+  after(() => sendRegistrationReceived(data.email, data.name, passCode, seatHeldAt));
+  redirect(`/pass/${passCode}`);
 }
 
 export type FindPassResult = { fieldError?: string; formError?: string; sent?: boolean };
@@ -185,7 +178,7 @@ export async function findMyPass(email: unknown, turnstileToken: unknown): Promi
   }
 }
 
-// The pass code is the key: these two actions change only the row it opens.
+// The pass code is the key: these three actions change only the row it opens.
 export async function saveBuilderId(code: unknown, value: unknown): Promise<{ error?: string }> {
   const passCode = passCodeSchema.safeParse(code);
   const builderId = builderIdSchema.safeParse(value);
@@ -194,7 +187,8 @@ export async function saveBuilderId(code: unknown, value: unknown): Promise<{ er
   if (!passCode.success) return { error: locked };
 
   try {
-    // Locked once approved. Rejected and cancelled passes don't show this field at all.
+    // Locked once a UTR is submitted. Cancelled passes don't show this field at all.
+    // Never touches seat_held_at, so saving a Builder ID can't move the deadline.
     const rows = await db
       .update(registrations)
       .set({ builderId: builderId.data })
@@ -211,6 +205,27 @@ export async function saveBuilderId(code: unknown, value: unknown): Promise<{ er
     if (constraint === BUILDER_ID_INDEX) return { error: BUILDER_ID_TAKEN };
     console.error('[builder-id] failed:', pgCode ?? 'unknown');
     return { error: GENERIC_ERROR };
+  }
+  revalidatePath(`/pass/${passCode.data}`);
+  return {};
+}
+
+export type PaymentResult = { fieldErrors?: Record<string, string>; formError?: string };
+
+export async function submitPayment(code: unknown, input: unknown): Promise<PaymentResult> {
+  const passCode = passCodeSchema.safeParse(code);
+  const parsed = paymentSchema.safeParse(input);
+  if (!parsed.success) return { fieldErrors: firstErrors(parsed.error) };
+  const closed = "This pass can't take a payment any more — contact us.";
+  if (!passCode.success) return { formError: closed };
+
+  try {
+    if (!(await submitUtr(db, { passCode: passCode.data, ...parsed.data }))) return { formError: closed };
+  } catch (err) {
+    const { code: pgCode, constraint_name: constraint } = pgError(err);
+    if (constraint === UTR_INDEX) return { fieldErrors: { utr: UTR_TAKEN } };
+    console.error('[payment] failed:', pgCode ?? 'unknown');
+    return { formError: GENERIC_ERROR };
   }
   revalidatePath(`/pass/${passCode.data}`);
   return {};

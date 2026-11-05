@@ -9,17 +9,22 @@ import { BuilderIdForm } from '@/components/registration/BuilderIdForm';
 import { EventFaq, EventSchedule } from '@/components/registration/EventInfo';
 import { CARD, CARD_TITLE, SECONDARY_BUTTON } from '@/components/registration/field-styles';
 import { InterestsForm } from '@/components/registration/InterestsForm';
+import { PayBox } from '@/components/registration/PayBox';
 import site from '@/content/site.json';
 import { db } from '@/lib/db';
 import { events, registrations, type Registration } from '@/lib/db/schema';
 import { formatEventDate, getEventBySlug } from '@/lib/events';
 import { EVENT_SLUG, eventPage, type JourneyItem } from '@/lib/registration/content';
 import {
+  formatDeadline,
   initials,
   interestsEditable,
   journeyStates,
   maskEmail,
   maskPhone,
+  maskUtr,
+  seatDeadline,
+  SEAT_RULE,
   type JourneyState,
 } from '@/lib/registration/format';
 import { passCodeSchema } from '@/lib/registration/validation';
@@ -33,11 +38,12 @@ export const metadata: Metadata = {
 };
 
 const BADGES: Record<Registration['status'], { label: string; className: string }> = {
-  pending: { label: 'PENDING APPROVAL', className: 'border-[#FBBF24]/50 bg-[#FBBF24]/10 text-[#FBBF24]' },
+  pending: { label: 'PAYMENT PENDING', className: 'border-[#FBBF24]/50 bg-[#FBBF24]/10 text-[#FBBF24]' },
+  payment_submitted: { label: 'PAYMENT SUBMITTED', className: 'border-[#FBBF24]/50 bg-[#FBBF24]/10 text-[#FBBF24]' },
   approved: { label: 'PASS ISSUED', className: 'border-emerald-400/50 bg-emerald-400/10 text-emerald-300' },
   waitlisted: { label: 'WAITLISTED', className: 'border-[#A855F7]/60 bg-[#A855F7]/10 text-[#D8B4FE]' },
   rejected: { label: 'NOT APPROVED', className: 'border-red-500/50 bg-red-950/40 text-red-300' },
-  cancelled: { label: 'NOT APPROVED', className: 'border-red-500/50 bg-red-950/40 text-red-300' },
+  cancelled: { label: 'CANCELLED', className: 'border-red-500/50 bg-red-950/40 text-red-300' },
 };
 
 const PHASES: { phase: JourneyItem['phase']; label: string }[] = [
@@ -128,7 +134,7 @@ function QrBlock({ code, reg, missingBuilderId }: { code: string; reg: Registrat
       </section>
     );
   }
-  if (reg.status === 'pending') {
+  if (reg.status === 'pending' || reg.status === 'payment_submitted') {
     return (
       <section aria-labelledby="qr-heading" className={`${CARD} flex flex-col items-center py-8 text-center`}>
         <h2 id="qr-heading" className={CARD_TITLE}>
@@ -136,7 +142,7 @@ function QrBlock({ code, reg, missingBuilderId }: { code: string; reg: Registrat
         </h2>
         <Lock className="mt-4 size-8 text-[#4C2A66]" aria-hidden="true" />
         <p className="mt-3 text-sm text-[#CFC5DC]">
-          {missingBuilderId ? 'Add your Builder ID' : 'Your QR appears here once approved'}
+          {missingBuilderId ? 'Add your Builder ID' : 'Your QR appears here once your payment is confirmed'}
         </p>
       </section>
     );
@@ -145,9 +151,8 @@ function QrBlock({ code, reg, missingBuilderId }: { code: string; reg: Registrat
     <section className={CARD}>
       <p className="text-sm leading-relaxed text-[#CFC5DC]">
         {reg.status === 'waitlisted'
-          ? "You're on the waitlist. Your QR appears here if a seat opens up."
-          : "This registration wasn't approved."}{' '}
-        Questions? Email{' '}
+          ? "You're on the waitlist. If a seat opens, you'll have 48 hours to add your Builder ID and pay. Questions? Email "
+          : 'This registration is cancelled. Want your seat back, or already paid? Email '}
         <a href={`mailto:${site.email}`} className="text-[#FBBF24] underline-offset-2 hover:underline">
           {site.email}
         </a>
@@ -176,7 +181,7 @@ export default async function PassPage({ params }: { params: Promise<{ code: str
   const badge = BADGES[reg.status];
   const missingBuilderId = registration.builderIdRequired && !reg.builderId;
   const builderIdEditable = reg.status === 'pending' || reg.status === 'waitlisted';
-  const notApproved = reg.status === 'rejected' || reg.status === 'cancelled';
+  const closed = reg.status === 'rejected' || reg.status === 'cancelled';
   const hasSideColumn = schedule.length > 0;
 
   const builderIdForm = (
@@ -195,8 +200,6 @@ export default async function PassPage({ params }: { params: Promise<{ code: str
       }`}
     >
       <div className="flex min-w-0 flex-col gap-5">
-        {builderIdEditable && missingBuilderId && builderIdForm}
-
         <section aria-label="Pass details" className={`${CARD} flex flex-wrap items-start gap-4`}>
           <span
             aria-hidden="true"
@@ -224,10 +227,16 @@ export default async function PassPage({ params }: { params: Promise<{ code: str
           <span className={`rounded-full border px-3 py-1.5 font-mono text-[10px] font-bold tracking-wide ${badge.className}`}>
             {badge.label}
           </span>
+          {reg.status === 'pending' && reg.seatHeldAt && (
+            <div className="basis-full rounded-xl border border-[#FBBF24]/40 bg-[#FBBF24]/10 px-4 py-3 text-sm text-[#FDE68A]">
+              <p>{SEAT_RULE}</p>
+              <p className="mt-1 font-semibold text-white">Deadline: {formatDeadline(seatDeadline(reg.seatHeldAt))}</p>
+            </div>
+          )}
         </section>
 
-        {builderIdEditable && !missingBuilderId && builderIdForm}
-        {reg.status === 'approved' && reg.builderId && (
+        {builderIdEditable && builderIdForm}
+        {(reg.status === 'approved' || reg.status === 'payment_submitted') && reg.builderId && (
           <section aria-labelledby="builder-id-heading" className={CARD}>
             <h2 id="builder-id-heading" className={CARD_TITLE}>
               AWS Builder ID
@@ -236,9 +245,22 @@ export default async function PassPage({ params }: { params: Promise<{ code: str
           </section>
         )}
 
+        {reg.status === 'pending' && reg.builderId && (
+          <PayBox code={code.data} fee={registration.fee} upiId={registration.upiId} upiQr={registration.upiQr} />
+        )}
+        {reg.status === 'payment_submitted' && reg.utr && (
+          <section aria-labelledby="payment-heading" className={CARD}>
+            <h2 id="payment-heading" className={CARD_TITLE}>
+              Payment submitted
+            </h2>
+            <p className="mt-2 text-sm text-[#CFC5DC]">We&apos;ll email your pass once it&apos;s confirmed.</p>
+            <p className="mt-2 font-mono text-xs text-[#E9D5FF]">UTR {maskUtr(reg.utr)}</p>
+          </section>
+        )}
+
         <QrBlock code={code.data} reg={reg} missingBuilderId={missingBuilderId} />
 
-        {workshops.length > 0 && !notApproved && (
+        {workshops.length > 0 && !closed && (
           <InterestsForm
             code={code.data}
             workshops={workshops}

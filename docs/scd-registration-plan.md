@@ -17,7 +17,7 @@ Supersedes the auth row in `docs/backend-plan.md` §1.
             ▼
 /pass/<pass_code>           the attendee's own pass page — bookmarkable
     + email: "Registration received" with the pass link
-    no Builder ID yet → "Add your AWS Builder ID" is the first block on the page
+    no Builder ID yet → "Add your AWS Builder ID" is the first block after the header card
 
 Pay box on the pass page: appears when the Builder ID is saved AND the status is PENDING
             club UPI QR + UPI ID, pay exactly registration.fee
@@ -63,7 +63,7 @@ Layout follows the reference; colours and type follow our site.
 |---|---|---|---|---|
 | Header card: initials, name, college, event date, ticket no, status badge | `PAYMENT PENDING` | `PAYMENT SUBMITTED` | `PASS ISSUED` | `WAITLISTED` / `CANCELLED` |
 | Deadline in the header card, visible before the Builder ID block: "Add your Builder ID and pay within 48 hours, or the seat goes to the waitlist." + the date and time (`seat_held_at` + 48 hours) | ✓ | hidden | hidden | hidden |
-| AWS Builder ID | **missing → first block on the page:** "Add your AWS Builder ID — your pass can't be issued without it", input + Save + "Create one" link (`builderIdSignupUrl`). Present → shown, editable. | read-only | read-only | editable / hidden |
+| AWS Builder ID | **missing → first block after the header card:** "Add your AWS Builder ID — your pass can't be issued without it", input + Save + "Create one" link (`builderIdSignupUrl`). Present → shown, editable. | read-only | read-only | editable / hidden |
 | Pay box | shown once a Builder ID is saved | hidden; "Payment submitted. We'll email your pass once it's confirmed." | hidden | hidden |
 | QR pass | locked placeholder: "Add your Builder ID" (if missing) or "Your QR appears here once your payment is confirmed" | same locked placeholder | QR + ticket no + **Download QR** | hidden; status message + contact email |
 | Workshop interests: toggle, checkbox grid, "None of the above", free text, Save | editable until the event | editable until the event | editable until the event | editable until the event / hidden |
@@ -354,7 +354,7 @@ Students hand us name, email, phone, college and, when they pay, a UTR and UPI n
 |---|---|
 | Resend: verify `awssbggcet.com` (DNS records), create SMTP credentials | Shivanshu |
 | Cloudflare Turnstile site for `awssbggcet.com` | Shivanshu |
-| Supabase Auth (needed for PR B): Email provider on, OTP length 6, expiry 600 s, custom SMTP = Resend, `{{ .Token }}` in both "Magic Link" and "Confirm signup" templates, email rate limit raised | Shivanshu |
+| Supabase Auth (needed for PR B): Email provider on, "Confirm email" on (the admin check trusts the account's email, so nobody may hold an unconfirmed one), OTP length 6, expiry 600 s, custom SMTP = Resend, `{{ .Token }}` in both "Magic Link" and "Confirm signup" templates, email rate limit raised | Shivanshu |
 | Vercel: function region `bom1`; env vars below in Production | Shivanshu |
 | Event content: capacity, schedule, workshops, FAQs, journey text | content team |
 | Club UPI ID and a QR image with no preset amount (`upiId`, `upiQr`) | leads |
@@ -370,7 +370,7 @@ SMTP_HOST  SMTP_PORT  SMTP_USER  SMTP_PASS  EMAIL_FROM
 NEXT_PUBLIC_TURNSTILE_SITE_KEY
 TURNSTILE_SECRET_KEY
 NEXT_PUBLIC_SUPABASE_URL           # PR B
-NEXT_PUBLIC_SUPABASE_ANON_KEY      # PR B
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY  # PR B
 ADMIN_EMAILS                       # PR B, comma-separated
 CRON_SECRET                        # PR B
 ```

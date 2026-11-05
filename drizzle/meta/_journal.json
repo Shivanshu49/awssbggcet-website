@@ -15,6 +15,13 @@
       "when": 1793636349155,
       "tag": "0001_pretty_goblin_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793843564822,
+      "tag": "0002_scd_payments",
+      "breakpoints": true
     }
   ]
 }

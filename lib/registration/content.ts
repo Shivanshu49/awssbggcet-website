@@ -1,6 +1,6 @@
 import data from '@/content/event-pages/aws-student-community-day-2026.json';
 
-export type JourneyStep = 'registered' | 'builder_id' | 'approved' | 'checked_in';
+export type JourneyStep = 'registered' | 'builder_id' | 'paid' | 'approved' | 'checked_in';
 
 export type JourneyItem = {
   phase: 'before' | 'venue';
@@ -13,6 +13,9 @@ type EventPage = {
   registration: {
     open: boolean;
     capacity: number; // 0 = not set yet: the seed script writes NULL
+    fee: number; // whole rupees; the only place the amount is stored
+    upiId: string;
+    upiQr: string; // path under public/, a QR with no preset amount
     collectMeal: boolean;
     builderIdRequired: boolean;
     builderIdSignupUrl: string;

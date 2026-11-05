@@ -1,17 +1,15 @@
 import { eq } from 'drizzle-orm';
-import QRCode from 'qrcode';
 
-import { SITE_URL } from '@/lib/constants';
 import { db } from '@/lib/db';
 import { registrations } from '@/lib/db/schema';
+import { checkinQrPng } from '@/lib/registration/qr';
 import { passCodeSchema } from '@/lib/registration/validation';
 
 export const dynamic = 'force-dynamic';
 
 const notFound = () => new Response('Not found', { status: 404 });
 
-// Issued passes only. The QR carries checkin_code, never pass_code, so a QR seen
-// over a shoulder can't open or edit the pass.
+// Issued passes only.
 export async function GET(_req: Request, { params }: { params: Promise<{ code: string }> }) {
   const code = passCodeSchema.safeParse((await params).code);
   if (!code.success) return notFound();
@@ -23,7 +21,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ code: s
     .limit(1);
   if (row?.status !== 'approved') return notFound();
 
-  const png = await QRCode.toBuffer(`${SITE_URL}/admin/checkin?c=${row.checkinCode}`, { width: 512, margin: 2 });
+  const png = await checkinQrPng(row.checkinCode);
   return new Response(new Uint8Array(png), {
     headers: {
       'Content-Type': 'image/png',

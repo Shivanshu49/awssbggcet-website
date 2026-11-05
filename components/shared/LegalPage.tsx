@@ -3,9 +3,12 @@ import path from 'node:path';
 
 import { marked } from 'marked';
 
+import { eventPage } from '@/lib/registration/content';
+
 // Rendered at build time from repo-authored files, so the HTML is trusted and the page stays static.
 export async function LegalPage({ title, file }: { title: string; file: string }) {
-  const markdown = await readFile(path.join(process.cwd(), 'content/legal', file), 'utf8');
+  const source = await readFile(path.join(process.cwd(), 'content/legal', file), 'utf8');
+  const markdown = source.replaceAll('{{fee}}', String(eventPage.registration.fee));
   return (
     <article className="mx-auto max-w-3xl px-4 pt-4 pb-20 text-[#CFC5DC] sm:px-6 sm:pt-14">
       <h1 className="text-3xl font-black tracking-tight text-white sm:text-5xl">{title}</h1>

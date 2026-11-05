@@ -32,9 +32,13 @@ const BUILDER_ID_ERROR = 'Enter a valid AWS Builder ID';
 const EMAIL_ERROR = 'Enter a valid email address';
 const PHONE_ERROR = 'Enter a valid 10-digit mobile number';
 const CONSENT_ERROR = 'Please accept to continue';
+const UTR_ERROR = 'Enter the 12-digit UTR from your UPI app';
+const PAYER_NAME_ERROR = 'Enter the name on your UPI account';
 
 export const BUILDER_ID_TAKEN =
   "This Builder ID is already linked to another registration — contact us if that's wrong.";
+
+export const UTR_TAKEN = "This UTR has already been submitted — contact us if that's wrong.";
 
 // Starts with a letter; \p{M} keeps combining marks, so names in Indian scripts pass.
 const NAME_PATTERN = /^\p{L}[\p{L}\p{M} .'’-]*$/u;
@@ -104,6 +108,13 @@ export const contactSchema = z.object({
 
 export const registrationSchema = detailsSchema.extend(contactSchema.shape);
 export type RegistrationInput = z.output<typeof registrationSchema>;
+
+export const utrSchema = z.string(UTR_ERROR).trim().regex(/^\d{12}$/, UTR_ERROR);
+
+export const paymentSchema = z.object({
+  utr: utrSchema,
+  payerName: z.string(PAYER_NAME_ERROR).trim().min(2, PAYER_NAME_ERROR).max(120, PAYER_NAME_ERROR),
+});
 
 export const NONE_OF_THE_ABOVE = 'none';
 
