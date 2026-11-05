@@ -44,7 +44,7 @@ Venue: volunteer phone scans QR ──▶ /admin/checkin?c=<checkin_code>
 | **No attendee login.** The pass link (128-bit random code) is the key, like an airline "manage booking" link. | No SMS (TRAI DLT takes weeks), no OTP email on every visit, no auth system for hundreds of students. Fits the deadline. |
 | **Paid = in.** No approve or reject step: a confirmed payment issues the pass. | Payment is the gate against junk sign-ups, since emails aren't verified at registration. |
 | **Students pay the club's UPI and enter the UTR; a bank statement CSV confirms it.** No payment gateway. | A credit of exactly `registration.fee` with that UTR on the club's own statement is the proof, so a fake UTR never matches. |
-| **The 48-hour clock starts when the seat is gained:** at registration with a seat, or on promotion from the waitlist. Students see "Add your Builder ID and pay within 48 hours, or the seat goes to the waitlist." | Nobody can hold a seat with no deadline, including someone who never adds a Builder ID. |
+| **The 48-hour clock starts when the seat is gained:** at registration with a seat, on promotion from the waitlist, or when an admin restores it. Students see "Add your Builder ID and pay within 48 hours, or the seat goes to the waitlist." | Nobody can hold a seat with no deadline, including someone who never adds a Builder ID. |
 | **Refunds only for duplicate payments, the event being cancelled, or a payment whose seat was released before the UTR was submitted, when no seat is free to restore it.** | Stated in `/event-policies` (§8). |
 | **AWS Builder ID is required for the pass, not for the form.** Register without one, add it on the pass page; the Pay box stays hidden until it's there. | AWS requires it. Making it required in the form would send students off mid-form to create one and lose what they typed. The order follows the reference: register → create Builder ID → add it. Ours then adds payment before the pass. |
 | **Builder ID = the AWS Builder Center alias** (like the reference's `shivanshu49`), not an email. | It's what AWS's own reference site collects. If AWS wants the email instead, it's a label + validation change. |
@@ -79,7 +79,7 @@ Layout follows the reference; colours and type follow our site.
 - **Payer UPI name:** required, 2–120 chars, trimmed. Error: "Enter the name on your UPI account".
 - Submitting moves the status to `payment_submitted` (§7). The UTR can't be edited afterwards; a typo lands on the admin's unmatched list.
 
-Waitlisted people see "You're on the waitlist. If a seat opens, you'll have 48 hours to add your Builder ID and pay." Cancelled people see "This registration is cancelled. Already paid? Email <contact>."
+Waitlisted people see "You're on the waitlist. If a seat opens, you'll have 48 hours to add your Builder ID and pay." Cancelled people see "This registration is cancelled. Want your seat back, or already paid? Email <contact>."
 
 Rules:
 - `dynamic = 'force-dynamic'`; metadata `robots: noindex` and `referrer: 'no-referrer'` (so the code never leaks through the Referer header to outside links).
@@ -124,11 +124,11 @@ Layout and behaviour follow the reference form; colours and type follow our site
 | `/pass/[code]/qr.png` | dynamic | issued passes only |
 | `/pass` | static + server action | "Find my pass" (email + Turnstile) |
 | `/admin/login` | dynamic | Supabase email OTP |
-| `/admin/scd` | dynamic, admin | counts, table, statement upload, unmatched list, manual confirm, cancel, CSV |
+| `/admin/scd` | dynamic, admin | counts, table, statement upload, unmatched list, manual confirm, cancel, restore seat, CSV |
 | `/admin/checkin` | dynamic, admin | scanner + manual search |
 | `/privacy`, `/event-policies` | static | text from `content/legal/`; must be live before registration opens |
 | `GET /api/events/[slug]/seats` | dynamic, `Cache-Control: s-maxage=30` | `{ capacity, taken, open }` for the counter; fetched client-side so the pages stay static |
-| `POST /api/cron/release-seats` | dynamic, `Authorization: Bearer $CRON_SECRET` | hourly 48-hour release (§7) |
+| `POST /api/cron/release-seats` | dynamic, `Authorization: Bearer $CRON_SECRET` | hourly 48-hour release and 24-hour reminder (§7) |
 
 - **No page queries the database at build time** — CI builds without `DATABASE_URL`.
 - Admin auth is checked inside every admin page and server action (`requireAdmin()`), not only in middleware.
@@ -229,10 +229,11 @@ registrations
   + payer_name         text                              -- payer's UPI name, for the manual check
   + utr_submitted_at   timestamptz
   + seat_held_at       timestamptz                       -- when the seat was gained; starts the 48-hour clock
+  + deadline_reminded_at timestamptz                     -- when the 24-hour reminder went out; sends it once per seat hold
   + unique (event_id, utr) WHERE utr IS NOT NULL         -- one UTR, one pass
 ```
 
-All four columns are nullable, so this is safe on a table that already has rows. The migration sets `seat_held_at = now()` on any existing pending rows, so none of them escape the clock. `approved` now means the payment is confirmed, and `approved_by` records the admin who uploaded the statement or pressed Confirm. `rejected` stays in the enum, unused.
+All five columns are nullable, so this is safe on a table that already has rows. The migration sets `seat_held_at = now()` on any existing pending rows, so none of them escape the clock. `approved` now means the payment is confirmed, and `approved_by` records the admin who uploaded the statement or pressed Confirm. `rejected` stays in the enum, unused.
 
 ## 7. Mechanics
 
@@ -262,10 +263,11 @@ If the row got a seat, set `seat_held_at = now()` in the same transaction. Then 
 | waitlisted → pending | a seat is released | takes it |
 | waitlisted → cancelled | admin cancels | no change |
 | cancelled → approved | manual confirm for someone who paid late; admin enters the UTR | needs one: the conditional increment above; 0 rows → "Event full", and the payment is refunded (§8) |
+| cancelled → pending | admin presses Restore seat; the row has no UTR | needs one: the conditional increment above; 0 rows → "Event full" |
 
 Every change uses `WHERE id = $id AND status = $expected_from`; 0 rows → roll back, so two admins clicking at once can't double-count. Moving to `approved` sends "pass issued" in `after()`.
 
-**48-hour clock:** `seat_held_at` is set when a row gains a seat: at registration with a seat, or on promotion from the waitlist. Saving a Builder ID never touches it, so adding or re-saving one doesn't change the deadline.
+**48-hour clock:** `seat_held_at` is set when a row gains a seat: at registration with a seat, on promotion from the waitlist, or on Restore seat. Saving a Builder ID never touches it, so adding or re-saving one doesn't change the deadline.
 
 **Pay box gate:** `status = 'pending' AND builder_id IS NOT NULL`. It has no effect on the clock.
 
@@ -301,6 +303,17 @@ WHERE id = $id AND status = 'pending' AND seat_held_at < now() - interval '48 ho
 ```
 Then the seat passes on as above, and the person gets "Your seat was released". The status is `cancelled`, not `waitlisted`, because the queue is ordered by `created_at` and would put them straight back at the front. A UTR submitted before the job reaches the row still counts: both updates need `status = 'pending'`, so exactly one wins. The same job promotes waitlisted people while free seats exist, which covers a raised capacity.
 
+**24-hour reminder** (same job, after the releases, so nobody being released gets one):
+```sql
+UPDATE registrations SET deadline_reminded_at = now()
+WHERE event_id = $event AND status = 'pending'
+  AND seat_held_at <= now() - interval '24 hours' AND deadline_reminded_at IS NULL
+RETURNING name, email, pass_code, seat_held_at;
+```
+Each returned row gets "Your seat expires in <hours>h: add your Builder ID and pay ₹<fee>" + pass link in `after()`. `<hours>` is the time left until `seat_held_at` + 48 hours, rounded up, and `<fee>` comes from `registration.fee`. The UPDATE claims the row before sending, so overlapping runs can't send twice. A failed send is logged and not retried.
+
+**Restore seat** (admin, on `cancelled` rows with `utr IS NULL`): set `status = 'pending'`, `seat_held_at = now()` and `deadline_reminded_at = NULL`, in one transaction with the conditional increment above. 0 rows → roll back and show "Event full". Sends "A seat opened" in `after()`. Clearing `deadline_reminded_at` gives the fresh clock its own reminder. Released seats go straight to the waitlist, so a free seat normally means nobody is waiting and a restore doesn't jump the queue.
+
 **Builder ID reminder** (admin bulk action, PR B): emails pending people without a Builder ID — "Add your AWS Builder ID to get your pass" + deadline + pass link. Skips anyone reminded in the last 24 h (`reminded_at`).
 
 **Check-in**
@@ -319,10 +332,11 @@ RETURNING name, college, ticket_no;
 2. Pass issued → QR (inline PNG) + pass link + date, venue, "bring your college ID"
 3. Your pass link (find my pass)
 4. Add your AWS Builder ID (admin reminder, PR B)
-5. A seat opened → pass link + the 48-hour rule and deadline (PR B)
+5. A seat opened → pass link + the 48-hour rule and deadline (promotion or Restore seat, PR B)
 6. Your seat was released → pass link + contact email (PR B)
+7. Your seat expires in <hours>h → pass link (24-hour reminder, PR B)
 
-Budget about **2 emails per person**, plus reminders for whoever hasn't added a Builder ID and one more for anyone promoted or released. Resend free is 100/day ≈ 50 registrations/day, and one statement upload can use a whole day's limit at once. If the announcement can bring more than that, take Resend's paid plan for November (or move to SES).
+Budget about **2 emails per person**, plus the 24-hour reminder for anyone without a UTR by then, Builder ID reminders, and one more for anyone promoted, released or restored. Resend free is 100/day ≈ 50 registrations/day, and one statement upload can use a whole day's limit at once. If the announcement can bring more than that, take Resend's paid plan for November (or move to SES).
 
 ## 8. Privacy and consent
 
@@ -369,8 +383,8 @@ Migration 0001, seed script, event content file, `/community-day/register` (§3a
 *Done:* register end to end → lands on a pending pass page and gets the email; same email again creates nothing and shows no link; with capacity = 2 the third person is waitlisted and the counter says "Waitlist open"; registering without a Builder ID lands on a pass page whose first block asks for it, and saving it moves the journey on; a Builder ID already used by someone else is refused with the §7 message; flipping a row to `approved` in Drizzle Studio shows the QR and Download works; build passes without `DATABASE_URL`.
 
 **PR B — payments + admin** → registrations can open
-Migration 0002, `fee` + `upiId` + `upiQr` in the content file and its type, fee shown on the form, Pay box + UTR action, statement parser, `/api/cron/release-seats` + its schedule, seat-opened + seat-released + pass-issued emails, `₹{{fee}}` in `LegalPage`. Update what PR A shipped: badges, QR block copy, Builder ID hint, received email, `interestsEditable`, `JourneyStep`, `journeyStates` and `scripts/check-registration.ts`. Supabase Auth for admins, `requireAdmin`, `/admin/scd` (counts by status, capacity, meal counts, search/filter, statement upload, unmatched list, manual confirm, cancel, Builder ID reminder, CSV). Manual confirm needs a Builder ID, and only goes through if `builder_id` still equals what the admin saw. CSV export prefixes cells starting with `=` `+` `-` `@` with `'`.
-*Done:* the pass page shows the deadline from the first visit; no Pay box without a Builder ID or on a waitlisted row; a UTR that isn't 12 digits or is already used is refused; a statement upload confirms only credits of exactly the fee and sends the QR email, and uploading it again sends nothing; a wrong amount and an unknown UTR both land on the unmatched list; manual confirm issues the pass; a seat past 48 hours with no UTR, with or without a Builder ID, goes to the oldest waitlisted person, and `seats_taken` moves exactly as in §7's table; saving a Builder ID doesn't change the deadline; the Builder ID reminder skips anyone reminded in the last 24 h; non-admins get 404 on every `/admin` route; the release route refuses a request without `CRON_SECRET`.
+Migration 0002, `fee` + `upiId` + `upiQr` in the content file and its type, fee shown on the form, Pay box + UTR action, statement parser, `/api/cron/release-seats` + its schedule, seat-opened + seat-released + 24-hour reminder + pass-issued emails, `₹{{fee}}` in `LegalPage`. Update what PR A shipped: badges, QR block copy, Builder ID hint, received email, `interestsEditable`, `JourneyStep`, `journeyStates` and `scripts/check-registration.ts`. Supabase Auth for admins, `requireAdmin`, `/admin/scd` (counts by status, capacity, meal counts, search/filter, statement upload, unmatched list, manual confirm, cancel, restore seat, Builder ID reminder, CSV). Manual confirm needs a Builder ID, and only goes through if `builder_id` still equals what the admin saw. CSV export prefixes cells starting with `=` `+` `-` `@` with `'`.
+*Done:* the pass page shows the deadline from the first visit; no Pay box without a Builder ID or on a waitlisted row; a UTR that isn't 12 digits or is already used is refused; a statement upload confirms only credits of exactly the fee and sends the QR email, and uploading it again sends nothing; a wrong amount and an unknown UTR both land on the unmatched list; manual confirm issues the pass; a seat past 48 hours with no UTR, with or without a Builder ID, goes to the oldest waitlisted person, and `seats_taken` moves exactly as in §7's table; saving a Builder ID doesn't change the deadline; the 24-hour reminder goes out once per seat hold, only to pending rows, and not to anyone released in the same run; Restore seat works only on cancelled rows with no UTR, starts a fresh 48 hours, sends the seat-opened email, and shows "Event full" when no seat is free; the Builder ID reminder skips anyone reminded in the last 24 h; non-admins get 404 on every `/admin` route; the release route refuses a request without `CRON_SECRET`.
 
 **PR C — check-in**
 `/admin/checkin`: camera scanner (a maintained library — check its last publish date) + manual search by ticket no / email / name.
