@@ -246,8 +246,9 @@
     "name": "GCET Auditorium, Campus 1",
     "institution": "Galgotias College of Engineering & Technology",
     "address": "1, Knowledge Park II, Greater Noida, Uttar Pradesh 201306",
+    "coordinates": "28.457185904700307, 77.49845600782581",
     "capacity": "200 Seats (Strict Limit)",
-    "mapLink": "https://maps.google.com/?q=Galgotias+College+of+Engineering+and+Technology"
+    "mapLink": "https://www.google.com/maps/dir/?api=1&destination=28.457185904700307,77.49845600782581"
   },
   "finalCTA": {
     "badge": "200 Seats Capacity • Registration Live",

@@ -41,7 +41,7 @@ export function FinalCTA() {
         <div className="pt-4">
           <Link
             href="/community-day/register"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black px-10 py-4 text-base uppercase tracking-wider transition-all duration-200 shadow-[0_0_30px_rgba(251,191,36,0.45)] hover:shadow-[0_0_45px_rgba(251,191,36,0.8)] hover:scale-105 active:scale-95 group cursor-pointer"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black px-10 py-4 text-base uppercase tracking-wider transition-all duration-200 shadow-[0_0_30px_rgba(251,191,36,0.45)] hover:shadow-[0_0_45px_rgba(251,191,36,0.8)] hover:scale-105 active:scale-95 group cursor-pointer"
           >
             <span>{finalCTA.buttonText}</span>
             <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
