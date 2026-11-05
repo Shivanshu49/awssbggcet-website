@@ -1,58 +1,15 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
 import { Sparkles } from 'lucide-react';
 import site from '@/content/site.json';
 import { NAV_ITEMS } from '@/lib/constants';
 import { MobileNav } from './MobileNav';
 import { NavLink } from './NavLink';
 
-// Not rendered until first opened, so framer-motion stays out of every page's JS.
-const RolledLetterBanner = dynamic(
-  () => import('./RolledLetterBanner').then((mod) => mod.RolledLetterBanner),
-  { ssr: false },
-);
-
-const BANNER_AUTO_OPENED_KEY = 'scd-banner-auto-opened';
-
 export function Header() {
-  const pathname = usePathname();
-  const [isBannerOpen, setIsBannerOpen] = useState(false);
-  const [bannerKey, setBannerKey] = useState(0);
-
-  // Auto-open on the home page only, at most once per browser session. The flag
-  // is written when the timer fires, so React's dev double-run of this effect
-  // can't set it and then cancel the open.
-  useEffect(() => {
-    if (pathname !== '/') return;
-
-    const timer = setTimeout(() => {
-      try {
-        if (sessionStorage.getItem(BANNER_AUTO_OPENED_KEY)) return;
-        sessionStorage.setItem(BANNER_AUTO_OPENED_KEY, '1');
-      } catch {
-        return; // Storage blocked: can't honour "once", so leave it to the manual button.
-      }
-      setBannerKey((prev) => prev + 1);
-      setIsBannerOpen(true);
-    }, 450);
-
-    return () => clearTimeout(timer);
-  }, [pathname]);
-
-  const handleOpenBanner = () => {
-    setBannerKey((prev) => prev + 1);
-    setIsBannerOpen(true);
-  };
-
-  const handleCloseBanner = () => {
-    setIsBannerOpen(false);
-  };
-
   return (
     <>
       <header className="navbar-floating navbar-corner-glow rounded-2xl border border-white/15 bg-[#090511]/90 backdrop-blur-xl">
@@ -89,19 +46,18 @@ export function Header() {
             ))}
           </nav>
 
-          {/* Right Action Button & Community Day Banner Trigger */}
+          {/* Right Action Button & Community Day link */}
           <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
-            {/* Cinematic Banner Replay / Trigger Button */}
-            <button
-              type="button"
-              onClick={handleOpenBanner}
+            {/* Opened the banner popup, which stays off until a version with no AWS logos arrives. */}
+            <Link
+              href="/community-day"
               className="inline-flex items-center gap-1 sm:gap-1.5 rounded-full bg-gradient-to-r from-[#7E22CE]/30 via-[#A855F7]/20 to-[#FBBF24]/30 border border-[#FBBF24]/60 px-2 sm:px-3.5 py-1 sm:py-1.5 text-[11px] sm:text-xs font-semibold text-[#FDE68A] hover:bg-[#FBBF24]/30 hover:border-[#FBBF24] transition-all duration-200 shadow-[0_0_15px_rgba(251,191,36,0.3)] hover:scale-105 active:scale-95 cursor-pointer shrink-0"
-              title="Open AWS Student Community Day 2026 Announcement"
+              title="AWS Student Community Day 2026"
             >
               <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#FBBF24] animate-pulse shrink-0" />
               <span className="hidden sm:inline lg:hidden xl:inline font-mono">Community Day &apos;26</span>
               <span className="sm:hidden lg:inline xl:hidden font-mono">Event</span>
-            </button>
+            </Link>
 
             {site.joinFormUrl && (
               <Link
@@ -113,19 +69,11 @@ export function Header() {
                 Join Club
               </Link>
             )}
-            <MobileNav joinFormUrl={site.joinFormUrl} onOpenBanner={handleOpenBanner} />
+            <MobileNav joinFormUrl={site.joinFormUrl} />
           </div>
         </div>
       </header>
 
-      {/* CINEMATIC EVENT PORTAL ANNOUNCEMENT */}
-      {bannerKey > 0 && (
-        <RolledLetterBanner
-          key={bannerKey}
-          isOpen={isBannerOpen}
-          onClose={handleCloseBanner}
-        />
-      )}
     </>
   );
 }
