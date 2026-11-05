@@ -82,35 +82,45 @@
 
   .navbar-floating {
     position: fixed;
-    top: 1rem;
+    top: 0.75rem;
     left: 50%;
     z-index: 100;
-    width: calc(100% - 2rem);
+    width: calc(100% - 1.5rem);
     max-width: 80rem;
     transform: translateX(-50%);
     pointer-events: auto;
+  }
+
+  @media (min-width: 640px) {
+    .navbar-floating {
+      top: 1rem;
+      width: calc(100% - 2rem);
+    }
   }
 
   .navbar-corner-glow {
     isolation: isolate;
   }
 
-  .navbar-corner-glow::before {
-    position: absolute;
-    z-index: -1;
-    inset: -8px;
-    border-radius: inherit;
-    background:
-      radial-gradient(ellipse at top left, rgb(255 255 255 / 70%), transparent 22%),
-      radial-gradient(ellipse at top right, rgb(255 255 255 / 70%), transparent 22%),
-      radial-gradient(ellipse at bottom left, rgb(255 255 255 / 70%), transparent 22%),
-      radial-gradient(ellipse at bottom right, rgb(255 255 255 / 70%), transparent 22%);
-    filter: blur(8px);
-    content: "";
-    pointer-events: none;
+  @media (min-width: 640px) {
+    .navbar-corner-glow::before {
+      position: absolute;
+      z-index: -1;
+      inset: -8px;
+      border-radius: inherit;
+      background:
+        radial-gradient(ellipse at top left, rgb(255 255 255 / 70%), transparent 22%),
+        radial-gradient(ellipse at top right, rgb(255 255 255 / 70%), transparent 22%),
+        radial-gradient(ellipse at bottom left, rgb(255 255 255 / 70%), transparent 22%),
+        radial-gradient(ellipse at bottom right, rgb(255 255 255 / 70%), transparent 22%);
+      filter: blur(8px);
+      content: "";
+      pointer-events: none;
+    }
   }
   html {
     @apply font-sans;
+    overflow-x: clip;
   }
   /* Smooth in-page anchor navigation, skipped for reduced-motion users. */
   @media (prefers-reduced-motion: no-preference) {
@@ -120,6 +130,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    overflow-x: clip;
   }
   h1,
   h2,
