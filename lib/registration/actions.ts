@@ -2,7 +2,7 @@
 
 import { randomBytes, randomInt } from 'node:crypto';
 
-import { and, eq, inArray, isNull, lt, or, sql } from 'drizzle-orm';
+import { and, eq, inArray, isNotNull, isNull, lt, or, sql } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { after } from 'next/server';
@@ -21,7 +21,9 @@ import {
   firstErrors,
   interestsSchema,
   passCodeSchema,
+  paymentSchema,
   registrationSchema,
+  UTR_TAKEN,
   type RegistrationInput,
 } from './validation';
 
@@ -40,6 +42,7 @@ const CODE_CONSTRAINTS = [
   'registrations_checkin_code_unique',
 ];
 const BUILDER_ID_INDEX = 'registrations_event_id_builder_id_key';
+const UTR_INDEX = 'registrations_event_id_utr_key';
 
 // Drizzle wraps the driver's error, so the Postgres details sit on `cause`.
 function pgError(err: unknown): { code?: string; constraint_name?: string } {
@@ -97,12 +100,10 @@ async function insertRegistration(eventId: string, input: RegistrationInput) {
             ),
           )
           .returning({ id: events.id });
-        if (!seat) {
-          await tx
-            .update(registrations)
-            .set({ status: 'waitlisted' })
-            .where(eq(registrations.id, row.id));
-        }
+        await tx
+          .update(registrations)
+          .set(seat ? { seatHeldAt: sql`now()` } : { status: 'waitlisted' })
+          .where(eq(registrations.id, row.id));
         return row.passCode;
       });
     } catch (err) {
@@ -185,7 +186,7 @@ export async function findMyPass(email: unknown, turnstileToken: unknown): Promi
   }
 }
 
-// The pass code is the key: these two actions change only the row it opens.
+// The pass code is the key: these three actions change only the row it opens.
 export async function saveBuilderId(code: unknown, value: unknown): Promise<{ error?: string }> {
   const passCode = passCodeSchema.safeParse(code);
   const builderId = builderIdSchema.safeParse(value);
@@ -194,7 +195,8 @@ export async function saveBuilderId(code: unknown, value: unknown): Promise<{ er
   if (!passCode.success) return { error: locked };
 
   try {
-    // Locked once approved. Rejected and cancelled passes don't show this field at all.
+    // Locked once a UTR is submitted. Cancelled passes don't show this field at all.
+    // Never touches seat_held_at, so saving a Builder ID can't move the deadline.
     const rows = await db
       .update(registrations)
       .set({ builderId: builderId.data })
@@ -211,6 +213,44 @@ export async function saveBuilderId(code: unknown, value: unknown): Promise<{ er
     if (constraint === BUILDER_ID_INDEX) return { error: BUILDER_ID_TAKEN };
     console.error('[builder-id] failed:', pgCode ?? 'unknown');
     return { error: GENERIC_ERROR };
+  }
+  revalidatePath(`/pass/${passCode.data}`);
+  return {};
+}
+
+export type PaymentResult = { fieldErrors?: Record<string, string>; formError?: string };
+
+export async function submitPayment(code: unknown, input: unknown): Promise<PaymentResult> {
+  const passCode = passCodeSchema.safeParse(code);
+  const parsed = paymentSchema.safeParse(input);
+  if (!parsed.success) return { fieldErrors: firstErrors(parsed.error) };
+  const closed = "This pass can't take a payment any more — contact us.";
+  if (!passCode.success) return { formError: closed };
+
+  try {
+    // Needs status = pending, as the 48-hour release does, so exactly one of them wins.
+    const rows = await db
+      .update(registrations)
+      .set({
+        status: 'payment_submitted',
+        utr: parsed.data.utr,
+        payerName: parsed.data.payerName,
+        utrSubmittedAt: sql`now()`,
+      })
+      .where(
+        and(
+          eq(registrations.passCode, passCode.data),
+          eq(registrations.status, 'pending'),
+          isNotNull(registrations.builderId),
+        ),
+      )
+      .returning({ id: registrations.id });
+    if (!rows.length) return { formError: closed };
+  } catch (err) {
+    const { code: pgCode, constraint_name: constraint } = pgError(err);
+    if (constraint === UTR_INDEX) return { fieldErrors: { utr: UTR_TAKEN } };
+    console.error('[payment] failed:', pgCode ?? 'unknown');
+    return { formError: GENERIC_ERROR };
   }
   revalidatePath(`/pass/${passCode.data}`);
   return {};

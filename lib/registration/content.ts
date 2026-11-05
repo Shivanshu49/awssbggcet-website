@@ -1,6 +1,6 @@
 import data from '@/content/event-pages/aws-student-community-day-2026.json';
 
-export type JourneyStep = 'registered' | 'builder_id' | 'approved' | 'checked_in';
+export type JourneyStep = 'registered' | 'builder_id' | 'paid' | 'approved' | 'checked_in';
 
 export type JourneyItem = {
   phase: 'before' | 'venue';

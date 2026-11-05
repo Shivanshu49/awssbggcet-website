@@ -168,6 +168,9 @@ export function RegistrationForm() {
 
   return (
     <div className="mx-auto w-full max-w-3xl text-left">
+      <p className="mb-3 text-sm text-[#E9D5FF]">
+        Registration fee: <strong className="text-[#FBBF24]">₹{eventPage.registration.fee}</strong>
+      </p>
       <SeatCounter />
 
       <form ref={form} onSubmit={handleSubmit} noValidate aria-busy={isPending} className={`${CARD} flex flex-col gap-5 sm:p-10`}>
@@ -298,7 +301,7 @@ export function RegistrationForm() {
               value={values.builderId}
               onChange={(e) => update('builderId', e.target.value)}
               error={errors.builderId}
-              hint="Don't have one yet? Add it later on your pass page — your pass can't be issued without it."
+              hint="Don't have one yet? Add it on your pass page within 48 hours of getting a seat — your pass can't be issued without it."
             />
             <div className="flex justify-end border-t border-[#4C2A66]/40 pt-6">
               <button type="submit" className={PRIMARY_BUTTON}>
@@ -349,8 +352,8 @@ export function RegistrationForm() {
               </p>
             </div>
             <p className="text-xs leading-relaxed text-[#A89DB5]">
-              Every registration is confirmed by our team before your pass is issued. Once it&apos;s approved, your QR
-              pass appears on your pass page and arrives by email. There&apos;s no need to register twice.
+              Your pass is issued once your payment is confirmed. Your QR pass then appears on your pass page and
+              arrives by email. There&apos;s no need to register twice.
             </p>
             <div>
               <label className="flex items-start gap-2.5 text-xs leading-relaxed text-[#CFC5DC]">

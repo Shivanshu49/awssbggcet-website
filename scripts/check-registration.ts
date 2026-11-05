@@ -4,13 +4,22 @@ import assert from 'node:assert/strict';
 
 import { dbCredentials, dbSsl } from '../lib/db/ssl';
 import { eventPage } from '../lib/registration/content';
-import { interestsEditable, journeyStates, maskEmail, maskPhone } from '../lib/registration/format';
+import {
+  formatDeadline,
+  interestsEditable,
+  journeyStates,
+  maskEmail,
+  maskPhone,
+  maskUtr,
+  seatDeadline,
+} from '../lib/registration/format';
 import {
   builderIdSchema,
   contactSchema,
   detailsSchema,
   interestsSchemaFor,
   normalizePhone,
+  paymentSchema,
 } from '../lib/registration/validation';
 
 const details = {
@@ -63,21 +72,45 @@ assert.equal(errorFor(contactSchema, { ...contact, consent: false }, 'consent'),
 assert.equal(maskEmail('shivanshu@gmail.com'), 'sh****@gmail.com');
 assert.equal(maskEmail('a@b.co'), 'a****@b.co');
 assert.equal(maskPhone('9812345210'), '98•••••210');
+assert.equal(maskUtr('123456789012'), '••••••••9012');
+
+const payment = { utr: ' 123456789012 ', payerName: ' Asha Rao ' };
+assert.deepEqual(paymentSchema.parse(payment), { utr: '123456789012', payerName: 'Asha Rao' });
+for (const utr of ['', '12345678901', '1234567890123', '12345678901a', '1234 5678 9012', '١٢٣٤٥٦٧٨٩٠١٢']) {
+  assert.equal(paymentSchema.safeParse({ ...payment, utr }).success, false, `utr ${utr}`);
+}
+for (const payerName of ['', 'A', 'A'.repeat(121)]) {
+  assert.equal(paymentSchema.safeParse({ ...payment, payerName }).success, false, `payer ${payerName}`);
+}
+
+// 48 hours from noon IST on 7 Nov, shown in IST whatever the server's time zone.
+const deadline = seatDeadline(new Date('2026-11-07T12:00:00+05:30'));
+assert.equal(deadline.toISOString(), new Date('2026-11-09T12:00:00+05:30').toISOString());
+assert.match(formatDeadline(deadline), /^9 Nov 2026, 12:00 pm IST$/i);
 
 const journey = [
   { phase: 'before', step: 'registered', title: '' },
   { phase: 'before', step: 'builder_id', title: '' },
+  { phase: 'before', step: 'paid', title: '' },
   { phase: 'before', step: 'approved', title: '' },
   { phase: 'venue', step: 'checked_in', title: '' },
   { phase: 'venue', step: null, title: '' },
 ] as const;
-const states = (status: 'pending' | 'approved' | 'rejected', builderId: string | null, checkedInAt: Date | null = null) =>
-  journeyStates([...journey], { status, builderId, checkedInAt });
-assert.deepEqual(states('pending', null), ['done', 'current', 'upcoming', 'upcoming', 'info']);
-assert.deepEqual(states('pending', 'asha'), ['done', 'done', 'current', 'upcoming', 'info']);
-assert.deepEqual(states('approved', 'asha'), ['done', 'done', 'done', 'current', 'info']);
-assert.deepEqual(states('approved', 'asha', new Date()), ['done', 'done', 'done', 'done', 'info']);
-assert.deepEqual(states('rejected', 'asha'), ['done', 'done', 'upcoming', 'upcoming', 'info']);
+const states = (
+  status: 'pending' | 'payment_submitted' | 'approved' | 'waitlisted' | 'cancelled',
+  builderId: string | null,
+  utr: string | null = null,
+  checkedInAt: Date | null = null,
+) => journeyStates([...journey], { status, builderId, utr, checkedInAt });
+const UTR = '123456789012';
+assert.deepEqual(states('pending', null), ['done', 'current', 'upcoming', 'upcoming', 'upcoming', 'info']);
+assert.deepEqual(states('pending', 'asha'), ['done', 'done', 'current', 'upcoming', 'upcoming', 'info']);
+assert.deepEqual(states('payment_submitted', 'asha', UTR), ['done', 'done', 'done', 'current', 'upcoming', 'info']);
+assert.deepEqual(states('approved', 'asha', UTR), ['done', 'done', 'done', 'done', 'current', 'info']);
+assert.deepEqual(states('approved', 'asha', UTR, new Date()), ['done', 'done', 'done', 'done', 'done', 'info']);
+assert.deepEqual(states('waitlisted', null), ['done', 'current', 'upcoming', 'upcoming', 'upcoming', 'info']);
+assert.deepEqual(states('waitlisted', 'asha'), ['done', 'done', 'upcoming', 'upcoming', 'upcoming', 'info'], 'no seat, so paying is not next');
+assert.deepEqual(states('cancelled', 'asha'), ['done', 'done', 'upcoming', 'upcoming', 'upcoming', 'info']);
 
 const interests = interestsSchemaFor(['A', 'B']);
 assert.deepEqual(interests.parse({ interests: ['A', 'A', 'none'], note: '' }).interests, ['A', 'none']);
@@ -87,7 +120,7 @@ assert.equal(interests.safeParse({ interests: ['Z'], note: '' }).success, false,
 const before = new Date('2026-11-21T09:00:00+05:30');
 const after = new Date('2026-11-21T11:00:00+05:30');
 const eventStart = new Date('2026-11-21T10:00:00+05:30');
-for (const status of ['pending', 'approved', 'waitlisted'] as const) {
+for (const status of ['pending', 'payment_submitted', 'approved', 'waitlisted'] as const) {
   assert.equal(interestsEditable(status, eventStart, before), true, status);
   assert.equal(interestsEditable(status, eventStart, after), false, status);
 }
