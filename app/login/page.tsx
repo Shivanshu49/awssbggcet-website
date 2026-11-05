@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Ticket, UserPlus, Mail, ArrowRight, Sparkles } from "lucide-react";
+import { Ticket, UserPlus, Mail, ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Pass Access & Registration | AWS Student Community Day 2026",
@@ -63,9 +63,9 @@ export default function LoginPage() {
           {/* Card 2: Not Registered Yet */}
           <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 sm:p-8 flex flex-col justify-between hover:border-amber-500/50 hover:shadow-[0_0_30px_rgba(251,191,36,0.12)] transition-all duration-300 backdrop-blur-sm relative">
             <div className="absolute top-4 right-4 sm:top-5 sm:right-5">
-              <span className="inline-flex items-center gap-1.5 text-xs font-extrabold tracking-wider uppercase px-3 py-1 rounded-full bg-white text-slate-950 shadow-[0_0_20px_rgba(255,255,255,0.35)] ring-2 ring-white/60">
-                <Sparkles className="w-3.5 h-3.5 fill-slate-950 text-slate-950" />
+              <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-extrabold tracking-wider uppercase px-3.5 py-1.5 rounded-full bg-[#090c15]/95 border-2 border-amber-400 text-white shadow-[0_0_16px_rgba(251,191,36,0.75),inset_0_0_8px_rgba(251,191,36,0.25)]">
                 <span>₹45 ONLY</span>
+                <span className="text-amber-300 text-xs">✦</span>
               </span>
             </div>
             <div className="space-y-4">
