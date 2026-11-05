@@ -45,7 +45,7 @@ export const PhotoGrid: React.FC<{ photos: GalleryPhoto[] }> = ({ photos }) => {
 
   const segments = 24;
   const unit = 360 / segments / 2;
-  const radius = isMobile ? 310 : 650;
+  const radius = isMobile ? 380 : 650;
   const items = useMemo(() => buildReactBitsItems(photos, segments), [photos, segments]);
 
   const [selectedPhoto, setSelectedPhoto] = useState<GalleryPhoto | null>(null);
@@ -183,7 +183,7 @@ export const PhotoGrid: React.FC<{ photos: GalleryPhoto[] }> = ({ photos }) => {
                         src={it.photo.src}
                         alt={it.photo.title || 'Dome Tile'}
                         fill
-                        sizes="(max-width: 640px) 99px, 143px"
+                        sizes="(max-width: 640px) 85px, 143px"
                       />
                     </div>
                   </div>

@@ -1,14 +1,15 @@
 import React from 'react';
 import Image from 'next/image';
+import site from '@/content/site.json';
 
 export function Footer() {
   return (
     <footer className="w-full bg-[#0B0713] border-t border-[#4C2A66]/35 text-[#CFC5DC]">
-      <div className="w-full px-6 sm:px-10 lg:px-16 py-8">
+      <div className="w-full px-4 sm:px-10 lg:px-16 py-6 sm:py-8">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           {/* Left: Logo & Email */}
           <div className="space-y-2">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
               <div className="relative w-8 h-8 rounded-xl overflow-hidden bg-[#160F24] border border-[#A855F7]/40 flex items-center justify-center shadow-[0_0_12px_rgba(168,85,247,0.25)] shrink-0">
                 <Image
                   src="/logo/sbg-logo.png"
@@ -17,12 +18,13 @@ export function Footer() {
                   className="object-cover"
                 />
               </div>
-              <div className="leading-tight">
-                <span className="text-sm font-bold text-white tracking-tight block">
+              <div className="leading-tight min-w-0">
+                <span className="text-xs sm:text-sm font-bold text-white tracking-tight block truncate">
                   AWS Builder Center GCET
                 </span>
-                <span className="text-[11px] font-mono text-[#A855F7]">
-                  Galgotias College of Engineering &amp; Technology
+                <span className="text-[10px] sm:text-[11px] font-mono text-[#A855F7] block truncate">
+                  <span className="sm:hidden">GCET</span>
+                  <span className="hidden sm:inline">Galgotias College of Engineering &amp; Technology</span>
                 </span>
               </div>
             </div>
@@ -30,7 +32,7 @@ export function Footer() {
               A student community at GCET that learns, builds, and ships on AWS together.
             </p>
             <a
-              href="mailto:awsbuildercenter.gcet@gmail.com"
+              href={`mailto:${site.email}`}
               className="inline-flex items-center gap-1.5 text-xs text-[#B8ACC9] hover:text-[#FBBF24] transition-colors pt-0.5"
             >
               <svg
@@ -43,18 +45,18 @@ export function Footer() {
                 <rect width="20" height="16" x="2" y="4" rx="2" />
                 <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
               </svg>
-              <span>awsbuildercenter.gcet@gmail.com</span>
+              <span>{site.email}</span>
             </a>
           </div>
 
           {/* Right: Social Icons */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2 sm:gap-2.5 flex-nowrap shrink-0">
             <a
               href="https://linkedin.com"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"
-              className="w-8 h-8 rounded-lg bg-[#150E22] border border-[#4C2A66]/40 flex items-center justify-center text-[#CFC5DC] hover:text-[#FBBF24] hover:border-[#FBBF24]/50 transition-all"
+              className="w-8 h-8 rounded-lg bg-[#150E22] border border-[#4C2A66]/40 flex items-center justify-center text-[#CFC5DC] hover:text-[#FBBF24] hover:border-[#FBBF24]/50 transition-all shrink-0"
             >
               <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                 <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
@@ -65,7 +67,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
-              className="w-8 h-8 rounded-lg bg-[#150E22] border border-[#4C2A66]/40 flex items-center justify-center text-[#CFC5DC] hover:text-[#FBBF24] hover:border-[#FBBF24]/50 transition-all"
+              className="w-8 h-8 rounded-lg bg-[#150E22] border border-[#4C2A66]/40 flex items-center justify-center text-[#CFC5DC] hover:text-[#FBBF24] hover:border-[#FBBF24]/50 transition-all shrink-0"
             >
               <svg
                 className="w-3.5 h-3.5"
@@ -84,7 +86,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="X"
-              className="w-8 h-8 rounded-lg bg-[#150E22] border border-[#4C2A66]/40 flex items-center justify-center text-[#CFC5DC] hover:text-[#FBBF24] hover:border-[#FBBF24]/50 transition-all"
+              className="w-8 h-8 rounded-lg bg-[#150E22] border border-[#4C2A66]/40 flex items-center justify-center text-[#CFC5DC] hover:text-[#FBBF24] hover:border-[#FBBF24]/50 transition-all shrink-0"
             >
               <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -95,7 +97,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub"
-              className="w-8 h-8 rounded-lg bg-[#150E22] border border-[#4C2A66]/40 flex items-center justify-center text-[#CFC5DC] hover:text-[#FBBF24] hover:border-[#FBBF24]/50 transition-all"
+              className="w-8 h-8 rounded-lg bg-[#150E22] border border-[#4C2A66]/40 flex items-center justify-center text-[#CFC5DC] hover:text-[#FBBF24] hover:border-[#FBBF24]/50 transition-all shrink-0"
             >
               <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                 <path
@@ -110,7 +112,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Discord"
-              className="w-8 h-8 rounded-lg bg-[#150E22] border border-[#4C2A66]/40 flex items-center justify-center text-[#CFC5DC] hover:text-[#FBBF24] hover:border-[#FBBF24]/50 transition-all"
+              className="w-8 h-8 rounded-lg bg-[#150E22] border border-[#4C2A66]/40 flex items-center justify-center text-[#CFC5DC] hover:text-[#FBBF24] hover:border-[#FBBF24]/50 transition-all shrink-0"
             >
               <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                 <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />

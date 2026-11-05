@@ -774,7 +774,7 @@ export default function FullySynchronizedPage() {
             />
             <canvas
               ref={strandsCanvasRef}
-              className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-[46%] w-full opacity-95 sm:h-[48%]"
+              className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-[16%] sm:h-[48%] opacity-20 sm:opacity-95 w-full"
               aria-hidden="true"
             />
             <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center text-center">
@@ -785,19 +785,33 @@ export default function FullySynchronizedPage() {
               <p className="mt-7 max-w-2xl mx-auto text-base text-[#CFC5DC]">
                 Galgotias College of Engineering &amp; Technology&apos;s official student cloud engineering community.
               </p>
-              <Link href="/community-day/register" className="mt-10 px-7 sm:px-9 py-4 rounded-full bg-[#FBBF24] text-[#0B0714] font-bold text-xs sm:text-sm uppercase shadow-[0_0_30px_rgba(251,191,36,0.45)] transition-all hover:bg-amber-300">
-                Register for Community Day · 21 Nov
-              </Link>
-              <div className="mt-5 flex flex-wrap justify-center gap-3">
-                <Link href="/#events" className="px-7 py-3.5 rounded-full border border-[#FBBF24]/40 bg-[#130C22] text-[#FBBF24] font-bold text-xs uppercase transition-all hover:border-[#FBBF24] hover:bg-[#FBBF24]/10">
-                  Explore Events
+              <div className="mt-8 sm:mt-10 flex w-full max-w-xs sm:max-w-none flex-col items-center gap-3 sm:gap-5">
+                <Link
+                  href="/community-day/register"
+                  className="w-full sm:w-auto text-center px-7 sm:px-9 py-3.5 sm:py-4 rounded-full bg-[#FBBF24] text-[#0B0714] font-bold text-xs sm:text-sm uppercase shadow-[0_0_30px_rgba(251,191,36,0.45)] transition-all hover:bg-amber-300"
+                >
+                  Register for Community Day · 21 Nov
                 </Link>
-                <Link href="/#learning" className="px-7 py-3.5 rounded-full border border-[#FBBF24]/40 bg-[#130C22] text-[#FBBF24] font-bold text-xs uppercase transition-all hover:border-[#FBBF24] hover:bg-[#FBBF24]/10">
-                  Learning Hub
-                </Link>
-                <Link href="/#contact" className="px-7 py-3.5 rounded-full border border-[#FBBF24]/40 bg-[#130C22] text-[#FBBF24] font-bold text-xs uppercase transition-all hover:border-[#FBBF24] hover:bg-[#FBBF24]/10">
-                  Join Community
-                </Link>
+                <div className="flex w-full sm:w-auto flex-col sm:flex-row sm:flex-wrap items-center justify-center gap-3">
+                  <Link
+                    href="/#events"
+                    className="w-full sm:w-auto text-center px-7 py-3.5 rounded-full border border-[#FBBF24]/40 bg-[#130C22] text-[#FBBF24] font-bold text-xs uppercase transition-all hover:border-[#FBBF24] hover:bg-[#FBBF24]/10"
+                  >
+                    Explore Events
+                  </Link>
+                  <Link
+                    href="/#learning"
+                    className="w-full sm:w-auto text-center px-7 py-3.5 rounded-full border border-[#FBBF24]/40 bg-[#130C22] text-[#FBBF24] font-bold text-xs uppercase transition-all hover:border-[#FBBF24] hover:bg-[#FBBF24]/10"
+                  >
+                    Learning Hub
+                  </Link>
+                  <Link
+                    href="/#contact"
+                    className="w-full sm:w-auto text-center px-7 py-3.5 rounded-full border border-[#FBBF24]/40 bg-[#130C22] text-[#FBBF24] font-bold text-xs uppercase transition-all hover:border-[#FBBF24] hover:bg-[#FBBF24]/10"
+                  >
+                    Join Community
+                  </Link>
+                </div>
               </div>
             </div>
           </section>
