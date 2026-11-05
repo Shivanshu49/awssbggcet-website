@@ -13,15 +13,17 @@ import { sendBuilderIdReminder, sendPaymentConfirmed, sendQrPass, sendSeatOpened
 import { formatDeadline } from '@/lib/registration/format';
 import {
   cancelRow,
+  checkIn,
   claimBuilderIdReminders,
   confirmRow,
   countQrUnsent,
   markQrEmailed,
   Refused,
   restoreRow,
+  type CheckInResult,
   sendNextQrPass,
 } from '@/lib/registration/seats';
-import { emailSchema, UTR_TAKEN, utrSchema } from '@/lib/registration/validation';
+import { checkinCodeFromScan, emailSchema, UTR_TAKEN, utrSchema } from '@/lib/registration/validation';
 
 import { authConfigured, isAdminEmail, requireAdmin, supabaseServer } from './auth';
 
@@ -171,4 +173,12 @@ export async function sendQrPasses(): Promise<ActionResult & { sent?: number; fa
     console.error('[admin] QR passes failed:', (err as { code?: string }).code ?? 'unknown');
     return { error: GENERIC_ERROR };
   }
+}
+
+// Takes whatever the scanner read. It's a POST from the page, so a link preview or prefetch of
+// /admin/checkin?c=... can't check anyone in.
+export async function checkInAttendee(scanned: unknown): Promise<CheckInResult> {
+  const admin = await requireAdmin();
+  const code = typeof scanned === 'string' ? checkinCodeFromScan(scanned) : null;
+  return code ? checkIn(db, code, admin) : { kind: 'unknown' };
 }

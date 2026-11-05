@@ -1,5 +1,6 @@
 import { and, count, desc, eq, ilike, inArray, or, type SQL } from 'drizzle-orm';
 import { Download, Upload } from 'lucide-react';
+import Link from 'next/link';
 
 import { BuilderIdReminderButton } from '@/components/admin/BuilderIdReminderButton';
 import { RowActions } from '@/components/admin/RowActions';
@@ -176,6 +177,9 @@ export default async function AdminScdPage({
             released={qrReleased()}
             opensAt={formatDeadline(new Date(eventPage.registration.qrReleaseAt))}
           />
+          <Link href="/admin/checkin" className={SECONDARY_BUTTON}>
+            Check-in desk
+          </Link>
           <a href="/admin/scd/export" className={SECONDARY_BUTTON}>
             <Download className="size-4" aria-hidden="true" />
             Export CSV

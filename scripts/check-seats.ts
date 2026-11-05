@@ -12,6 +12,7 @@ import * as schema from '../lib/db/schema';
 import { dbSsl } from '../lib/db/ssl';
 import {
   cancelRow,
+  checkIn,
   claimBuilderIdReminders,
   confirmRow,
   countQrUnsent,
@@ -343,6 +344,26 @@ async function main() {
   await clickSendQr();
   assert.deepEqual(qrAttempts, [], 'a click with nothing owed sends nothing');
   assert.equal(await countQrUnsent(db, qrEvent), 0);
+
+  // Check-in: two volunteers scan one QR, and exactly one succeeds.
+  const gateEvent = await newEvent(null);
+  await person(gateEvent, 'approved', { checkinCode: 'gate-approved' });
+  const scans = await Promise.all([
+    checkIn(db, 'gate-approved', 'one@example.test'),
+    checkIn(db, 'gate-approved', 'two@example.test'),
+  ]);
+  assert.deepEqual(scans.map((scan) => scan.kind).sort(), ['already', 'ok'], 'one succeeds, one is told it already happened');
+  const winner = scans[0].kind === 'ok' ? 'one@example.test' : 'two@example.test';
+  const later = await checkIn(db, 'gate-approved', 'three@example.test');
+  assert.ok(later.kind === 'already' && later.by === winner && later.at instanceof Date, 'keeps the first volunteer and time');
+  for (const status of ['pending', 'payment_submitted', 'waitlisted', 'rejected', 'cancelled'] as const) {
+    await person(gateEvent, status, { checkinCode: `gate-${status}` });
+    const refused = await checkIn(db, `gate-${status}`, 'one@example.test');
+    assert.ok(refused.kind === 'not_admitted' && refused.status === status, status);
+    const [row] = await db.select({ at: registrations.checkedInAt }).from(registrations).where(eq(registrations.checkinCode, `gate-${status}`));
+    assert.equal(row.at, null, `${status} stays unchecked`);
+  }
+  assert.deepEqual(await checkIn(db, 'gate-nobody', 'one@example.test'), { kind: 'unknown' });
 
   console.log('Seat rules OK');
 }
