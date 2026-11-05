@@ -5,10 +5,11 @@
     "fee": 45,
     "upiId": "9289850019@ptaxis",
     "upiQr": "/scd/upi-qr.png",
-    "collectMeal": true,
+    "collectMeal": false,
     "builderIdRequired": true,
     "builderIdSignupUrl": "",
-    "consentVersion": "2026-11-v1"
+    "consentVersion": "2026-11-v1",
+    "qrReleaseAt": "2026-11-17T00:00:00+05:30"
   },
   "allowOtherColleges": true,
   "colleges": ["Galgotias College of Engineering and Technology"],

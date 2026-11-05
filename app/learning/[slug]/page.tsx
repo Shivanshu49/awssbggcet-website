@@ -46,7 +46,7 @@ export async function generateMetadata({
 
   return {
     title: path.title,
-    description: `${path.description} A ${path.duration}, ${path.level.toLowerCase()}-level learning path curated by AWS Builder Center GCET.`,
+    description: `${path.description} A ${path.duration}, ${path.level.toLowerCase()}-level learning path curated by AWS Student Builder Group GCET.`,
     openGraph: {
       title: path.title,
       description: path.description,
@@ -85,7 +85,7 @@ export default async function LearningPathPage({ params }: PageProps) {
     ...(durationMatch ? { timeRequired: `P${durationMatch[1]}W` } : {}),
     provider: {
       "@type": "Organization",
-      name: "AWS Builder Center GCET",
+      name: "AWS Student Builder Group GCET",
       sameAs: "https://builder.aws.com/",
     },
   };

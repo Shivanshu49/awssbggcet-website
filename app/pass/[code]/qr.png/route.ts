@@ -2,6 +2,7 @@ import { eq } from 'drizzle-orm';
 
 import { db } from '@/lib/db';
 import { registrations } from '@/lib/db/schema';
+import { qrReleased } from '@/lib/registration/content';
 import { checkinQrPng } from '@/lib/registration/qr';
 import { passCodeSchema } from '@/lib/registration/validation';
 
@@ -9,8 +10,9 @@ export const dynamic = 'force-dynamic';
 
 const notFound = () => new Response('Not found', { status: 404 });
 
-// Issued passes only.
+// Issued passes only, and only from the release date.
 export async function GET(_req: Request, { params }: { params: Promise<{ code: string }> }) {
+  if (!qrReleased()) return notFound();
   const code = passCodeSchema.safeParse((await params).code);
   if (!code.success) return notFound();
 

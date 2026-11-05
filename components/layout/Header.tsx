@@ -62,13 +62,13 @@ export function Header() {
             <div className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-xl overflow-hidden bg-[#150E22] border border-[#A855F7]/40 flex items-center justify-center shadow-[0_0_15px_rgba(168,85,247,0.3)] transition-transform group-hover:scale-105 shrink-0">
               <Image
                 src="/logo/sbg-logo.png"
-                alt="AWS Builder Center GCET Logo"
+                alt="AWS Student Builder Group GCET Logo"
                 fill
                 className="object-cover"
               />
             </div>
-            <span className="text-xs sm:text-sm font-bold text-white tracking-tight group-hover:text-[#FBBF24] transition-colors truncate whitespace-nowrap">
-              AWS Builder Center GCET
+            <span className="text-xs sm:text-sm font-bold text-white tracking-tight group-hover:text-[#FBBF24] transition-colors leading-tight text-balance">
+              AWS Student Builder Group GCET
             </span>
           </Link>
 

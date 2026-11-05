@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { cronAuthorized } from '../lib/admin/cron-auth';
 import { escapeLike, parseAdminEmails, toCsv } from '../lib/admin/rules';
 import { dbCredentials, dbSsl } from '../lib/db/ssl';
-import { eventPage } from '../lib/registration/content';
+import { eventPage, qrReleased } from '../lib/registration/content';
 import {
   formatDeadline,
   hoursLeft,
@@ -14,6 +14,7 @@ import {
   maskEmail,
   maskPhone,
   maskUtr,
+  passSteps,
   reminderLine,
   seatDeadline,
 } from '../lib/registration/format';
@@ -57,6 +58,9 @@ assert.equal(errorFor(detailsSchema, { ...details, yearOfStudy: '' }, 'yearOfStu
 assert.equal(detailsSchema.parse({ ...details, yearOfStudy: 'other' }).yearOfStudy, 'other');
 if (eventPage.registration.collectMeal) {
   assert.equal(errorFor(detailsSchema, { ...details, mealPref: '' }, 'mealPref'), 'Choose a meal preference');
+} else {
+  assert.equal(detailsSchema.parse({ ...details, mealPref: '' }).mealPref, null);
+  assert.equal(parsedDetails.mealPref, null, 'a value from an old form is dropped');
 }
 for (const id of ['ab', 'a'.repeat(51), 'has space', 'bad!']) {
   assert.equal(builderIdSchema.safeParse(id).success, false, id);
@@ -170,6 +174,17 @@ const interests = interestsSchemaFor(['A', 'B']);
 assert.deepEqual(interests.parse({ interests: ['A', 'A', 'none'], note: '' }).interests, ['A', 'none']);
 assert.equal(interests.safeParse({ interests: ['A', 'B', 'none', 'A'], note: '' }).success, false, 'too many items');
 assert.equal(interests.safeParse({ interests: ['Z'], note: '' }).success, false, 'unknown workshop');
+
+assert.equal(qrReleased(new Date('2026-11-16T23:59:59+05:30')), false);
+assert.equal(qrReleased(new Date('2026-11-16T18:30:00Z')), true, 'midnight IST, whatever the server zone');
+assert.equal(qrReleased(new Date('2026-11-17T00:00:00+05:30')), true);
+
+assert.deepEqual(passSteps('pending'), ['done', 'done', 'current']);
+assert.deepEqual(passSteps('payment_submitted'), ['done', 'done', 'current']);
+assert.deepEqual(passSteps('approved'), ['done', 'done', 'done']);
+for (const status of ['waitlisted', 'rejected', 'cancelled'] as const) {
+  assert.deepEqual(passSteps(status), ['done', 'done', 'upcoming'], status);
+}
 
 const before = new Date('2026-11-21T09:00:00+05:30');
 const after = new Date('2026-11-21T11:00:00+05:30');

@@ -46,13 +46,13 @@ export function MobileNav({
               <div className="relative w-8 h-8 rounded-xl overflow-hidden bg-[#150E22] border border-[#A855F7]/40 flex items-center justify-center shadow-[0_0_12px_rgba(168,85,247,0.3)] shrink-0">
                 <Image
                   src="/logo/sbg-logo.png"
-                  alt="AWS Builder Center GCET Logo"
+                  alt="AWS Student Builder Group GCET Logo"
                   fill
                   className="object-cover"
                 />
               </div>
               <DialogTitle className="text-sm font-bold text-white tracking-tight">
-                AWS Builder Center GCET
+                AWS Student Builder Group GCET
               </DialogTitle>
             </div>
             <DialogClose asChild>

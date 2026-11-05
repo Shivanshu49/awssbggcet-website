@@ -49,7 +49,7 @@ export function FinalCTA() {
         </div>
 
         <p className="text-xs text-slate-400 pt-2">
-          Strict limit of 200 participants • Digital pass issued instantly upon verification
+          Strict limit of 200 participants • Digital QR pass from 17 November, once your payment is verified
         </p>
       </div>
     </section>

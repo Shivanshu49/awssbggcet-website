@@ -10,11 +10,12 @@ import { EventFaq, EventSchedule } from '@/components/registration/EventInfo';
 import { CARD, CARD_TITLE, SECONDARY_BUTTON } from '@/components/registration/field-styles';
 import { InterestsForm } from '@/components/registration/InterestsForm';
 import { PayBox } from '@/components/registration/PayBox';
+import { RegistrationSteps } from '@/components/registration/RegistrationSteps';
 import site from '@/content/site.json';
 import { db } from '@/lib/db';
 import { events, registrations, type Registration } from '@/lib/db/schema';
 import { formatEventDate, getEventBySlug } from '@/lib/events';
-import { EVENT_SLUG, eventPage, type JourneyItem } from '@/lib/registration/content';
+import { EVENT_SLUG, eventPage, qrReleased, type JourneyItem } from '@/lib/registration/content';
 import {
   formatDeadline,
   initials,
@@ -23,6 +24,7 @@ import {
   maskEmail,
   maskPhone,
   maskUtr,
+  passSteps,
   seatDeadline,
   SEAT_RULE,
   type JourneyState,
@@ -71,7 +73,7 @@ function JourneyMarker({ state }: { state: JourneyState }) {
   return <span className="ml-1.5 mt-1.5 size-2 shrink-0 rounded-full bg-[#4C2A66]" aria-hidden="true" />;
 }
 
-function Journey({ reg }: { reg: Registration }) {
+function Journey({ reg, released }: { reg: Registration; released: boolean }) {
   const { journey } = eventPage;
   if (!journey.length) return null;
   const states = journeyStates(journey, reg);
@@ -81,7 +83,13 @@ function Journey({ reg }: { reg: Registration }) {
         Your journey
       </h2>
       {PHASES.map(({ phase, label }) => {
-        const items = journey.map((item, i) => ({ ...item, state: states[i] })).filter((item) => item.phase === phase);
+        const items = journey
+          .map((item, i) => ({
+            ...item,
+            title: item.step === 'approved' && !released ? 'Pass issued — QR on 17–18 Nov' : item.title,
+            state: states[i],
+          }))
+          .filter((item) => item.phase === phase);
         if (!items.length) return null;
         return (
           <div key={phase} className="mt-5">
@@ -111,7 +119,32 @@ function Journey({ reg }: { reg: Registration }) {
   );
 }
 
-function QrBlock({ code, reg, missingBuilderId }: { code: string; reg: Registration; missingBuilderId: boolean }) {
+function QrBlock({
+  code,
+  reg,
+  missingBuilderId,
+  released,
+}: {
+  code: string;
+  reg: Registration;
+  missingBuilderId: boolean;
+  released: boolean;
+}) {
+  if (reg.status === 'approved' && !released) {
+    return (
+      <section
+        aria-labelledby="qr-heading"
+        className="rounded-2xl border border-emerald-400/50 bg-emerald-400/10 p-5 text-center sm:p-6"
+      >
+        <h2 id="qr-heading" className="text-lg font-bold text-emerald-300">
+          You&apos;re going! 🎉
+        </h2>
+        <p className="mt-2 text-sm leading-relaxed text-emerald-100">
+          Payment confirmed. Your QR pass will be generated on 17–18 November. Stay tuned, we&apos;ll email it to you.
+        </p>
+      </section>
+    );
+  }
   if (reg.status === 'approved') {
     return (
       <section aria-labelledby="qr-heading" className={`${CARD} flex flex-col items-center text-center`}>
@@ -142,7 +175,11 @@ function QrBlock({ code, reg, missingBuilderId }: { code: string; reg: Registrat
         </h2>
         <Lock className="mt-4 size-8 text-[#4C2A66]" aria-hidden="true" />
         <p className="mt-3 text-sm text-[#CFC5DC]">
-          {missingBuilderId ? 'Add your Builder ID' : 'Your QR appears here once your payment is confirmed'}
+          {missingBuilderId
+            ? 'Add your Builder ID'
+            : released
+              ? 'Your QR appears here once your payment is confirmed'
+              : 'Your QR pass will be generated on 17–18 November, once your payment is confirmed'}
         </p>
       </section>
     );
@@ -183,6 +220,7 @@ export default async function PassPage({ params }: { params: Promise<{ code: str
   const builderIdEditable = reg.status === 'pending' || reg.status === 'waitlisted';
   const closed = reg.status === 'rejected' || reg.status === 'cancelled';
   const hasSideColumn = schedule.length > 0;
+  const released = qrReleased();
 
   const builderIdForm = (
     <BuilderIdForm
@@ -200,6 +238,10 @@ export default async function PassPage({ params }: { params: Promise<{ code: str
       }`}
     >
       <div className="flex min-w-0 flex-col gap-5">
+        <section aria-label="Your progress" className={CARD}>
+          <RegistrationSteps states={passSteps(reg.status)} />
+        </section>
+
         <section aria-label="Pass details" className={`${CARD} flex flex-wrap items-start gap-4`}>
           <span
             aria-hidden="true"
@@ -253,12 +295,17 @@ export default async function PassPage({ params }: { params: Promise<{ code: str
             <h2 id="payment-heading" className={CARD_TITLE}>
               Payment submitted
             </h2>
-            <p className="mt-2 text-sm text-[#CFC5DC]">We&apos;ll email your pass once it&apos;s confirmed.</p>
+            <p className="mt-2 text-sm text-[#CFC5DC]">
+              We&apos;re checking your payment.{' '}
+              {released
+                ? 'We\'ll email your pass once it\'s confirmed.'
+                : 'Your QR pass will be generated on 17–18 November.'}
+            </p>
             <p className="mt-2 font-mono text-xs text-[#E9D5FF]">UTR {maskUtr(reg.utr)}</p>
           </section>
         )}
 
-        <QrBlock code={code.data} reg={reg} missingBuilderId={missingBuilderId} />
+        <QrBlock code={code.data} reg={reg} missingBuilderId={missingBuilderId} released={released} />
 
         {workshops.length > 0 && !closed && (
           <InterestsForm
@@ -271,7 +318,7 @@ export default async function PassPage({ params }: { params: Promise<{ code: str
         )}
 
         <EventFaq />
-        <Journey reg={reg} />
+        <Journey reg={reg} released={released} />
 
         <p className="text-center text-xs text-[#A89DB5]">
           Bookmark this page — it&apos;s your pass. Lost it?{' '}

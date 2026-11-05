@@ -20,6 +20,7 @@ type EventPage = {
     builderIdRequired: boolean;
     builderIdSignupUrl: string;
     consentVersion: string;
+    qrReleaseAt: string; // ISO date with offset; no QR anywhere before this
   };
   allowOtherColleges: boolean;
   colleges: string[];
@@ -33,3 +34,5 @@ type EventPage = {
 // ponytail: one event, one content file. Look this up by slug when a second event appears.
 export const EVENT_SLUG = 'aws-student-community-day-2026';
 export const eventPage = data as EventPage;
+
+export const qrReleased = (now = new Date()) => now >= new Date(eventPage.registration.qrReleaseAt);

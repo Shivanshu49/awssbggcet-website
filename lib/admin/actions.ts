@@ -8,9 +8,19 @@ import { z } from 'zod';
 
 import { db } from '@/lib/db';
 import { events } from '@/lib/db/schema';
-import { EVENT_SLUG } from '@/lib/registration/content';
-import { sendBuilderIdReminder, sendPassIssued, sendSeatOpened } from '@/lib/registration/email';
-import { cancelRow, claimBuilderIdReminders, confirmRow, Refused, restoreRow } from '@/lib/registration/seats';
+import { EVENT_SLUG, eventPage, qrReleased } from '@/lib/registration/content';
+import { sendBuilderIdReminder, sendPaymentConfirmed, sendQrPass, sendSeatOpened } from '@/lib/registration/email';
+import { formatDeadline } from '@/lib/registration/format';
+import {
+  cancelRow,
+  claimBuilderIdReminders,
+  confirmRow,
+  countQrUnsent,
+  markQrEmailed,
+  Refused,
+  restoreRow,
+  sendNextQrPass,
+} from '@/lib/registration/seats';
 import { emailSchema, UTR_TAKEN, utrSchema } from '@/lib/registration/validation';
 
 import { authConfigured, isAdminEmail, requireAdmin, supabaseServer } from './auth';
@@ -88,7 +98,11 @@ export async function confirmPayment(input: unknown): Promise<ActionResult> {
   if (!parsed.success) return { error: parsed.error.issues[0].message };
   return runChange('confirm', async () => {
     const row = await db.transaction((tx) => confirmRow(tx, { ...parsed.data, admin }));
-    after(() => sendPassIssued(row));
+    after(async () => {
+      if (!qrReleased()) return void (await sendPaymentConfirmed(row));
+      // Past the release date nobody should wait for another batch, so the QR goes out now.
+      if (await sendQrPass(row)) await markQrEmailed(db, row.id);
+    });
   });
 }
 
@@ -129,6 +143,32 @@ export async function sendBuilderIdReminders(): Promise<ActionResult & { sent?: 
     return { sent: rows.length };
   } catch (err) {
     console.error('[admin] reminder failed:', (err as { code?: string }).code ?? 'unknown');
+    return { error: GENERIC_ERROR };
+  }
+}
+
+const QR_BATCH_MS = 45_000; // Stops short of the admin page's 60-second limit. The next click carries on.
+
+export async function sendQrPasses(): Promise<ActionResult & { sent?: number; failed?: number; remaining?: number }> {
+  await requireAdmin();
+  if (!qrReleased()) {
+    return { error: `QR passes can't be sent before ${formatDeadline(new Date(eventPage.registration.qrReleaseAt))}.` };
+  }
+  try {
+    const [event] = await db.select({ id: events.id }).from(events).where(eq(events.slug, EVENT_SLUG)).limit(1);
+    if (!event) return { error: GENERIC_ERROR };
+    const failed: string[] = [];
+    let sent = 0;
+    const stopAt = Date.now() + QR_BATCH_MS;
+    while (Date.now() < stopAt) {
+      const result = await sendNextQrPass(db, event.id, failed, sendQrPass);
+      if (!result) break;
+      if (result.sent) sent++;
+      else failed.push(result.id);
+    }
+    return { sent, failed: failed.length, remaining: await countQrUnsent(db, event.id) };
+  } catch (err) {
+    console.error('[admin] QR passes failed:', (err as { code?: string }).code ?? 'unknown');
     return { error: GENERIC_ERROR };
   }
 }
