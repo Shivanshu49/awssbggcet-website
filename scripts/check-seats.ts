@@ -14,11 +14,13 @@ import {
   cancelRow,
   claimBuilderIdReminders,
   confirmRow,
+  countQrUnsent,
   EVENT_FULL,
   EVENT_FULL_REFUND,
   Refused,
   restoreRow,
   runHourlyJob,
+  sendNextQrPass,
   STALE,
   submitUtr,
   takeSeat,
@@ -306,6 +308,41 @@ async function main() {
   assert.deepEqual(claimed2.map((r) => r.id).sort(), [needsId, longAgo].sort());
   assert.ok(!claimed2.some((r) => r.id === lately));
   assert.equal((await claimBuilderIdReminders(db, event)).length, 0, 'a second click sends nothing');
+
+  // Send QR passes: approved and not yet emailed only. A failed send stays open for the next click.
+  const qrEvent = await newEvent(null);
+  const qrBounces = await person(qrEvent, 'approved');
+  const qrA = await person(qrEvent, 'approved');
+  const qrB = await person(qrEvent, 'approved');
+  await person(qrEvent, 'approved', { qrEmailedAt: new Date() });
+  await person(qrEvent, 'payment_submitted');
+  await person(qrEvent, 'pending');
+  await person(qrEvent, 'cancelled');
+  const qrAttempts: string[] = [];
+  const clickSendQr = async (bounce: string[] = []) => {
+    const skip: string[] = [];
+    for (;;) {
+      const result = await sendNextQrPass(db, qrEvent, skip, async ({ id }) => {
+        qrAttempts.push(id);
+        await new Promise((resolve) => setTimeout(resolve, 20)); // Keeps overlapping clicks overlapping.
+        return !bounce.includes(id);
+      });
+      if (!result) return;
+      if (!result.sent) skip.push(result.id);
+    }
+  };
+  await Promise.all([clickSendQr([qrBounces]), clickSendQr([qrBounces])]);
+  const qrSent = qrAttempts.filter((id) => id !== qrBounces);
+  assert.deepEqual([...qrSent].sort(), [qrA, qrB].sort(), 'overlapping clicks email each person once');
+  assert.ok(qrAttempts.includes(qrBounces), 'the failure did not block anyone or get skipped');
+  assert.equal(await countQrUnsent(db, qrEvent), 1, 'a failed send is still owed');
+  qrAttempts.length = 0;
+  await clickSendQr();
+  assert.deepEqual(qrAttempts, [qrBounces], 'the next click sends only what failed');
+  qrAttempts.length = 0;
+  await clickSendQr();
+  assert.deepEqual(qrAttempts, [], 'a click with nothing owed sends nothing');
+  assert.equal(await countQrUnsent(db, qrEvent), 0);
 
   console.log('Seat rules OK');
 }

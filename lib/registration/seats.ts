@@ -1,4 +1,4 @@
-import { and, asc, eq, isNotNull, isNull, lt, lte, or, sql } from 'drizzle-orm';
+import { and, asc, count, eq, isNotNull, isNull, lt, lte, notInArray, or, sql } from 'drizzle-orm';
 
 import type { db } from '@/lib/db'; // Type only, so scripts can import this module outside Next.js.
 import { events, registrations } from '@/lib/db/schema';
@@ -235,4 +235,36 @@ export function claimBuilderIdReminders(database: Db, eventId: string) {
       ),
     )
     .returning(CONTACT);
+}
+
+const qrUnsent = (eventId: string) =>
+  and(eq(registrations.eventId, eventId), eq(registrations.status, 'approved'), isNull(registrations.qrEmailedAt));
+
+type QrPass = Contact & { checkinCode: string; ticketNo: string };
+
+// Holds the row lock while sending, so a second click skips this person, and only marks them after
+// the mail server accepts, so a failed send or a crash leaves them for the next click. `skip` holds
+// this run's failures, so one bad address can't block everyone after it. Null means nobody is left.
+export function sendNextQrPass(database: Db, eventId: string, skip: string[], send: (row: QrPass) => Promise<boolean>) {
+  return database.transaction(async (tx) => {
+    const [row] = await tx
+      .select({ ...CONTACT, checkinCode: registrations.checkinCode, ticketNo: registrations.ticketNo })
+      .from(registrations)
+      .where(and(qrUnsent(eventId), notInArray(registrations.id, skip)))
+      .limit(1)
+      .for('update', { skipLocked: true });
+    if (!row) return null;
+    const sent = await send(row);
+    if (sent) await markQrEmailed(tx, row.id);
+    return { id: row.id, sent };
+  });
+}
+
+export async function markQrEmailed(database: Db | Tx, id: string) {
+  await database.update(registrations).set({ qrEmailedAt: sql`now()` }).where(eq(registrations.id, id));
+}
+
+export async function countQrUnsent(database: Db, eventId: string) {
+  const [{ n }] = await database.select({ n: count() }).from(registrations).where(qrUnsent(eventId));
+  return n;
 }

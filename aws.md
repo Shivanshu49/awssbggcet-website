@@ -1,10 +1,10 @@
-# PROJECT: AWS BUILDER CENTER GCET — COMPLETE WEBSITE REDESIGN
+# PROJECT: AWS STUDENT BUILDER GROUP GCET — COMPLETE WEBSITE REDESIGN
 
 ## 1. ROLE AND OBJECTIVE
 
 Act as a senior frontend engineer, UI/UX designer, design systems architect, and experienced Next.js developer.
 
-Your task is to transform my existing AWS Builder Center GCET website into a premium, modern, responsive, production-quality developer community platform.
+Your task is to transform my existing AWS Student Builder Group GCET website into a premium, modern, responsive, production-quality developer community platform.
 
 The website should look and feel like a professionally designed technology community website, comparable in visual quality to modern developer platforms, open-source communities, cloud engineering websites, and technology event platforms.
 
@@ -49,7 +49,7 @@ The existing website already includes a navbar.
 Its current functionality includes:
 
 1. A sticky header approximately 64px high.
-2. The AWS Builder Center GCET logo or brand text.
+2. The AWS Student Builder Group GCET logo or brand text.
 3. Desktop navigation links:
    Home, About, Events, Resources, Learning, Contact.
 4. A Join Club button.
@@ -77,7 +77,7 @@ Create a cohesive design system and use it consistently throughout the website.
 
 Use a premium developer-community aesthetic inspired by modern cloud platforms, engineering communities, technical documentation sites, and contemporary SaaS interfaces.
 
-The design must feel original and specifically tailored to AWS Builder Center GCET.
+The design must feel original and specifically tailored to AWS Student Builder Group GCET.
 
 Do not copy another website's exact design.
 
@@ -211,7 +211,7 @@ Build the homepage as a complete, polished experience.
 
 ### SECTION A: HERO
 
-Create a striking hero section that immediately communicates the purpose of AWS Builder Center GCET.
+Create a striking hero section that immediately communicates the purpose of AWS Student Builder Group GCET.
 
 Include:
 
@@ -276,7 +276,7 @@ Use a clean grid with subtle visual accents.
 
 ### SECTION C: ABOUT THE COMMUNITY
 
-Explain what AWS Builder Center GCET is and what students can gain from joining.
+Explain what AWS Student Builder Group GCET is and what students can gain from joining.
 
 Include three or four feature cards:
 
@@ -451,7 +451,7 @@ Create a comprehensive footer.
 
 Include:
 
-* AWS Builder Center GCET branding.
+* AWS Student Builder Group GCET branding.
 * Short community description.
 * Navigation links.
 * Events and learning links.

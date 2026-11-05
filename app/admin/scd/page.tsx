@@ -3,16 +3,18 @@ import { Download, Upload } from 'lucide-react';
 
 import { BuilderIdReminderButton } from '@/components/admin/BuilderIdReminderButton';
 import { RowActions } from '@/components/admin/RowActions';
+import { SendQrPassesButton } from '@/components/admin/SendQrPassesButton';
 import { CARD, CARD_TITLE, FIELD_INPUT, SECONDARY_BUTTON, SMALL_SECONDARY_BUTTON, fieldBorder } from '@/components/registration/field-styles';
 import { signOutAdmin } from '@/lib/admin/actions';
 import { requireAdmin } from '@/lib/admin/auth';
 import { escapeLike } from '@/lib/admin/rules';
 import { db } from '@/lib/db';
 import { events, registrations, registrationStatus, type Registration } from '@/lib/db/schema';
-import { EVENT_SLUG } from '@/lib/registration/content';
+import { EVENT_SLUG, eventPage, qrReleased } from '@/lib/registration/content';
 import { formatDeadline, seatDeadline } from '@/lib/registration/format';
 
 export const dynamic = 'force-dynamic';
+export const maxDuration = 60; // Send QR passes works in batches inside this limit.
 
 const STATUS_LABELS: Record<Registration['status'], string> = {
   pending: 'Payment pending',
@@ -79,7 +81,7 @@ export default async function AdminScdPage({
       .from(registrations)
       .where(eq(registrations.eventId, event.id))
       .groupBy(registrations.status),
-    db
+    !eventPage.registration.collectMeal ? [] : db
       .select({ meal: registrations.mealPref, n: count() })
       .from(registrations)
       .where(
@@ -120,12 +122,14 @@ export default async function AdminScdPage({
         ))}
       </section>
 
-      <p className="text-xs text-[#CFC5DC]">
-        Meals for seat holders:{' '}
-        {mealCounts.length
-          ? mealCounts.map(({ meal, n }) => `${meal ? MEAL_LABELS[meal] : 'Not asked'} ${n}`).join(' · ')
-          : 'none yet'}
-      </p>
+      {eventPage.registration.collectMeal && (
+        <p className="text-xs text-[#CFC5DC]">
+          Meals for seat holders:{' '}
+          {mealCounts.length
+            ? mealCounts.map(({ meal, n }) => `${meal ? MEAL_LABELS[meal] : 'Not asked'} ${n}`).join(' · ')
+            : 'none yet'}
+        </p>
+      )}
 
       <section aria-labelledby="statement-heading" className={`${CARD} flex items-center gap-3`}>
         <Upload className="size-5 shrink-0 text-[#4C2A66]" aria-hidden="true" />
@@ -168,6 +172,10 @@ export default async function AdminScdPage({
         </form>
         <div className="flex flex-wrap items-center gap-2">
           <BuilderIdReminderButton />
+          <SendQrPassesButton
+            released={qrReleased()}
+            opensAt={formatDeadline(new Date(eventPage.registration.qrReleaseAt))}
+          />
           <a href="/admin/scd/export" className={SECONDARY_BUTTON}>
             <Download className="size-4" aria-hidden="true" />
             Export CSV

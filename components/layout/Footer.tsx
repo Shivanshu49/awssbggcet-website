@@ -13,14 +13,14 @@ export function Footer() {
               <div className="relative w-8 h-8 rounded-xl overflow-hidden bg-[#160F24] border border-[#A855F7]/40 flex items-center justify-center shadow-[0_0_12px_rgba(168,85,247,0.25)] shrink-0">
                 <Image
                   src="/logo/sbg-logo.png"
-                  alt="AWS Builder Center GCET Logo"
+                  alt="AWS Student Builder Group GCET Logo"
                   fill
                   className="object-cover"
                 />
               </div>
               <div className="leading-tight min-w-0">
                 <span className="text-xs sm:text-sm font-bold text-white tracking-tight block truncate">
-                  AWS Builder Center GCET
+                  AWS Student Builder Group GCET
                 </span>
                 <span className="text-[10px] sm:text-[11px] font-mono text-[#A855F7] block truncate">
                   <span className="sm:hidden">GCET</span>
@@ -123,7 +123,7 @@ export function Footer() {
 
         {/* Slim Bottom Bar */}
         <div className="mt-6 pt-4 border-t border-[#4C2A66]/25 text-center text-[11px] text-[#8E82A0]">
-          <p>© 2026 AWS Builder Center GCET. Brought to you by GCET.</p>
+          <p>© 2026 AWS Student Builder Group GCET. Brought to you by GCET.</p>
         </div>
       </div>
     </footer>

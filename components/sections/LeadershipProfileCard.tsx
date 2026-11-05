@@ -106,10 +106,10 @@ export function LeadershipProfileCard({ member }: { member: TeamMember }) {
           </div>
 
           <div className={styles.dialogDetails}>
-            <span className={styles.dialogEyebrow}>AWS Builder Center GCET</span>
+            <span className={styles.dialogEyebrow}>AWS Student Builder Group GCET</span>
             <DialogTitle className={styles.dialogName}>{member.name}</DialogTitle>
             <DialogDescription className={styles.dialogDescription}>
-              {member.bio || `${member.role} at AWS Builder Center GCET.`}
+              {member.bio || `${member.role} at AWS Student Builder Group GCET.`}
             </DialogDescription>
 
             {member.achievements && member.achievements.length > 0 && (

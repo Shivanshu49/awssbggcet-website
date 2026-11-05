@@ -47,6 +47,14 @@ export function reminderLine(hours: number, hasBuilderId: boolean, fee: number) 
   return `Your seat expires in ${hours}h: ${hasBuilderId ? 'pay' : 'add your Builder ID and pay'} ₹${fee}`;
 }
 
+export type StepState = 'done' | 'current' | 'upcoming';
+
+// The pass page's copy of the form's stepper. Paying needs a seat, so it isn't next on the waitlist.
+export function passSteps(status: Registration['status']): StepState[] {
+  if (status === 'approved') return ['done', 'done', 'done'];
+  return ['done', 'done', status === 'pending' || status === 'payment_submitted' ? 'current' : 'upcoming'];
+}
+
 export type JourneyState = 'done' | 'current' | 'upcoming' | 'info';
 
 export function journeyStates(

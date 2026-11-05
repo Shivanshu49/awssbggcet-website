@@ -15,6 +15,8 @@ const eventLine = `${formatEventDate(event.date)}, ${event.venue}`;
 const QR_CID = 'pass-qr';
 const FEE = eventPage.registration.fee;
 
+type Issued = { email: string; name: string; passCode: string; checkinCode: string; ticketNo: string };
+
 const deadlineLine = (seatHeldAt: Date | null) =>
   seatHeldAt ? [`Deadline: ${formatDeadline(seatDeadline(seatHeldAt))}`] : [];
 
@@ -23,11 +25,12 @@ const escapeHtml = (text: string) =>
 
 // Runs inside after(), so SMTP never delays the response. A failure is logged and
 // the pass page still works. The log carries no personal data, only the error code.
+// Returns whether the mail server accepted it, for callers that track delivery.
 async function send(to: string, subject: string, paragraphs: string[], passCode: string, qr?: Buffer) {
   const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_FROM } = process.env;
   if (!SMTP_HOST || !EMAIL_FROM) {
     console.warn('[email] SMTP is not configured; skipped');
-    return;
+    return false;
   }
   const link = `${SITE_URL}/pass/${passCode}`;
   const port = Number(SMTP_PORT) || 587;
@@ -53,8 +56,10 @@ ${qr ? `<p><img src="cid:${QR_CID}" width="224" height="224" alt="Your entry QR 
 </div>`,
         attachments: qr ? [{ filename: 'pass-qr.png', content: qr, cid: QR_CID }] : undefined,
       });
+    return true;
   } catch (err) {
     console.error('[email] send failed:', (err as { code?: string }).code ?? 'unknown');
+    return false;
   }
 }
 
@@ -74,25 +79,27 @@ export function sendRegistrationReceived(to: string, name: string, passCode: str
   );
 }
 
-export async function sendPassIssued({
-  email,
-  name,
-  passCode,
-  checkinCode,
-  ticketNo,
-}: {
-  email: string;
-  name: string;
-  passCode: string;
-  checkinCode: string;
-  ticketNo: string;
-}) {
+export function sendPaymentConfirmed({ email, name, passCode, ticketNo }: Issued) {
   return send(
     email,
-    `Your pass is issued: ${event.title}`,
+    "Payment confirmed: you're going!",
     [
       `Hi ${name},`,
-      'Your payment is confirmed and your pass is issued.',
+      `Your payment is confirmed and you're going to ${event.title}.`,
+      `Ticket: ${ticketNo}`,
+      "Your QR pass will be generated on 17–18 November, and we'll email it to you then.",
+    ],
+    passCode,
+  );
+}
+
+export async function sendQrPass({ email, name, passCode, checkinCode, ticketNo }: Issued) {
+  return send(
+    email,
+    `Your QR pass: ${event.title}`,
+    [
+      `Hi ${name},`,
+      `Here's your QR pass for ${event.title}.`,
       `Ticket: ${ticketNo}`,
       'Show this QR at the gate, and bring your college ID.',
     ],

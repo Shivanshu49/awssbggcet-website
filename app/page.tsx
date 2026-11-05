@@ -871,7 +871,7 @@ export default function FullySynchronizedPage() {
                 <h3 className="mt-2 text-2xl font-bold sm:text-3xl">Core Team &amp; Leadership</h3>
               </div>
               <p className="max-w-xl text-sm leading-relaxed text-[#9E92B0]">
-                Our faculty advisor, student leaders, and builders guiding the AWS Builder Center GCET chapter.
+                Our faculty advisor, student leaders, and builders guiding the AWS Student Builder Group GCET chapter.
               </p>
             </div>
             <div className="grid grid-cols-2 items-stretch gap-5 md:grid-cols-4">

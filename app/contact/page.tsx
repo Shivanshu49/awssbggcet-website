@@ -6,7 +6,7 @@ import { SocialIcon } from "@/components/shared/SocialIcon";
 
 export const metadata: Metadata = {
   title: `${site.clubName} Contact`,
-  description: `Contact AWS Builder Center GCET at ${site.email}`,
+  description: `Contact AWS Student Builder Group GCET at ${site.email}`,
 };
 
 export default function ContactPage() {
@@ -55,7 +55,7 @@ export default function ContactPage() {
 
       <div className="border-t border-border pt-12">
         <p className="text-lg text-ink-muted/70">
-          © {new Date().getFullYear()} AWS Builder Center GCET. All rights reserved.
+          © {new Date().getFullYear()} AWS Student Builder Group GCET. All rights reserved.
         </p>
       </div>
     </Container>

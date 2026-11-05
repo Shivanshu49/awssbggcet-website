@@ -1,0 +1,1 @@
+ALTER TABLE "registrations" ADD COLUMN "qr_emailed_at" timestamp with time zone;
