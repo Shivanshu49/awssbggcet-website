@@ -61,7 +61,7 @@ const getEvent = async () =>
       .limit(1)
   )[0];
 
-// Returns the new pass code, or null if this email is already registered.
+// Returns the new pass, or null if this email is already registered.
 async function insertRegistration(eventId: string, input: RegistrationInput) {
   for (let attempt = 1; ; attempt++) {
     try {
@@ -91,11 +91,12 @@ async function insertRegistration(eventId: string, input: RegistrationInput) {
 
         // A duplicate attempt (above) never touches a seat.
         const hasSeat = await takeSeat(tx, eventId);
-        await tx
+        const [held] = await tx
           .update(registrations)
           .set(hasSeat ? { seatHeldAt: sql`now()` } : { status: 'waitlisted' })
-          .where(eq(registrations.id, row.id));
-        return row.passCode;
+          .where(eq(registrations.id, row.id))
+          .returning({ seatHeldAt: registrations.seatHeldAt });
+        return { passCode: row.passCode, seatHeldAt: held.seatHeldAt };
       });
     } catch (err) {
       if (attempt >= 5 || !CODE_CONSTRAINTS.includes(pgError(err).constraint_name ?? '')) throw err;
@@ -135,14 +136,14 @@ export async function register(input: unknown, turnstileToken: unknown): Promise
   if (!parsed.success) return { fieldErrors: firstErrors(parsed.error) };
   const data = parsed.data;
 
-  let passCode: string | null;
+  let created: Awaited<ReturnType<typeof insertRegistration>>;
   try {
     const event = await getEvent();
     if (!eventPage.registration.open || !event?.registrationOpen) {
       return { formError: "Registration isn't open right now." };
     }
-    passCode = await insertRegistration(event.id, data);
-    if (passCode === null) {
+    created = await insertRegistration(event.id, data);
+    if (created === null) {
       await emailPassLink(event.id, data.email);
       return { notice: "This email is already registered — we've emailed your pass link." };
     }
@@ -153,9 +154,9 @@ export async function register(input: unknown, turnstileToken: unknown): Promise
     return { formError: GENERIC_ERROR };
   }
 
-  const newPassCode = passCode;
-  after(() => sendRegistrationReceived(data.email, data.name, newPassCode));
-  redirect(`/pass/${newPassCode}`);
+  const { passCode, seatHeldAt } = created;
+  after(() => sendRegistrationReceived(data.email, data.name, passCode, seatHeldAt));
+  redirect(`/pass/${passCode}`);
 }
 
 export type FindPassResult = { fieldError?: string; formError?: string; sent?: boolean };

@@ -220,3 +220,19 @@ export async function runHourlyJob(database: Db, eventId: string) {
   const reminded = await claimDeadlineReminders(database, eventId);
   return { released, promoted: [...promoted, ...filled], reminded };
 }
+
+// Skips anyone reminded in the last 24 hours. The UPDATE claims each row before anything is sent.
+export function claimBuilderIdReminders(database: Db, eventId: string) {
+  return database
+    .update(registrations)
+    .set({ remindedAt: sql`now()` })
+    .where(
+      and(
+        eq(registrations.eventId, eventId),
+        eq(registrations.status, 'pending'),
+        isNull(registrations.builderId),
+        or(isNull(registrations.remindedAt), lt(registrations.remindedAt, pastHours(24))),
+      ),
+    )
+    .returning(CONTACT);
+}

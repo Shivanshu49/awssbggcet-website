@@ -38,6 +38,15 @@ export function formatDeadline(deadline: Date) {
   return `${deadlineFormat.format(deadline)} IST`;
 }
 
+// Rounded up, so a job running late never says "0h".
+export function hoursLeft(seatHeldAt: Date, now = new Date()) {
+  return Math.max(1, Math.ceil((seatDeadline(seatHeldAt).getTime() - now.getTime()) / 3_600_000));
+}
+
+export function reminderLine(hours: number, hasBuilderId: boolean, fee: number) {
+  return `Your seat expires in ${hours}h: ${hasBuilderId ? 'pay' : 'add your Builder ID and pay'} ₹${fee}`;
+}
+
 export type JourneyState = 'done' | 'current' | 'upcoming' | 'info';
 
 export function journeyStates(

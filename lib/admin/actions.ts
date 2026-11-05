@@ -1,11 +1,16 @@
 'use server';
 
+import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { after } from 'next/server';
 import { z } from 'zod';
 
 import { db } from '@/lib/db';
-import { cancelRow, confirmRow, Refused, restoreRow } from '@/lib/registration/seats';
+import { events } from '@/lib/db/schema';
+import { EVENT_SLUG } from '@/lib/registration/content';
+import { sendBuilderIdReminder, sendPassIssued, sendSeatOpened } from '@/lib/registration/email';
+import { cancelRow, claimBuilderIdReminders, confirmRow, Refused, restoreRow } from '@/lib/registration/seats';
 import { emailSchema, UTR_TAKEN, utrSchema } from '@/lib/registration/validation';
 
 import { authConfigured, isAdminEmail, requireAdmin, supabaseServer } from './auth';
@@ -81,7 +86,10 @@ export async function confirmPayment(input: unknown): Promise<ActionResult> {
   const admin = await requireAdmin();
   const parsed = confirmSchema.safeParse(input);
   if (!parsed.success) return { error: parsed.error.issues[0].message };
-  return runChange('confirm', () => db.transaction((tx) => confirmRow(tx, { ...parsed.data, admin })));
+  return runChange('confirm', async () => {
+    const row = await db.transaction((tx) => confirmRow(tx, { ...parsed.data, admin }));
+    after(() => sendPassIssued(row));
+  });
 }
 
 const cancelSchema = z.object({
@@ -93,12 +101,34 @@ export async function cancelRegistration(input: unknown): Promise<ActionResult> 
   await requireAdmin();
   const parsed = cancelSchema.safeParse(input);
   if (!parsed.success) return { error: GENERIC_ERROR };
-  return runChange('cancel', () => db.transaction((tx) => cancelRow(tx, parsed.data.id, parsed.data.from)));
+  return runChange('cancel', async () => {
+    const promoted = await db.transaction((tx) => cancelRow(tx, parsed.data.id, parsed.data.from));
+    if (promoted) after(() => sendSeatOpened(promoted));
+  });
 }
 
 export async function restoreSeat(id: unknown): Promise<ActionResult> {
   await requireAdmin();
   const parsed = z.uuid().safeParse(id);
   if (!parsed.success) return { error: GENERIC_ERROR };
-  return runChange('restore', () => db.transaction((tx) => restoreRow(tx, parsed.data)));
+  return runChange('restore', async () => {
+    const row = await db.transaction((tx) => restoreRow(tx, parsed.data));
+    after(() => sendSeatOpened(row));
+  });
+}
+
+export async function sendBuilderIdReminders(): Promise<ActionResult & { sent?: number }> {
+  await requireAdmin();
+  try {
+    const [event] = await db.select({ id: events.id }).from(events).where(eq(events.slug, EVENT_SLUG)).limit(1);
+    if (!event) return { error: GENERIC_ERROR };
+    const rows = await claimBuilderIdReminders(db, event.id);
+    after(async () => {
+      for (const row of rows) await sendBuilderIdReminder(row);
+    });
+    return { sent: rows.length };
+  } catch (err) {
+    console.error('[admin] reminder failed:', (err as { code?: string }).code ?? 'unknown');
+    return { error: GENERIC_ERROR };
+  }
 }

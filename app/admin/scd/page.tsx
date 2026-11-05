@@ -1,6 +1,7 @@
 import { and, count, desc, eq, ilike, inArray, or, type SQL } from 'drizzle-orm';
 import { Download, Upload } from 'lucide-react';
 
+import { BuilderIdReminderButton } from '@/components/admin/BuilderIdReminderButton';
 import { RowActions } from '@/components/admin/RowActions';
 import { CARD, CARD_TITLE, FIELD_INPUT, SECONDARY_BUTTON, SMALL_SECONDARY_BUTTON, fieldBorder } from '@/components/registration/field-styles';
 import { signOutAdmin } from '@/lib/admin/actions';
@@ -165,10 +166,13 @@ export default async function AdminScdPage({
             Search
           </button>
         </form>
-        <a href="/admin/scd/export" className={SECONDARY_BUTTON}>
-          <Download className="size-4" aria-hidden="true" />
-          Export CSV
-        </a>
+        <div className="flex flex-wrap items-center gap-2">
+          <BuilderIdReminderButton />
+          <a href="/admin/scd/export" className={SECONDARY_BUTTON}>
+            <Download className="size-4" aria-hidden="true" />
+            Export CSV
+          </a>
+        </div>
       </div>
 
       {rows.length > ROW_LIMIT && (

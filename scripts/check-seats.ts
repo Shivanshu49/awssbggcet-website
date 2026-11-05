@@ -12,6 +12,7 @@ import * as schema from '../lib/db/schema';
 import { dbSsl } from '../lib/db/ssl';
 import {
   cancelRow,
+  claimBuilderIdReminders,
   confirmRow,
   EVENT_FULL,
   EVENT_FULL_REFUND,
@@ -293,6 +294,18 @@ async function main() {
   assert.equal(await submitUtr(db, { passCode: (await rowOf(noId)).passCode, utr: '300000000001', payerName: 'N' }), false, 'needs a Builder ID');
   const onList = await person(event, 'waitlisted', { builderId: `b${randomBytes(4).toString('hex')}` });
   assert.equal(await submitUtr(db, { passCode: (await rowOf(onList)).passCode, utr: '300000000002', payerName: 'N' }), false, 'needs a seat');
+
+  // The Builder ID reminder: pending, no Builder ID, and not reminded in the last 24 hours.
+  event = await newEvent(9, 3);
+  const needsId = await person(event, 'pending', { seatHeldAt: new Date() });
+  const lately = await person(event, 'pending', { seatHeldAt: new Date(), remindedAt: hoursAgo(23) });
+  const longAgo = await person(event, 'pending', { seatHeldAt: new Date(), remindedAt: hoursAgo(25) });
+  await person(event, 'pending', { seatHeldAt: new Date(), builderId: `b${randomBytes(4).toString('hex')}` });
+  await person(event, 'waitlisted');
+  const claimed2 = await claimBuilderIdReminders(db, event);
+  assert.deepEqual(claimed2.map((r) => r.id).sort(), [needsId, longAgo].sort());
+  assert.ok(!claimed2.some((r) => r.id === lately));
+  assert.equal((await claimBuilderIdReminders(db, event)).length, 0, 'a second click sends nothing');
 
   console.log('Seat rules OK');
 }

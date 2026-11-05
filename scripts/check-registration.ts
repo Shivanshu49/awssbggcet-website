@@ -8,11 +8,13 @@ import { dbCredentials, dbSsl } from '../lib/db/ssl';
 import { eventPage } from '../lib/registration/content';
 import {
   formatDeadline,
+  hoursLeft,
   interestsEditable,
   journeyStates,
   maskEmail,
   maskPhone,
   maskUtr,
+  reminderLine,
   seatDeadline,
 } from '../lib/registration/format';
 import {
@@ -89,6 +91,15 @@ for (const payerName of ['', 'A', 'A'.repeat(121)]) {
 const deadline = seatDeadline(new Date('2026-11-07T12:00:00+05:30'));
 assert.equal(deadline.toISOString(), new Date('2026-11-09T12:00:00+05:30').toISOString());
 assert.match(formatDeadline(deadline), /^9 Nov 2026, 12:00 pm IST$/i);
+
+const heldAt = new Date('2026-11-07T00:00:00Z');
+const after_ = (hours: number) => new Date(heldAt.getTime() + hours * 3_600_000);
+assert.equal(hoursLeft(heldAt, after_(24)), 24);
+assert.equal(hoursLeft(heldAt, after_(24.5)), 24, 'rounds up');
+assert.equal(hoursLeft(heldAt, after_(47.9)), 1);
+assert.equal(hoursLeft(heldAt, after_(60)), 1, 'never says 0h');
+assert.equal(reminderLine(24, true, 45), 'Your seat expires in 24h: pay ₹45');
+assert.equal(reminderLine(24, false, 45), 'Your seat expires in 24h: add your Builder ID and pay ₹45');
 
 const journey = [
   { phase: 'before', step: 'registered', title: '' },
