@@ -354,7 +354,7 @@ Students hand us name, email, phone, college and, when they pay, a UTR and UPI n
 |---|---|
 | Resend: verify `awssbggcet.com` (DNS records), create SMTP credentials | Shivanshu |
 | Cloudflare Turnstile site for `awssbggcet.com` | Shivanshu |
-| Supabase Auth (needed for PR B): Email provider on, OTP length 6, expiry 600 s, custom SMTP = Resend, `{{ .Token }}` in both "Magic Link" and "Confirm signup" templates, email rate limit raised | Shivanshu |
+| Supabase Auth (needed for PR B): Email provider on, "Confirm email" on (the admin check trusts the account's email, so nobody may hold an unconfirmed one), OTP length 6, expiry 600 s, custom SMTP = Resend, `{{ .Token }}` in both "Magic Link" and "Confirm signup" templates, email rate limit raised | Shivanshu |
 | Vercel: function region `bom1`; env vars below in Production | Shivanshu |
 | Event content: capacity, schedule, workshops, FAQs, journey text | content team |
 | Club UPI ID and a QR image with no preset amount (`upiId`, `upiQr`) | leads |
@@ -370,7 +370,7 @@ SMTP_HOST  SMTP_PORT  SMTP_USER  SMTP_PASS  EMAIL_FROM
 NEXT_PUBLIC_TURNSTILE_SITE_KEY
 TURNSTILE_SECRET_KEY
 NEXT_PUBLIC_SUPABASE_URL           # PR B
-NEXT_PUBLIC_SUPABASE_ANON_KEY      # PR B
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY  # PR B
 ADMIN_EMAILS                       # PR B, comma-separated
 CRON_SECRET                        # PR B
 ```

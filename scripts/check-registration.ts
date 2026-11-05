@@ -2,6 +2,7 @@
 // The rules that are easy to break silently: section 3a's validation, masking and journey progress.
 import assert from 'node:assert/strict';
 
+import { escapeLike, parseAdminEmails, toCsv } from '../lib/admin/rules';
 import { dbCredentials, dbSsl } from '../lib/db/ssl';
 import { eventPage } from '../lib/registration/content';
 import {
@@ -152,5 +153,15 @@ assert.deepEqual(dbCredentials('postgres://postgres@127.0.0.1:55432/scd'), {
 });
 assert.equal(dbCredentials(undefined).host, '', 'no URL: migrate stops on the empty host');
 assert.equal(dbCredentials(undefined).ssl, 'require');
+
+assert.deepEqual(parseAdminEmails(' A@x.com, b@y.org ,,'), ['a@x.com', 'b@y.org']);
+assert.deepEqual(parseAdminEmails(undefined), [], 'unset means nobody is an admin');
+assert.equal(escapeLike('50%_a\\b'), '50\\%\\_a\\\\b');
+
+assert.equal(toCsv([['a', null, 'x,y', 'say "hi"', 'two\nlines']]), 'a,,"x,y","say ""hi""","two\nlines"');
+for (const formula of ['=SUM(A1)', '+91', '-1', '@cmd', '\tx', '\rx']) {
+  assert.ok(toCsv([[formula]]).replace(/^"/, '').startsWith("'"), `formula ${JSON.stringify(formula)}`);
+}
+assert.equal(toCsv([['a'], ['b']]), 'a\r\nb');
 
 console.log('Registration rules OK');

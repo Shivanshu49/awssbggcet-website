@@ -13,6 +13,7 @@ import { events, registrations } from '@/lib/db/schema';
 import { EVENT_SLUG, eventPage } from './content';
 import { sendPassLink, sendRegistrationReceived } from './email';
 import { interestsEditable } from './format';
+import { takeSeat } from './seats';
 import { verifyTurnstile } from './turnstile';
 import {
   BUILDER_ID_TAKEN,
@@ -88,21 +89,11 @@ async function insertRegistration(eventId: string, input: RegistrationInput) {
           .returning({ id: registrations.id, passCode: registrations.passCode });
         if (!row) return null;
 
-        // One conditional UPDATE is atomic, so a rush of sign-ups can't pass capacity,
-        // and a duplicate attempt (above) never touches a seat.
-        const [seat] = await tx
-          .update(events)
-          .set({ seatsTaken: sql`${events.seatsTaken} + 1` })
-          .where(
-            and(
-              eq(events.id, eventId),
-              or(isNull(events.capacity), lt(events.seatsTaken, events.capacity)),
-            ),
-          )
-          .returning({ id: events.id });
+        // A duplicate attempt (above) never touches a seat.
+        const hasSeat = await takeSeat(tx, eventId);
         await tx
           .update(registrations)
-          .set(seat ? { seatHeldAt: sql`now()` } : { status: 'waitlisted' })
+          .set(hasSeat ? { seatHeldAt: sql`now()` } : { status: 'waitlisted' })
           .where(eq(registrations.id, row.id));
         return row.passCode;
       });
