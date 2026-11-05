@@ -1,0 +1,259 @@
+{
+  "hero": {
+    "badge": "Flagship Annual Summit • 21st Nov 2026",
+    "title": "BUILD. LEARN. CONNECT.",
+    "tagline": "AWS Student Community Day — GCET",
+    "description": "The culminating capstone leadership summit organized by AWS Builder Center GCET. Bringing together AWS Heroes, Community Builders, industry architects, and student innovators for a full day of hands-on cloud learning.",
+    "date": "Saturday, 21st November 2026",
+    "time": "10:00 AM – 05:00 PM IST",
+    "venue": "GCET Auditorium, Campus 1",
+    "capacity": "200 Seats Only",
+    "fee": "₹45 per participant",
+    "ctaRegister": "Register for Community Day",
+    "ctaExplore": "Explore Schedule"
+  },
+  "infoCards": [
+    {
+      "icon": "Ticket",
+      "title": "Entry Pass",
+      "value": "₹45 only",
+      "description": "Nominal participant pass covering access, digital pass QR, and event materials."
+    },
+    {
+      "icon": "Users",
+      "title": "Limited Capacity",
+      "value": "200 Seats",
+      "description": "Hosted at GCET Auditorium. Strict pre-registration required; slots fill rapidly."
+    },
+    {
+      "icon": "Layers",
+      "title": "Full-Day Summit",
+      "value": "10 AM – 5 PM",
+      "description": "Keynotes, technical deep-dives, hands-on demos, Kahoot quizzes, and panel sessions."
+    },
+    {
+      "icon": "Award",
+      "title": "Perks & Swag",
+      "value": "Certificates & Swags",
+      "description": "Official participation certificates, AWS stickers, community swag, and quiz prizes."
+    }
+  ],
+  "about": {
+    "heading": "One Day. One Community. Countless Possibilities.",
+    "subheading": "The Culminating Leadership Project for Student Builders",
+    "description": "AWS Student Community Day (SCD) is a premier one-day, student-led technical conference recognized in the AWS Playbook as the culminating capstone achievement for Student Builder Group Leaders. Unlike regular sessions, SCD brings together AWS Heroes, industry professionals, and student developers to provide real-world cloud exposure, ignite certification pathways, and celebrate builder culture."
+  },
+  "highlights": [
+    {
+      "icon": "Zap",
+      "title": "Serverless with AWS Lambda",
+      "description": "Master event-driven architecture, compute scaling, and serverless best practices."
+    },
+    {
+      "icon": "ShieldCheck",
+      "title": "Cloud Security (IAM & KMS)",
+      "description": "Deep-dive into least-privilege policies, identity management, and encryption at rest."
+    },
+    {
+      "icon": "Database",
+      "title": "Hands-On Demo: DynamoDB + Lambda",
+      "description": "Live, practical demonstration building low-latency serverless data pipelines."
+    },
+    {
+      "icon": "Users",
+      "title": "Women in Tech & Startup Panel",
+      "description": "Inspirational discussions on diversity, entrepreneurial journeys, and cloud career blueprints."
+    },
+    {
+      "icon": "Gamepad2",
+      "title": "Interactive Quizzes & Games",
+      "description": "AWS Kahoot challenge, AWS Bingo, and 'Guess the Service' with exclusive community prizes."
+    },
+    {
+      "icon": "Award",
+      "title": "Certificates & Recognition",
+      "description": "Earn official verified credentials and connect directly with AWS community leaders."
+    }
+  ],
+  "schedule": [
+    {
+      "time": "10:00 AM – 10:15 AM",
+      "title": "Opening Ceremony & Welcome Address",
+      "type": "Ceremony",
+      "speaker": "Faculty & SBG Student Leads",
+      "description": "Opening remarks, event context, and welcome to student builders and dignitaries."
+    },
+    {
+      "time": "10:15 AM – 10:45 AM",
+      "title": "Keynote 1: Cloud Career Pathways",
+      "type": "Keynote",
+      "speaker": "AWS Hero / Community Builder",
+      "description": "Navigating cloud certifications, community contributions, and high-impact career trajectories."
+    },
+    {
+      "time": "10:45 AM – 11:30 AM",
+      "title": "Technical Session 1: Serverless Applications with AWS Lambda",
+      "type": "Technical Session",
+      "speaker": "Cloud Architecture Specialist",
+      "description": "Architecting resilient, cost-optimized, event-driven backends without managing servers."
+    },
+    {
+      "time": "11:30 AM – 11:45 AM",
+      "title": "Game 1: AWS Kahoot Quiz",
+      "type": "Interactive Activity",
+      "speaker": "Community Leads",
+      "description": "Fast-paced live quiz testing cloud knowledge with on-the-spot community rewards."
+    },
+    {
+      "time": "11:45 AM – 12:30 PM",
+      "title": "Technical Session 2: Cloud Security — IAM & KMS Best Practices",
+      "type": "Technical Session",
+      "speaker": "Industry Cloud Security Expert",
+      "description": "Zero trust architecture, identity governance, cryptographic key management, and compliance."
+    },
+    {
+      "time": "12:30 PM – 01:30 PM",
+      "title": "Lunch Break & Networking (AWS Bingo)",
+      "type": "Networking",
+      "speaker": "All Attendees & Mentors",
+      "description": "Lunch break paired with the AWS Bingo networking challenge to connect with peer developers."
+    },
+    {
+      "time": "01:30 PM – 02:15 PM",
+      "title": "Hands-On Demo: DynamoDB + AWS Lambda",
+      "type": "Live Demo",
+      "speaker": "AWS Educator / Practitioner",
+      "description": "Step-by-step live walkthrough building a fast NoSQL data model integrated with Lambda."
+    },
+    {
+      "time": "02:15 PM – 02:30 PM",
+      "title": "Rapid Fire Quiz Round",
+      "type": "Interactive Activity",
+      "speaker": "Host Team",
+      "description": "Lightning trivia round on cloud concepts with special sponsor swag."
+    },
+    {
+      "time": "02:30 PM – 03:15 PM",
+      "title": "Panel Discussion: Women in Tech & Startup Journeys",
+      "type": "Panel Discussion",
+      "speaker": "Women in Tech Leaders & Startup Founders",
+      "description": "Exploring diversity, startup scaling on AWS, overcoming hurdles, and founder stories."
+    },
+    {
+      "time": "03:15 PM – 03:30 PM",
+      "title": "Game 2: Guess the Service",
+      "type": "Interactive Activity",
+      "speaker": "Community Team",
+      "description": "Interactive architectural icon puzzle and trivia challenge."
+    },
+    {
+      "time": "03:30 PM – 04:15 PM",
+      "title": "Keynote 2: The Future of Cloud & Generative AI",
+      "type": "Keynote",
+      "speaker": "Senior AWS Professional",
+      "description": "Emerging enterprise cloud trends, foundation models, and modern builder skillsets."
+    },
+    {
+      "time": "04:15 PM – 05:00 PM",
+      "title": "Closing Ceremony, Prize Distribution & Swags",
+      "type": "Ceremony",
+      "speaker": "Organizing Committee & Faculty",
+      "description": "Distribution of certificates, awards for quiz winners, swags, and vote of thanks."
+    }
+  ],
+  "speakers": [
+    {
+      "role": "Keynote Speaker",
+      "name": "AWS Hero / Community Builder",
+      "affiliation": "AWS Community Leader",
+      "topic": "Keynote 1: Cloud Career Pathways & Certifications",
+      "status": "Industry Renowned"
+    },
+    {
+      "role": "Security Speaker",
+      "name": "Cloud Security Expert",
+      "affiliation": "Enterprise Security Practitioner",
+      "topic": "Technical Session 2: Cloud Security — IAM & KMS Best Practices",
+      "status": "Industry Leader"
+    },
+    {
+      "role": "Hands-on Lead",
+      "name": "AWS Educator / Practitioner",
+      "affiliation": "AWS Certified Specialist",
+      "topic": "Hands-On Demo: Serverless Data with DynamoDB + Lambda",
+      "status": "Technical Specialist"
+    },
+    {
+      "role": "Panelists",
+      "name": "Startup Founders & Tech Leaders",
+      "affiliation": "Women in Tech & Emerging Startups",
+      "topic": "Panel Discussion: Diversity & Startup Journeys",
+      "status": "Featured Panel"
+    },
+    {
+      "role": "Keynote Speaker",
+      "name": "Senior AWS Professional",
+      "affiliation": "Industry Leader",
+      "topic": "Keynote 2: Future of Cloud, AI & Builder Ecosystems",
+      "status": "Keynote Dignitary"
+    }
+  ],
+  "journey": [
+    {
+      "step": 1,
+      "title": "Register Online",
+      "description": "Head to /community-day/register and reserve your seat (₹45 entry fee per participant)."
+    },
+    {
+      "step": 2,
+      "title": "Receive Digital Pass",
+      "description": "Your confirmation and digital pass link will be generated and emailed to your inbox."
+    },
+    {
+      "step": 3,
+      "title": "Check In at GCET Auditorium",
+      "description": "Arrive by 9:30 AM at Campus 1 GCET Auditorium and present your pass QR code for verification."
+    },
+    {
+      "step": 4,
+      "title": "Build, Compete & Earn Swags",
+      "description": "Participate in keynotes, technical tracks, Kahoot quizzes, and collect your certificates & swag."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "What is the registration fee for AWS Student Community Day 2026?",
+      "answer": "The registration fee is ₹45 per participant. This covers your event entry, attendee kit, session access, and verification credentials."
+    },
+    {
+      "question": "Who is eligible to attend?",
+      "answer": "All college students from any branch or year who are interested in cloud computing, serverless architectures, and building technology can attend."
+    },
+    {
+      "question": "How will I receive my event entry pass?",
+      "answer": "After completing registration at /community-day/register, your digital entry pass with a unique QR code will be generated and sent to your email address."
+    },
+    {
+      "question": "Are seats limited?",
+      "answer": "Yes. Due to auditorium capacity, registration is strictly limited to 200 attendees on a first-come, first-served basis."
+    },
+    {
+      "question": "Will participants receive a certificate?",
+      "answer": "Yes, verified participants who attend the full-day summit will receive an official digital Certificate of Participation."
+    }
+  ],
+  "venue": {
+    "name": "GCET Auditorium, Campus 1",
+    "institution": "Galgotias College of Engineering & Technology",
+    "address": "1, Knowledge Park II, Greater Noida, Uttar Pradesh 201306",
+    "capacity": "200 Seats (Strict Limit)",
+    "mapLink": "https://maps.google.com/?q=Galgotias+College+of+Engineering+and+Technology"
+  },
+  "finalCTA": {
+    "badge": "200 Seats Capacity • Registration Live",
+    "heading": "Secure Your Seat for AWS Student Community Day 2026",
+    "subheading": "Join us on 21st November 2026 at the GCET Auditorium for North India's flagship student cloud summit.",
+    "fee": "Entry Fee: ₹45 per participant",
+    "buttonText": "Register Now"
+  }
+}
