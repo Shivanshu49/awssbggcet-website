@@ -61,6 +61,47 @@ if (eventPage.registration.collectMeal) {
 for (const id of ['ab', 'a'.repeat(51), 'has space', 'bad!']) {
   assert.equal(builderIdSchema.safeParse(id).success, false, id);
 }
+// Every pasted form of an alias saves the same value, so the unique index still catches duplicates.
+const PROFILE = 'https://builder.aws.com/community/';
+for (const pasted of [
+  '@Asha.Rao-1',
+  ' @asha.rao-1 ',
+  `${PROFILE}@Asha.Rao-1`,
+  ` ${PROFILE}@asha.rao-1/ `,
+  `${PROFILE}@asha.rao-1?utm_source=share`,
+  `${PROFILE}@asha.rao-1/#about`,
+  'http://builder.aws.com/community/@asha.rao-1',
+  'builder.aws.com/community/@asha.rao-1',
+  'HTTPS://BUILDER.AWS.COM/community/@ASHA.RAO-1',
+]) {
+  assert.equal(builderIdSchema.parse(pasted), 'asha.rao-1', pasted);
+  assert.equal(detailsSchema.parse({ ...details, builderId: pasted }).builderId, 'asha.rao-1', pasted);
+}
+assert.equal(builderIdSchema.parse('https://builder.aws.com/community/@shivanshu049'), 'shivanshu049');
+assert.equal(detailsSchema.parse({ ...details, builderId: '   ' }).builderId, null, 'blank stays optional');
+for (const bad of [
+  '@',
+  '@@asha',
+  '@ab',
+  '@has space',
+  'asha@example.com',
+  `${PROFILE}@`,
+  `${PROFILE}@ab`,
+  `${PROFILE}@has space`,
+  `${PROFILE}@bad!`,
+  `${PROFILE}asha`, // no @: not a profile
+  `${PROFILE}events`, // a site page must not pass as the alias "events"
+  `${PROFILE}@asha/posts`,
+  'https://builder.aws.com/@asha',
+  'https://evil.example/community/@asha',
+  'https://builder.aws.com.evil.example/community/@asha',
+  'https://builder.aws.com@evil.example/community/@asha',
+  'https://evil.example/builder.aws.com/community/@asha',
+  'ftp://builder.aws.com/community/@asha',
+]) {
+  assert.equal(builderIdSchema.safeParse(bad).success, false, bad);
+  assert.equal(errorFor(detailsSchema, { ...details, builderId: bad }, 'builderId'), 'Enter a valid AWS Builder ID', bad);
+}
 assert.equal(errorFor(contactSchema, { ...contact, email: 'nope' }, 'email'), 'Enter a valid email address');
 for (const phone of ['+91 98123 45210', '919812345210', '09812345210']) {
   assert.equal(normalizePhone(phone), '9812345210', phone);
