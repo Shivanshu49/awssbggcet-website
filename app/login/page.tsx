@@ -103,10 +103,10 @@ export default function LoginPage() {
             <Mail className="w-4 h-4 text-slate-500 shrink-0" />
             <span>Lost your confirmation email or pass link?</span>
             <a
-              href="mailto:awscloudclub@gmail.com"
+              href="mailto:gcetawscloudclub@gmail.com"
               className="text-amber-400 hover:underline font-medium"
             >
-              awscloudclub@gmail.com
+              gcetawscloudclub@gmail.com
             </a>
           </p>
         </div>
