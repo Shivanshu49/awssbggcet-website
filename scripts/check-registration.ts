@@ -1,6 +1,9 @@
 // Usage: pnpm check:registration
 // The rules that are easy to break silently: section 3a's validation, masking and journey progress.
 import assert from 'node:assert/strict';
+import { existsSync } from 'node:fs';
+
+import { ZXING_WASM_VERSION } from 'barcode-detector/ponyfill';
 
 import { cronAuthorized } from '../lib/admin/cron-auth';
 import { escapeLike, parseAdminEmails, toCsv } from '../lib/admin/rules';
@@ -20,6 +23,7 @@ import {
 } from '../lib/registration/format';
 import {
   builderIdSchema,
+  checkinCodeFromScan,
   contactSchema,
   detailsSchema,
   interestsSchemaFor,
@@ -221,6 +225,23 @@ assert.deepEqual(dbCredentials('postgres://postgres@127.0.0.1:55432/scd'), {
 });
 assert.equal(dbCredentials(undefined).host, '', 'no URL: migrate stops on the empty host');
 assert.equal(dbCredentials(undefined).ssl, 'require');
+
+const CHECKIN_CODE = 'AbCdEfGhIjKlMnOpQrSt-_';
+assert.equal(checkinCodeFromScan(`https://www.awssbggcet.com/admin/checkin?c=${CHECKIN_CODE}`), CHECKIN_CODE);
+assert.equal(checkinCodeFromScan(` http://localhost:3000/admin/checkin?c=${CHECKIN_CODE} `), CHECKIN_CODE);
+assert.equal(checkinCodeFromScan(CHECKIN_CODE), CHECKIN_CODE, 'a bare code');
+for (const other of [
+  'upi://pay?pa=9289850019@ptaxis&pn=A',
+  'https://www.awssbggcet.com/admin/checkin',
+  'https://www.awssbggcet.com/admin/checkin?c=short',
+  'https://www.awssbggcet.com/admin/checkin?c=',
+  `https://www.awssbggcet.com/admin/checkin?c=${CHECKIN_CODE}x`,
+  'hello',
+  '',
+]) {
+  assert.equal(checkinCodeFromScan(other), null, other);
+}
+assert.ok(existsSync(`public/scd/zxing_reader-${ZXING_WASM_VERSION}.wasm`), 'scanner WASM must match the installed library');
 
 assert.deepEqual(parseAdminEmails(' A@x.com, b@y.org ,,'), ['a@x.com', 'b@y.org']);
 assert.deepEqual(parseAdminEmails(undefined), [], 'unset means nobody is an admin');

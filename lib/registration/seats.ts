@@ -1,7 +1,7 @@
 import { and, asc, count, eq, isNotNull, isNull, lt, lte, notInArray, or, sql } from 'drizzle-orm';
 
 import type { db } from '@/lib/db'; // Type only, so scripts can import this module outside Next.js.
-import { events, registrations } from '@/lib/db/schema';
+import { events, registrations, type Registration } from '@/lib/db/schema';
 
 import { SEAT_HOLD_HOURS } from './format';
 
@@ -267,4 +267,41 @@ export async function markQrEmailed(database: Db | Tx, id: string) {
 export async function countQrUnsent(database: Db, eventId: string) {
   const [{ n }] = await database.select({ n: count() }).from(registrations).where(qrUnsent(eventId));
   return n;
+}
+
+const ATTENDEE = { name: registrations.name, college: registrations.college, ticketNo: registrations.ticketNo };
+type Attendee = { name: string; college: string; ticketNo: string };
+
+export type CheckInResult =
+  | ({ kind: 'ok' } & Attendee)
+  | ({ kind: 'already'; at: Date; by: string | null } & Attendee)
+  | ({ kind: 'not_admitted'; status: Registration['status'] } & Attendee)
+  | { kind: 'unknown' };
+
+// One conditional UPDATE, so two volunteers scanning one QR can't both succeed.
+export async function checkIn(database: Db, code: string, admin: string): Promise<CheckInResult> {
+  const [row] = await database
+    .update(registrations)
+    .set({ checkedInAt: sql`now()`, checkedInBy: admin })
+    .where(
+      and(eq(registrations.checkinCode, code), eq(registrations.status, 'approved'), isNull(registrations.checkedInAt)),
+    )
+    .returning(ATTENDEE);
+  if (row) return { kind: 'ok', ...row };
+
+  const [found] = await database
+    .select({
+      ...ATTENDEE,
+      status: registrations.status,
+      checkedInAt: registrations.checkedInAt,
+      checkedInBy: registrations.checkedInBy,
+    })
+    .from(registrations)
+    .where(eq(registrations.checkinCode, code))
+    .limit(1);
+  if (!found) return { kind: 'unknown' };
+  const { name, college, ticketNo, status, checkedInAt, checkedInBy } = found;
+  return checkedInAt
+    ? { kind: 'already', name, college, ticketNo, at: checkedInAt, by: checkedInBy }
+    : { kind: 'not_admitted', name, college, ticketNo, status };
 }

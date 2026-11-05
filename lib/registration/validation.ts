@@ -48,6 +48,14 @@ const PASS_CODE_PATTERN = /^[\w-]{22}$/; // randomBytes(16) in base64url
 
 export const passCodeSchema = z.string().regex(PASS_CODE_PATTERN);
 
+// The QR holds a /admin/checkin?c=<code> URL, and check-in codes have the same shape as pass codes.
+// Anything else a scanner picks up, like a UPI QR, has no code.
+export function checkinCodeFromScan(text: string) {
+  const value = text.trim();
+  const code = URL.canParse(value) ? new URL(value).searchParams.get('c') : value;
+  return code !== null && PASS_CODE_PATTERN.test(code) ? code : null;
+}
+
 // Pasted numbers often carry +91 or a leading 0. Slicing to 10 digits instead would save
 // "919812345210" as "9198123452": wrong, but valid.
 export function normalizePhone(value: string) {
