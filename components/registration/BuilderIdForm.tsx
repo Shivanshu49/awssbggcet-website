@@ -40,6 +40,7 @@ export function BuilderIdForm({
       const result = await saveBuilderId(code, value);
       setError(result.error ?? '');
       setSaved(!result.error);
+      if (!result.error) setValue(parsed.data); // Shows the alias taken from a pasted URL.
     });
   };
 

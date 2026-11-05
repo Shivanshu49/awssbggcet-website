@@ -43,6 +43,7 @@ export const UTR_TAKEN = "This UTR has already been submitted — contact us if 
 // Starts with a letter; \p{M} keeps combining marks, so names in Indian scripts pass.
 const NAME_PATTERN = /^\p{L}[\p{L}\p{M} .'’-]*$/u;
 const BUILDER_ID_PATTERN = /^[A-Za-z0-9._-]{3,50}$/;
+const BUILDER_PROFILE_URL = /^(?:https?:\/\/)?builder\.aws\.com\/community\/@([^/?#]+)\/?(?:[?#].*)?$/i;
 const PASS_CODE_PATTERN = /^[\w-]{22}$/; // randomBytes(16) in base64url
 
 export const passCodeSchema = z.string().regex(PASS_CODE_PATTERN);
@@ -56,11 +57,18 @@ export function normalizePhone(value: string) {
   return digits;
 }
 
+// People paste "@alias" or their profile URL. The URL must be a Builder Center profile, so a page
+// like /community/events can't pass as the alias "events". The alias rules still apply afterwards.
+function normalizeBuilderId(value: string) {
+  const alias = value.match(BUILDER_PROFILE_URL)?.[1] ?? value.replace(/^@/, '');
+  return alias.toLowerCase();
+}
+
 export const builderIdSchema = z
   .string(BUILDER_ID_ERROR)
   .trim()
-  .regex(BUILDER_ID_PATTERN, BUILDER_ID_ERROR)
-  .transform((value) => value.toLowerCase());
+  .transform(normalizeBuilderId)
+  .pipe(z.string().regex(BUILDER_ID_PATTERN, BUILDER_ID_ERROR));
 
 export const emailSchema = z
   .string(EMAIL_ERROR)
@@ -92,8 +100,8 @@ export const detailsSchema = z.object({
   builderId: z
     .string(BUILDER_ID_ERROR)
     .trim()
-    .refine((value) => value === '' || BUILDER_ID_PATTERN.test(value), BUILDER_ID_ERROR)
-    .transform((value) => value.toLowerCase() || null),
+    .refine((value) => value === '' || BUILDER_ID_PATTERN.test(normalizeBuilderId(value)), BUILDER_ID_ERROR)
+    .transform((value) => normalizeBuilderId(value) || null),
 });
 
 // Step 2: Contact & confirm
