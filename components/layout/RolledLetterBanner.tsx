@@ -1,7 +1,5 @@
 'use client';
 
-// Not rendered: off until a banner with no AWS logos arrives. To bring it back, add the new image at
-// the Image src below and put this component back in Header.tsx.
 import React, { useEffect, useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -326,7 +324,7 @@ export const RolledLetterBanner: React.FC<RolledLetterBannerProps> = ({
                     title="Click to Open Community Day Registration Page"
                   >
                     <Image
-                      src="/events/aws-community-day-banner.jpg"
+                      src="/events/aws-community-day-banner.webp"
                       alt="AWS Student Community Day 2026 - Galgotias College of Engineering and Technology"
                       fill
                       priority
