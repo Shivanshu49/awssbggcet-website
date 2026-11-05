@@ -497,7 +497,7 @@ const EVENT_CARDS = [
   {
     title: 'AWS Student Community Day 2026',
     date: '2026-11-21',
-    time: '10:00 AM – 4:00 PM IST',
+    time: '10:00 AM – 5:00 PM IST',
     venue: 'Galgotias College of Engineering & Technology, Greater Noida',
     format: 'Flagship Conference · Learn | Build | Connect',
     registrationUrl: '/community-day/register',

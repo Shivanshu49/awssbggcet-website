@@ -267,7 +267,7 @@ export default async function PassPage({ params }: { params: Promise<{ code: str
             </div>
           </div>
           <span className={`rounded-full border px-3 py-1.5 font-mono text-[10px] font-bold tracking-wide ${badge.className}`}>
-            {badge.label}
+            {reg.status === 'approved' && !released ? 'PAYMENT CONFIRMED' : badge.label}
           </span>
           {reg.status === 'pending' && reg.seatHeldAt && (
             <div className="basis-full rounded-xl border border-[#FBBF24]/40 bg-[#FBBF24]/10 px-4 py-3 text-sm text-[#FDE68A]">

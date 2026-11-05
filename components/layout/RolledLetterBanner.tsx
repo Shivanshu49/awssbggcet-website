@@ -1,5 +1,7 @@
 'use client';
 
+// Not rendered: off until a banner with no AWS logos arrives. To bring it back, add the new image at
+// the Image src below and put this component back in Header.tsx.
 import React, { useEffect, useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -126,7 +128,7 @@ export const RolledLetterBanner: React.FC<RolledLetterBannerProps> = ({
       'Join AWS Student Builder Group GCET for the premier flagship student cloud engineering conference featuring keynote sessions, hands-on cloud labs, architect showcases, and community networking.'
     );
     const location = encodeURIComponent('Galgotias College of Engineering & Technology, Greater Noida');
-    const dates = '20261121T043000Z/20261121T103000Z'; // 10:00 AM - 4:00 PM IST
+    const dates = '20261121T043000Z/20261121T113000Z'; // 10:00 AM - 5:00 PM IST
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${dates}`;
   }, []);
 
@@ -353,7 +355,7 @@ export const RolledLetterBanner: React.FC<RolledLetterBannerProps> = ({
 
                     <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2A1308]/90 border border-amber-500/50 text-[#FEF08A] shadow-md">
                       <Clock className="w-4 h-4 text-[#FDE68A]" />
-                      <span>10:00 AM – 4:00 PM IST</span>
+                      <span>10:00 AM – 5:00 PM IST</span>
                     </div>
 
                     <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2A1308]/90 border border-amber-500/50 text-[#FEF08A] shadow-md">

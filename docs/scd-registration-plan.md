@@ -1,7 +1,7 @@
 # Event Registration & Pass — AWS Student Community Day 2026
 
 Spec for on-site registration with a payment step and a pass page.
-Event: **21 Nov 2026, 10:00 AM – 4:00 PM IST, GCET Greater Noida** · Site: **awssbggcet.com**
+Event: **21 Nov 2026, 10:00 AM – 5:00 PM IST, GCET Greater Noida** · Site: **awssbggcet.com**
 Reference for the pass page: futurebuildersconnect.com ("My Pass").
 Supersedes the auth row in `docs/backend-plan.md` §1.
 
