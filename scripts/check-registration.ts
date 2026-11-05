@@ -2,6 +2,7 @@
 // The rules that are easy to break silently: section 3a's validation, masking and journey progress.
 import assert from 'node:assert/strict';
 
+import { cronAuthorized } from '../lib/admin/cron-auth';
 import { escapeLike, parseAdminEmails, toCsv } from '../lib/admin/rules';
 import { dbCredentials, dbSsl } from '../lib/db/ssl';
 import { eventPage } from '../lib/registration/content';
@@ -163,5 +164,12 @@ for (const formula of ['=SUM(A1)', '+91', '-1', '@cmd', '\tx', '\rx']) {
   assert.ok(toCsv([[formula]]).replace(/^"/, '').startsWith("'"), `formula ${JSON.stringify(formula)}`);
 }
 assert.equal(toCsv([['a'], ['b']]), 'a\r\nb');
+
+assert.equal(cronAuthorized('Bearer s3cret', 's3cret'), true);
+assert.equal(cronAuthorized('Bearer wrong', 's3cret'), false);
+assert.equal(cronAuthorized('s3cret', 's3cret'), false, 'needs the Bearer prefix');
+assert.equal(cronAuthorized(null, 's3cret'), false);
+assert.equal(cronAuthorized('Bearer ', ''), false, 'an unset secret refuses everything');
+assert.equal(cronAuthorized('Bearer undefined', undefined), false, 'an unset secret refuses everything');
 
 console.log('Registration rules OK');

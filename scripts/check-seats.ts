@@ -10,7 +10,19 @@ import postgres from 'postgres';
 
 import * as schema from '../lib/db/schema';
 import { dbSsl } from '../lib/db/ssl';
-import { cancelRow, confirmRow, EVENT_FULL, EVENT_FULL_REFUND, Refused, restoreRow, STALE, takeSeat, type Tx } from '../lib/registration/seats';
+import {
+  cancelRow,
+  confirmRow,
+  EVENT_FULL,
+  EVENT_FULL_REFUND,
+  Refused,
+  restoreRow,
+  runHourlyJob,
+  STALE,
+  submitUtr,
+  takeSeat,
+  type Tx,
+} from '../lib/registration/seats';
 
 const { events, registrations } = schema;
 
@@ -186,6 +198,101 @@ async function main() {
     (err: { cause?: { constraint_name?: string } }) => err.cause?.constraint_name === 'registrations_event_id_utr_key',
   );
   assert.equal((await rowOf(dupe)).status, 'payment_submitted');
+
+  // The hourly job: only unpaid seats past 48 hours go, with or without a Builder ID.
+  const hoursAgo = (hours: number) => new Date(Date.now() - hours * 3_600_000);
+  event = await newEvent(5, 5);
+  const noBuilder = await person(event, 'pending', { seatHeldAt: hoursAgo(49) });
+  const withBuilder = await person(event, 'pending', { seatHeldAt: hoursAgo(49), builderId: `b${randomBytes(4).toString('hex')}` });
+  const inTime = await person(event, 'pending', { seatHeldAt: hoursAgo(47) });
+  const submitted = await person(event, 'payment_submitted', { seatHeldAt: hoursAgo(72) });
+  const issued = await person(event, 'approved', { seatHeldAt: hoursAgo(72) });
+  const queued = await person(event, 'waitlisted');
+  let run = await runHourlyJob(db, event);
+  assert.deepEqual(run.released.map((r) => r.id).sort(), [noBuilder, withBuilder].sort());
+  assert.deepEqual(run.promoted.map((r) => r.id), [queued], 'one seat to the waitlist');
+  assert.equal(await seats(event), 4, 'the other seat is freed');
+  assert.equal((await rowOf(noBuilder)).status, 'cancelled');
+  assert.equal((await rowOf(inTime)).status, 'pending');
+  assert.equal((await rowOf(submitted)).status, 'payment_submitted', 'a UTR stops the clock');
+  assert.equal((await rowOf(issued)).status, 'approved');
+  assert.ok((await rowOf(queued)).seatHeldAt! > hoursAgo(1), 'promotion starts a new clock');
+
+  // Reminders: pending past 24 hours, once, and never for someone released in the same run.
+  assert.deepEqual(run.reminded.map((r) => r.id), [inTime]);
+  assert.ok(!run.reminded.some((r) => r.id === noBuilder));
+  assert.equal(run.reminded[0].builderId, null, 'tells the email which wording to use');
+  run = await runHourlyJob(db, event);
+  assert.deepEqual([run.released.length, run.promoted.length, run.reminded.length], [0, 0, 0], 'a second run does nothing');
+
+  // A restored seat gets its own reminder on the fresh clock.
+  await inTx((tx) => restoreRow(tx, noBuilder));
+  await db.update(registrations).set({ seatHeldAt: hoursAgo(25) }).where(eq(registrations.id, noBuilder));
+  run = await runHourlyJob(db, event);
+  assert.deepEqual(run.reminded.map((r) => r.id), [noBuilder]);
+
+  // A raised capacity promotes people while seats are free, oldest first.
+  event = await newEvent(1, 1);
+  const q1 = await person(event, 'waitlisted');
+  const q2 = await person(event, 'waitlisted');
+  const q3 = await person(event, 'waitlisted');
+  run = await runHourlyJob(db, event);
+  assert.equal(run.promoted.length, 0, 'still full');
+  await db.update(events).set({ capacity: 3 }).where(eq(events.id, event));
+  run = await runHourlyJob(db, event);
+  assert.deepEqual(run.promoted.map((r) => r.id), [q1, q2]);
+  assert.equal((await rowOf(q3)).status, 'waitlisted');
+  assert.equal(await seats(event), 3);
+  event = await newEvent(null, 0);
+  const unlimited = await person(event, 'waitlisted');
+  assert.deepEqual((await runHourlyJob(db, event)).promoted.map((r) => r.id), [unlimited]);
+  assert.equal(await seats(event), 1, 'an empty waitlist stops the loop without taking a seat');
+
+  // Overlapping runs: everyone handled once, and the seat count stays right.
+  event = await newEvent(3, 3);
+  for (let i = 0; i < 3; i++) await person(event, 'pending', { seatHeldAt: hoursAgo(50) });
+  await person(event, 'waitlisted');
+  const remindMe = await newEvent(1, 1);
+  await person(remindMe, 'pending', { seatHeldAt: hoursAgo(30) });
+  const overlap = await Promise.all([runHourlyJob(db, event), runHourlyJob(db, event), runHourlyJob(db, event)]);
+  assert.equal(overlap.flatMap((r) => r.released).length, 3, 'each release counted once');
+  assert.equal(overlap.flatMap((r) => r.promoted).length, 1, 'one promotion');
+  assert.equal(await seats(event), 1);
+  const reminders = await Promise.all([runHourlyJob(db, remindMe), runHourlyJob(db, remindMe)]);
+  assert.equal(reminders.flatMap((r) => r.reminded).length, 1, 'overlapping runs send one reminder');
+
+  // Paying at the moment the seat expires: exactly one of them wins, and the seat count agrees.
+  for (let i = 0; i < 10; i++) {
+    event = await newEvent(1, 1);
+    const racer = await person(event, 'pending', {
+      seatHeldAt: hoursAgo(49),
+      builderId: `b${randomBytes(4).toString('hex')}`,
+      passCode: `race${i}${randomBytes(4).toString('hex')}`,
+    });
+    const { passCode } = await rowOf(racer);
+    const [paid_, job] = await Promise.all([
+      submitUtr(db, { passCode, utr: `2000000000${String(i).padStart(2, '0')}`, payerName: 'R' }),
+      runHourlyJob(db, event),
+    ]);
+    const final = await rowOf(racer);
+    if (paid_) {
+      assert.equal(final.status, 'payment_submitted');
+      assert.equal(job.released.length, 0);
+      assert.equal(await seats(event), 1);
+    } else {
+      assert.equal(final.status, 'cancelled');
+      assert.equal(final.utr, null);
+      assert.equal(job.released.length, 1);
+      assert.equal(await seats(event), 0);
+    }
+  }
+
+  // The Pay box gate holds in the database too.
+  event = await newEvent(1, 1);
+  const noId = await person(event, 'pending', { seatHeldAt: new Date() });
+  assert.equal(await submitUtr(db, { passCode: (await rowOf(noId)).passCode, utr: '300000000001', payerName: 'N' }), false, 'needs a Builder ID');
+  const onList = await person(event, 'waitlisted', { builderId: `b${randomBytes(4).toString('hex')}` });
+  assert.equal(await submitUtr(db, { passCode: (await rowOf(onList)).passCode, utr: '300000000002', payerName: 'N' }), false, 'needs a seat');
 
   console.log('Seat rules OK');
 }

@@ -2,7 +2,7 @@
 
 import { randomBytes, randomInt } from 'node:crypto';
 
-import { and, eq, inArray, isNotNull, isNull, lt, or, sql } from 'drizzle-orm';
+import { and, eq, inArray, isNull, lt, or, sql } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { after } from 'next/server';
@@ -13,7 +13,7 @@ import { events, registrations } from '@/lib/db/schema';
 import { EVENT_SLUG, eventPage } from './content';
 import { sendPassLink, sendRegistrationReceived } from './email';
 import { interestsEditable } from './format';
-import { takeSeat } from './seats';
+import { submitUtr, takeSeat } from './seats';
 import { verifyTurnstile } from './turnstile';
 import {
   BUILDER_ID_TAKEN,
@@ -219,24 +219,7 @@ export async function submitPayment(code: unknown, input: unknown): Promise<Paym
   if (!passCode.success) return { formError: closed };
 
   try {
-    // Needs status = pending, as the 48-hour release does, so exactly one of them wins.
-    const rows = await db
-      .update(registrations)
-      .set({
-        status: 'payment_submitted',
-        utr: parsed.data.utr,
-        payerName: parsed.data.payerName,
-        utrSubmittedAt: sql`now()`,
-      })
-      .where(
-        and(
-          eq(registrations.passCode, passCode.data),
-          eq(registrations.status, 'pending'),
-          isNotNull(registrations.builderId),
-        ),
-      )
-      .returning({ id: registrations.id });
-    if (!rows.length) return { formError: closed };
+    if (!(await submitUtr(db, { passCode: passCode.data, ...parsed.data }))) return { formError: closed };
   } catch (err) {
     const { code: pgCode, constraint_name: constraint } = pgError(err);
     if (constraint === UTR_INDEX) return { fieldErrors: { utr: UTR_TAKEN } };
