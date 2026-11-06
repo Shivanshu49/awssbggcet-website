@@ -75,6 +75,65 @@ function Field({
   );
 }
 
+// Native radios (visually hidden) give arrow keys, Space and screen-reader "2 of 5" for free.
+function PillRadios({
+  name,
+  label,
+  options,
+  value,
+  onChange,
+  error,
+}: {
+  name: string;
+  label: string;
+  options: readonly { value: string; label: string }[];
+  value: string;
+  onChange: (value: string) => void;
+  error?: string;
+}) {
+  return (
+    <div>
+      <p id={`${name}-label`} className={FIELD_LABEL}>
+        {label}
+      </p>
+      <div
+        role="radiogroup"
+        aria-labelledby={`${name}-label`}
+        aria-invalid={Boolean(error)}
+        aria-describedby={error ? `${name}-error` : undefined}
+        tabIndex={-1}
+        className="grid grid-cols-[repeat(auto-fit,minmax(3rem,1fr))] gap-2 rounded-xl outline-none"
+      >
+        {options.map((option) => (
+          <label
+            key={option.value}
+            className={`cursor-pointer rounded-full border px-1 py-2.5 text-center text-xs font-semibold transition has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[#FBBF24] ${
+              value === option.value
+                ? 'border-[#FBBF24] bg-[#FBBF24] text-[#090511]'
+                : `${fieldBorder(error)} bg-[#1A0E2A]/70 text-[#CFC5DC] hover:border-[#FBBF24]/60 hover:text-white`
+            }`}
+          >
+            <input
+              type="radio"
+              name={name}
+              value={option.value}
+              checked={value === option.value}
+              onChange={() => onChange(option.value)}
+              className="sr-only"
+            />
+            {option.label}
+          </label>
+        ))}
+      </div>
+      {error && (
+        <p id={`${name}-error`} className={FIELD_ERROR}>
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export function RegistrationForm() {
   // React state only: no browser storage for personal data.
   const [values, setValues] = useState({
@@ -121,7 +180,7 @@ export function RegistrationForm() {
       firstRender.current = false;
       return;
     }
-    form.current?.querySelector<HTMLElement>('input, select, button')?.focus();
+    form.current?.querySelector<HTMLElement>('input, button')?.focus();
   }, [step]);
 
   // Runs after the step effect, so a server error sent back to step 1 wins the focus.
@@ -197,73 +256,23 @@ export function RegistrationForm() {
               collegeError={errors.college}
               branchError={errors.branch}
             />
-            <div>
-              <label htmlFor="yearOfStudy" className={FIELD_LABEL}>
-                Year of study *
-              </label>
-              <select
-                id="yearOfStudy"
-                value={values.yearOfStudy}
-                onChange={(e) => update('yearOfStudy', e.target.value)}
-                aria-invalid={Boolean(errors.yearOfStudy)}
-                aria-describedby={errors.yearOfStudy ? 'yearOfStudy-error' : undefined}
-                className={`${FIELD_INPUT} ${fieldBorder(errors.yearOfStudy)}`}
-              >
-                <option value="" className="bg-[#140C20]">
-                  Select your year
-                </option>
-                {YEAR_OPTIONS.map(({ value, label }) => (
-                  <option key={value} value={value} className="bg-[#140C20]">
-                    {label}
-                  </option>
-                ))}
-              </select>
-              {errors.yearOfStudy && (
-                <p id="yearOfStudy-error" className={FIELD_ERROR}>
-                  {errors.yearOfStudy}
-                </p>
-              )}
-            </div>
+            <PillRadios
+              name="yearOfStudy"
+              label="Year of study *"
+              options={YEAR_OPTIONS}
+              value={values.yearOfStudy}
+              onChange={(value) => update('yearOfStudy', value)}
+              error={errors.yearOfStudy}
+            />
             {eventPage.registration.collectMeal && (
-              <div>
-                <p id="meal-label" className={FIELD_LABEL}>
-                  Meal preference *
-                </p>
-                <div
-                  role="radiogroup"
-                  aria-labelledby="meal-label"
-                  aria-invalid={Boolean(errors.mealPref)}
-                  aria-describedby={errors.mealPref ? 'meal-error' : undefined}
-                  tabIndex={-1}
-                  className="flex flex-wrap gap-2 rounded-xl outline-none"
-                >
-                  {MEAL_OPTIONS.map(({ value, label }) => (
-                    <label
-                      key={value}
-                      className={`cursor-pointer rounded-full border px-4 py-2 text-xs font-semibold transition has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[#FBBF24] ${
-                        values.mealPref === value
-                          ? 'border-[#FBBF24] bg-[#FBBF24]/15 text-[#FBBF24]'
-                          : `${fieldBorder(errors.mealPref)} bg-[#1A0E2A]/70 text-[#CFC5DC]`
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="mealPref"
-                        value={value}
-                        checked={values.mealPref === value}
-                        onChange={() => update('mealPref', value)}
-                        className="sr-only"
-                      />
-                      {label}
-                    </label>
-                  ))}
-                </div>
-                {errors.mealPref && (
-                  <p id="meal-error" className={FIELD_ERROR}>
-                    {errors.mealPref}
-                  </p>
-                )}
-              </div>
+              <PillRadios
+                name="mealPref"
+                label="Meal preference *"
+                options={MEAL_OPTIONS}
+                value={values.mealPref}
+                onChange={(value) => update('mealPref', value)}
+                error={errors.mealPref}
+              />
             )}
             <Field
               id="builderId"
