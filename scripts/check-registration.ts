@@ -6,7 +6,7 @@ import { existsSync } from 'node:fs';
 import { ZXING_WASM_VERSION } from 'barcode-detector/ponyfill';
 
 import { cronAuthorized } from '../lib/admin/cron-auth';
-import { escapeLike, parseAdminEmails, toCsv } from '../lib/admin/rules';
+import { escapeLike, parseAdminEmails, parseUtrList, toCsv } from '../lib/admin/rules';
 import { dbCredentials, dbSsl } from '../lib/db/ssl';
 import { eventPage, qrReleased } from '../lib/registration/content';
 import {
@@ -252,6 +252,12 @@ for (const formula of ['=SUM(A1)', '+91', '-1', '@cmd', '\tx', '\rx']) {
   assert.ok(toCsv([[formula]]).replace(/^"/, '').startsWith("'"), `formula ${JSON.stringify(formula)}`);
 }
 assert.equal(toCsv([['a'], ['b']]), 'a\r\nb');
+assert.deepEqual(
+  parseUtrList(' 100000000001\r\n100000000002,100000000003 ;\t100000000001\n\n,'),
+  ['100000000001', '100000000002', '100000000003'],
+  'lines, commas, blanks and duplicates',
+);
+assert.deepEqual(parseUtrList(' \n , '), []);
 
 assert.equal(cronAuthorized('Bearer s3cret', 's3cret'), true);
 assert.equal(cronAuthorized('Bearer wrong', 's3cret'), false);

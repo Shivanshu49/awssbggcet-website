@@ -29,3 +29,8 @@ function csvCell(value: string | null) {
 export function toCsv(rows: (string | null)[][]) {
   return rows.map((row) => row.map(csvCell).join(',')).join('\r\n');
 }
+
+// A column pasted from the bank statement: one per line or comma-separated, duplicates dropped.
+export function parseUtrList(text: string) {
+  return [...new Set(text.split(/[\s,;]+/).filter(Boolean))];
+}
