@@ -1,11 +1,12 @@
 import { and, count, desc, eq, ilike, inArray, or, type SQL } from 'drizzle-orm';
-import { Download, Upload } from 'lucide-react';
+import { Download } from 'lucide-react';
 import Link from 'next/link';
 
 import { BuilderIdReminderButton } from '@/components/admin/BuilderIdReminderButton';
+import { BulkConfirmForm } from '@/components/admin/BulkConfirmForm';
 import { RowActions } from '@/components/admin/RowActions';
 import { SendQrPassesButton } from '@/components/admin/SendQrPassesButton';
-import { CARD, CARD_TITLE, FIELD_INPUT, SECONDARY_BUTTON, SMALL_SECONDARY_BUTTON, fieldBorder } from '@/components/registration/field-styles';
+import { CARD, FIELD_INPUT, SECONDARY_BUTTON, SMALL_SECONDARY_BUTTON, fieldBorder } from '@/components/registration/field-styles';
 import { signOutAdmin } from '@/lib/admin/actions';
 import { requireAdmin } from '@/lib/admin/auth';
 import { escapeLike } from '@/lib/admin/rules';
@@ -132,15 +133,7 @@ export default async function AdminScdPage({
         </p>
       )}
 
-      <section aria-labelledby="statement-heading" className={`${CARD} flex items-center gap-3`}>
-        <Upload className="size-5 shrink-0 text-[#4C2A66]" aria-hidden="true" />
-        <div>
-          <h2 id="statement-heading" className={CARD_TITLE}>
-            Bank statement
-          </h2>
-          <p className="text-sm text-[#CFC5DC]">Upload coming soon. Until then, confirm payments by hand below.</p>
-        </div>
-      </section>
+      <BulkConfirmForm statusLabels={STATUS_LABELS} />
 
       <div className="flex flex-wrap items-end justify-between gap-3">
         <form className="grid min-w-0 flex-1 basis-80 gap-2 sm:grid-cols-[minmax(0,1fr)_13rem_auto]">

@@ -1,4 +1,4 @@
-import { and, asc, count, eq, isNotNull, isNull, lt, lte, notInArray, or, sql } from 'drizzle-orm';
+import { and, asc, count, eq, inArray, isNotNull, isNull, lt, lte, notInArray, or, sql } from 'drizzle-orm';
 
 import type { db } from '@/lib/db'; // Type only, so scripts can import this module outside Next.js.
 import { events, registrations, type Registration } from '@/lib/db/schema';
@@ -104,6 +104,14 @@ export async function restoreRow(tx: Tx, id: string) {
 
 export type ConfirmFrom = 'payment_submitted' | 'cancelled';
 
+// What every confirm writes, by hand or in bulk.
+const approval = (admin: string) => ({
+  status: 'approved' as const,
+  utrSubmittedAt: sql`coalesce(${registrations.utrSubmittedAt}, now())`,
+  approvedAt: sql`now()`,
+  approvedBy: admin,
+});
+
 // builderId is what the admin saw, so a Builder ID changed in the meantime can't slip through.
 export async function confirmRow(
   tx: Tx,
@@ -111,18 +119,52 @@ export async function confirmRow(
 ) {
   const [row] = await tx
     .update(registrations)
-    .set({
-      status: 'approved',
-      utr,
-      utrSubmittedAt: sql`coalesce(${registrations.utrSubmittedAt}, now())`,
-      approvedAt: sql`now()`,
-      approvedBy: admin,
-    })
+    .set({ ...approval(admin), utr })
     .where(and(eq(registrations.id, id), eq(registrations.status, from), eq(registrations.builderId, builderId)))
     .returning({ ...CONTACT, checkinCode: registrations.checkinCode, ticketNo: registrations.ticketNo });
   if (!row) throw new Refused(STALE);
   if (from === 'cancelled' && !(await takeSeat(tx, row.eventId))) throw new Refused(EVENT_FULL_REFUND);
   return row;
+}
+
+// Confirm, from payment_submitted, for everyone whose submitted UTR is on a pasted bank statement.
+// No seat changes from that status, and it sends nothing: QR passes go out with Send QR passes.
+export async function confirmByUtr(tx: Tx, eventId: string, utrs: string[], admin: string) {
+  const confirmed = await tx
+    .update(registrations)
+    .set(approval(admin))
+    .where(
+      and(
+        eq(registrations.eventId, eventId),
+        eq(registrations.status, 'payment_submitted'),
+        isNotNull(registrations.builderId),
+        inArray(registrations.utr, utrs),
+      ),
+    )
+    .returning({ utr: registrations.utr });
+  const rows = await tx
+    .select({ utr: registrations.utr, name: registrations.name, status: registrations.status })
+    .from(registrations)
+    .where(
+      and(
+        eq(registrations.eventId, eventId),
+        or(inArray(registrations.utr, utrs), eq(registrations.status, 'payment_submitted')),
+      ),
+    );
+  const pasted = new Set(utrs);
+  const done = new Set(confirmed.map((row) => row.utr));
+  const found = new Set(rows.map((row) => row.utr));
+  return {
+    confirmed: confirmed.length,
+    unmatched: utrs.filter((utr) => !found.has(utr)),
+    // On the list, but the row is already approved, cancelled, or otherwise not awaiting a confirm.
+    skipped: rows
+      .filter((row) => row.utr && pasted.has(row.utr) && !done.has(row.utr))
+      .map(({ utr, status }) => ({ utr: utr!, status })),
+    notInList: rows
+      .filter((row) => row.status === 'payment_submitted' && !(row.utr && pasted.has(row.utr)))
+      .map(({ utr, name }) => ({ utr, name })),
+  };
 }
 
 // Needs status = pending, as the 48-hour release does, so exactly one of them wins.

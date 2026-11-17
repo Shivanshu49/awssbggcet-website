@@ -14,6 +14,7 @@ import {
   cancelRow,
   checkIn,
   claimBuilderIdReminders,
+  confirmByUtr,
   confirmRow,
   countQrUnsent,
   EVENT_FULL,
@@ -202,6 +203,44 @@ async function main() {
     (err: { cause?: { constraint_name?: string } }) => err.cause?.constraint_name === 'registrations_event_id_utr_key',
   );
   assert.equal((await rowOf(dupe)).status, 'payment_submitted');
+
+  // Bulk confirm by UTR: payment_submitted rows on the list only, in this event, with no seat change.
+  event = await newEvent(5, 4);
+  const other = await newEvent(5, 1);
+  const bid = () => ({ builderId: `b${randomBytes(4).toString('hex')}` });
+  const onA = await person(event, 'payment_submitted', { ...bid(), utr: '400000000001', utrSubmittedAt: old });
+  const onB = await person(event, 'payment_submitted', { ...bid(), utr: '400000000002' });
+  const offList = await person(event, 'payment_submitted', { ...bid(), utr: '400000000003' });
+  await person(event, 'approved', { ...bid(), utr: '400000000004' });
+  const lapsed = await person(event, 'cancelled', { ...bid(), utr: '400000000005' });
+  const elsewhere = await person(other, 'payment_submitted', { ...bid(), utr: '400000000006' });
+  const list = ['400000000001', '400000000002', '400000000004', '400000000005', '400000000006', 'nope'];
+  let bulk = await inTx((tx) => confirmByUtr(tx, event, list, 'bulk@example.test'));
+  assert.equal(bulk.confirmed, 2);
+  assert.deepEqual(bulk.unmatched, ['400000000006', 'nope'], 'another event\'s UTR matches no one here');
+  assert.deepEqual(
+    bulk.skipped.sort((x, y) => x.utr.localeCompare(y.utr)),
+    [{ utr: '400000000004', status: 'approved' }, { utr: '400000000005', status: 'cancelled' }],
+  );
+  assert.deepEqual(bulk.notInList, [{ utr: '400000000003', name: (await rowOf(offList)).name }]);
+  row = await rowOf(onA);
+  assert.equal(row.status, 'approved');
+  assert.equal(row.approvedBy, 'bulk@example.test');
+  assert.equal(row.utrSubmittedAt?.getTime(), old.getTime(), 'same rules as Confirm');
+  assert.equal((await rowOf(onB)).status, 'approved');
+  assert.equal((await rowOf(offList)).status, 'payment_submitted');
+  assert.equal((await rowOf(lapsed)).status, 'cancelled', 'a late payer still goes through Confirm by hand');
+  assert.equal((await rowOf(elsewhere)).status, 'payment_submitted');
+  assert.equal(await seats(event), 4);
+  assert.equal(await seats(other), 1);
+  bulk = await inTx((tx) => confirmByUtr(tx, event, list, 'bulk@example.test'));
+  assert.equal(bulk.confirmed, 0, 'pasting the same list again confirms nobody twice');
+  assert.equal(bulk.skipped.length, 4);
+  const twice = await Promise.all([
+    inTx((tx) => confirmByUtr(tx, event, ['400000000003'], 'one@example.test')),
+    inTx((tx) => confirmByUtr(tx, event, ['400000000003'], 'two@example.test')),
+  ]);
+  assert.equal(twice[0].confirmed + twice[1].confirmed, 1, 'overlapping runs confirm once');
 
   // The hourly job: only unpaid seats past 48 hours go, with or without a Builder ID.
   const hoursAgo = (hours: number) => new Date(Date.now() - hours * 3_600_000);

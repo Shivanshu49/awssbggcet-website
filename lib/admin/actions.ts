@@ -15,6 +15,7 @@ import {
   cancelRow,
   checkIn,
   claimBuilderIdReminders,
+  confirmByUtr,
   confirmRow,
   countQrUnsent,
   markQrEmailed,
@@ -26,6 +27,7 @@ import {
 import { checkinCodeFromScan, emailSchema, UTR_TAKEN, utrSchema } from '@/lib/registration/validation';
 
 import { authConfigured, isAdminEmail, requireAdmin, supabaseServer } from './auth';
+import { parseUtrList } from './rules';
 
 const GENERIC_ERROR = 'Something went wrong. Please try again.';
 const BAD_CODE = "That code isn't valid. Check it or ask for a new one.";
@@ -106,6 +108,27 @@ export async function confirmPayment(input: unknown): Promise<ActionResult> {
       if (await sendQrPass(row)) await markQrEmailed(db, row.id);
     });
   });
+}
+
+export type BulkConfirmResult = ActionResult & Partial<Awaited<ReturnType<typeof confirmByUtr>>>;
+
+// One transaction for the whole list. No emails: QR passes go out with Send QR passes.
+export async function bulkConfirmByUtr(text: unknown): Promise<BulkConfirmResult> {
+  const admin = await requireAdmin();
+  const parsed = z.string().max(100_000).safeParse(text); // About 1,500 raw statement rows.
+  if (!parsed.success) return { error: 'That list is too long. Paste it in parts.' };
+  const utrs = parseUtrList(parsed.data);
+  if (!utrs.length) return { error: 'No 12-digit UTRs found in that text.' };
+  try {
+    const [event] = await db.select({ id: events.id }).from(events).where(eq(events.slug, EVENT_SLUG)).limit(1);
+    if (!event) return { error: GENERIC_ERROR };
+    const result = await db.transaction((tx) => confirmByUtr(tx, event.id, utrs, admin));
+    revalidatePath('/admin/scd');
+    return result;
+  } catch (err) {
+    console.error('[admin] bulk confirm failed:', (err as { code?: string }).code ?? 'unknown');
+    return { error: GENERIC_ERROR };
+  }
 }
 
 const cancelSchema = z.object({

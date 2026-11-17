@@ -29,3 +29,8 @@ function csvCell(value: string | null) {
 export function toCsv(rows: (string | null)[][]) {
   return rows.map((row) => row.map(csvCell).join(',')).join('\r\n');
 }
+
+// Every standalone 12-digit number, so raw statement rows paste as they are. Duplicates dropped.
+export function parseUtrList(text: string) {
+  return [...new Set(text.match(/\b\d{12}\b/g) ?? [])];
+}
