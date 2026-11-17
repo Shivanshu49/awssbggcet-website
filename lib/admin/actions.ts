@@ -115,10 +115,10 @@ export type BulkConfirmResult = ActionResult & Partial<Awaited<ReturnType<typeof
 // One transaction for the whole list. No emails: QR passes go out with Send QR passes.
 export async function bulkConfirmByUtr(text: unknown): Promise<BulkConfirmResult> {
   const admin = await requireAdmin();
-  const parsed = z.string().max(20_000).safeParse(text); // About 1,500 UTRs.
+  const parsed = z.string().max(100_000).safeParse(text); // About 1,500 raw statement rows.
   if (!parsed.success) return { error: 'That list is too long. Paste it in parts.' };
   const utrs = parseUtrList(parsed.data);
-  if (!utrs.length) return { error: 'Paste at least one UTR.' };
+  if (!utrs.length) return { error: 'No 12-digit UTRs found in that text.' };
   try {
     const [event] = await db.select({ id: events.id }).from(events).where(eq(events.slug, EVENT_SLUG)).limit(1);
     if (!event) return { error: GENERIC_ERROR };

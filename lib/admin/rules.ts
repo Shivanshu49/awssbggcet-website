@@ -30,7 +30,7 @@ export function toCsv(rows: (string | null)[][]) {
   return rows.map((row) => row.map(csvCell).join(',')).join('\r\n');
 }
 
-// A column pasted from the bank statement: one per line or comma-separated, duplicates dropped.
+// Every standalone 12-digit number, so raw statement rows paste as they are. Duplicates dropped.
 export function parseUtrList(text: string) {
-  return [...new Set(text.split(/[\s,;]+/).filter(Boolean))];
+  return [...new Set(text.match(/\b\d{12}\b/g) ?? [])];
 }

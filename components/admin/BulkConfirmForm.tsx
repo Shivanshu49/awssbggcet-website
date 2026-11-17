@@ -45,11 +45,12 @@ export function BulkConfirmForm({ statusLabels }: { statusLabels: Record<Registr
           rows={4}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder={'123456789012\n123456789013, 123456789014'}
+          placeholder={'UPI/431234567890/NAME/okaxis/45.00\n431234567891'}
           className={`${FIELD_INPUT} ${fieldBorder()} font-mono`}
         />
         <p id="bulk-hint" className={FIELD_HINT}>
-          One per line or comma-separated. Sends no emails: use Send QR passes afterwards.
+          Paste UTRs or raw statement rows: every standalone 12-digit number counts as a UTR. Sends no emails:
+          use Send QR passes afterwards.
         </p>
         <button type="submit" disabled={isPending} className={`${SECONDARY_BUTTON} self-start`}>
           {isPending ? 'Confirming…' : 'Confirm matches'}

@@ -252,10 +252,16 @@ for (const formula of ['=SUM(A1)', '+91', '-1', '@cmd', '\tx', '\rx']) {
   assert.ok(toCsv([[formula]]).replace(/^"/, '').startsWith("'"), `formula ${JSON.stringify(formula)}`);
 }
 assert.equal(toCsv([['a'], ['b']]), 'a\r\nb');
+assert.deepEqual(parseUtrList('UPI/431234567890/NAME/okaxis/45.00'), ['431234567890'], 'a raw statement row');
 assert.deepEqual(
-  parseUtrList(' 100000000001\r\n100000000002,100000000003 ;\t100000000001\n\n,'),
-  ['100000000001', '100000000002', '100000000003'],
-  'lines, commas, blanks and duplicates',
+  parseUtrList('UPI/431234567890/A/okaxis/45.00\r\n100000000002,100000000003\tUPI/431234567890/A/ybl/45.00'),
+  ['431234567890', '100000000002', '100000000003'],
+  'rows, lines, commas and duplicates',
+);
+assert.deepEqual(
+  parseUtrList('12345678901 1234567890123 A123456789012 123456789012B 17/11/2026 45.00'),
+  [],
+  'not 12 digits, or glued to letters or digits',
 );
 assert.deepEqual(parseUtrList(' \n , '), []);
 
