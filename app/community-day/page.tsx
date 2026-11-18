@@ -11,14 +11,17 @@ import { VenueMap } from "@/components/community-day/VenueMap";
 import { FinalCTA } from "@/components/community-day/FinalCTA";
 
 export const metadata: Metadata = {
-  title: "AWS Student Community Day 2026 | GCET Auditorium",
+  title: "AWS Student Community Day 2026 | D Block Auditorium, GCET Campus 1",
   description:
     "Official summit page for AWS Student Community Day 2026 at Galgotias College of Engineering & Technology. 21st Nov 2026. Entry fee ₹45. 200 seats only. Register now!",
 };
 
 export default function CommunityDayPage() {
   return (
-    <main className="min-h-screen bg-[#07090e] text-slate-100 overflow-x-hidden selection:bg-amber-400 selection:text-black">
+    <main
+      suppressHydrationWarning
+      className="min-h-screen bg-[#07090e] text-slate-100 overflow-x-hidden selection:bg-amber-400 selection:text-black"
+    >
       <Hero />
       <InfoCards />
       <About />
