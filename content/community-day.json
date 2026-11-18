@@ -3,10 +3,10 @@
     "badge": "Flagship Annual Summit • 21st Nov 2026",
     "title": "BUILD. LEARN. CONNECT.",
     "tagline": "AWS Student Community Day — GCET",
-    "description": "The culminating capstone leadership summit organized by AWS Student Builder Group GCET. Bringing together AWS Heroes, Community Builders, industry architects, and student innovators for a full day of hands-on cloud learning.",
+    "description": "The culminating capstone leadership summit organized by AWS Student Builder Group GCET. Bringing together AWS Solutions Architects, enterprise cloud and AI leaders, and student innovators for a full day of hands-on cloud learning.",
     "date": "Saturday, 21st November 2026",
     "time": "10:00 AM – 05:00 PM IST",
-    "venue": "GCET Auditorium, Campus 1",
+    "venue": "D Block Auditorium, GCET Campus 1",
     "capacity": "200 Seats Only",
     "fee": "₹45 per participant",
     "ctaRegister": "Register for Community Day",
@@ -17,185 +17,228 @@
       "icon": "Ticket",
       "title": "Entry Pass",
       "value": "₹45 only",
-      "description": "Nominal participant pass covering access, digital pass QR, and event materials."
+      "description": "Nominal participant pass covering access, digital QR pass, wristband, and Builder Passport."
     },
     {
       "icon": "Users",
       "title": "Limited Capacity",
       "value": "200 Seats",
-      "description": "Hosted at GCET Auditorium. Strict pre-registration required; slots fill rapidly."
+      "description": "Hosted at D Block Auditorium, GCET Campus 1. Strict pre-registration required; slots fill rapidly."
     },
     {
       "icon": "Layers",
       "title": "Full-Day Summit",
       "value": "10 AM – 5 PM",
-      "description": "Keynotes, technical deep-dives, hands-on demos, Kahoot quizzes, and panel sessions."
+      "description": "Two keynotes, Generative AI deep-dive, hands-on workshop, Kahoot quizzes, Game Zone, and panel discussion."
     },
     {
       "icon": "Award",
       "title": "Perks & Swag",
       "value": "Certificates & Swags",
-      "description": "Official participation certificates, AWS stickers, community swag, and quiz prizes."
+      "description": "Verified digital participation certificates, event swag kits, and Builder Passport quiz & game prizes."
     }
   ],
   "about": {
     "heading": "One Day. One Community. Countless Possibilities.",
     "subheading": "The Culminating Leadership Project for Student Builders",
-    "description": "AWS Student Community Day (SCD) is a premier one-day, student-led technical conference recognized in the AWS Playbook as the culminating capstone achievement for Student Builder Group Leaders. Unlike regular sessions, SCD brings together AWS Heroes, industry professionals, and student developers to provide real-world cloud exposure, ignite certification pathways, and celebrate builder culture."
+    "description": "AWS Student Community Day (SCD) is a premier one-day, student-led technical conference recognized in the AWS Playbook as the culminating capstone achievement for Student Builder Group Leaders. Bringing together five industry speakers, enterprise cloud & AI leaders, and student developers, SCD delivers real-world cloud exposure, certification pathways, hands-on practice, and builder community culture."
   },
   "highlights": [
     {
       "icon": "Zap",
-      "title": "Serverless with AWS Lambda",
-      "description": "Master event-driven architecture, compute scaling, and serverless best practices."
-    },
-    {
-      "icon": "ShieldCheck",
-      "title": "Cloud Security (IAM & KMS)",
-      "description": "Deep-dive into least-privilege policies, identity management, and encryption at rest."
+      "title": "Keynote Sessions: Cloud Careers & Future",
+      "description": "Cloud Career Pathways with Amit Kumar (AWS) and Future in Cloud Computing with Dipali Kulshreshta."
     },
     {
       "icon": "Database",
-      "title": "Hands-On Demo: DynamoDB + Lambda",
-      "description": "Live, practical demonstration building low-latency serverless data pipelines."
+      "title": "Generative AI on AWS: Bedrock & SageMaker",
+      "description": "Deep technical walkthrough by Diksha Verma covering Amazon Bedrock, Amazon SageMaker, and real-world GenAI use cases."
+    },
+    {
+      "icon": "ShieldCheck",
+      "title": "Hands-On Technical Workshop",
+      "description": "60-minute practical, console-based hands-on architecture workshop led by Prabhakar Mishra (Wipro) plus a dedicated workshop quiz."
     },
     {
       "icon": "Users",
-      "title": "Women in Tech & Startup Panel",
-      "description": "Inspirational discussions on diversity, entrepreneurial journeys, and cloud career blueprints."
+      "title": "Panel: Women in Tech and Startups",
+      "description": "Led by Namitha Sharma with Amit Kumar, Diksha Verma, Prabhakar Mishra, and Dipali Kulshreshta sharing startup and career journeys."
     },
     {
       "icon": "Gamepad2",
-      "title": "Interactive Quizzes & Games",
-      "description": "AWS Kahoot challenge, AWS Bingo, and 'Guess the Service' with exclusive community prizes."
+      "title": "Builder Passport, Quizzes & Game Zone",
+      "description": "GenAI & Workshop Kahoot quizzes, three parallel Game Zone stations (AWS Solitaire Service, AWS Puzzle, AWS Bingo), Rapid Fire, and Guess the Service."
     },
     {
       "icon": "Award",
-      "title": "Certificates & Recognition",
-      "description": "Earn official verified credentials and connect directly with AWS community leaders."
+      "title": "Digital Certificates, Swags & Prizes",
+      "description": "Earn verified digital certificates (emailed within 48 hours), exit-desk event swag kits, and Builder Passport grand prizes."
     }
   ],
   "schedule": [
     {
-      "time": "10:00 AM – 10:15 AM",
+      "time": "09:30 AM – 10:00 AM",
+      "title": "Check-in, Registration & Seating",
+      "type": "Ceremony",
+      "speaker": "Registration & Stage Teams",
+      "location": "Foyer / Auditorium",
+      "description": "QR pass scanning, college ID verification, wristband and Builder Passport distribution, seating, and pre-event announcement at 9:45 AM."
+    },
+    {
+      "time": "10:00 AM – 10:20 AM",
       "title": "Opening Ceremony & Welcome Address",
       "type": "Ceremony",
       "speaker": "Faculty & SBG Student Leads",
-      "description": "Opening remarks, event context, and welcome to student builders and dignitaries."
+      "location": "Auditorium",
+      "description": "Welcome remarks, lamp lighting, opening video, and felicitation of dignitaries."
     },
     {
-      "time": "10:15 AM – 10:45 AM",
+      "time": "10:25 AM – 11:05 AM",
       "title": "Keynote 1: Cloud Career Pathways",
       "type": "Keynote",
-      "speaker": "AWS Hero / Community Builder",
-      "description": "Navigating cloud certifications, community contributions, and high-impact career trajectories."
+      "speaker": "Amit Kumar (Senior Solutions Architect, AWS)",
+      "location": "Auditorium",
+      "description": "30-minute keynote talk followed by 10-minute audience Q&A on navigating cloud certifications, technical growth, and AWS career pathways."
     },
     {
-      "time": "10:45 AM – 11:30 AM",
-      "title": "Technical Session 1: Serverless Applications with AWS Lambda",
+      "time": "11:10 AM – 11:25 AM",
+      "title": "Sponsor Session",
+      "type": "Sponsor Session",
+      "speaker": "Sponsor Representative",
+      "location": "Auditorium",
+      "description": "12-minute partner presentation followed by a 3-minute live demo or lucky draw."
+    },
+    {
+      "time": "11:30 AM – 12:20 PM",
+      "title": "Generative AI on AWS: Bedrock and SageMaker",
       "type": "Technical Session",
-      "speaker": "Cloud Architecture Specialist",
-      "description": "Architecting resilient, cost-optimized, event-driven backends without managing servers."
+      "speaker": "Diksha Verma (AWS Certified Solutions Architect Associate)",
+      "location": "Auditorium",
+      "description": "40-minute technical deep-dive into building and scaling Generative AI workloads using Amazon Bedrock and Amazon SageMaker, plus 10-minute Q&A."
     },
     {
-      "time": "11:30 AM – 11:45 AM",
-      "title": "Game 1: AWS Kahoot Quiz",
+      "time": "12:25 PM – 12:35 PM",
+      "title": "Quiz 1: GenAI Quiz (Kahoot)",
       "type": "Interactive Activity",
-      "speaker": "Community Leads",
-      "description": "Fast-paced live quiz testing cloud knowledge with on-the-spot community rewards."
+      "speaker": "Games Team & Diksha Verma",
+      "location": "Auditorium",
+      "description": "8-question Kahoot quiz covering Bedrock and SageMaker use cases. Top 3 win goodies and all finishers score Builder Passport points."
     },
     {
-      "time": "11:45 AM – 12:30 PM",
-      "title": "Technical Session 2: Cloud Security — IAM & KMS Best Practices",
-      "type": "Technical Session",
-      "speaker": "Industry Cloud Security Expert",
-      "description": "Zero trust architecture, identity governance, cryptographic key management, and compliance."
-    },
-    {
-      "time": "12:30 PM – 01:30 PM",
-      "title": "Lunch Break & Networking (AWS Bingo)",
+      "time": "12:40 PM – 02:30 PM",
+      "title": "Lunch & Parallel Game Zone (3 Games + Ask-the-Expert Tables)",
       "type": "Networking",
-      "speaker": "All Attendees & Mentors",
-      "description": "Lunch break paired with the AWS Bingo networking challenge to connect with peer developers."
+      "speaker": "Food, Games Teams & All Speakers",
+      "location": "D Block Arena / Game Zone",
+      "description": "Wave-based lunch running continuously alongside three parallel Game Zone stations (AWS Solitaire Service, AWS Puzzle, AWS Bingo) and Ask-the-Expert Tables (1:10 – 2:10 PM)."
     },
     {
-      "time": "01:30 PM – 02:15 PM",
-      "title": "Hands-On Demo: DynamoDB + AWS Lambda",
-      "type": "Live Demo",
-      "speaker": "AWS Educator / Practitioner",
-      "description": "Step-by-step live walkthrough building a fast NoSQL data model integrated with Lambda."
+      "time": "01:20 PM – 02:20 PM",
+      "title": "Hands-On Technical Workshop",
+      "type": "Workshop",
+      "speaker": "Prabhakar Mishra (Director - Architecture Stream @ Wipro)",
+      "location": "Workshop Room",
+      "description": "60-minute practical, hands-on technical workshop running inside the afternoon parallel block (limited seats by sign-up)."
     },
     {
-      "time": "02:15 PM – 02:30 PM",
-      "title": "Rapid Fire Quiz Round",
+      "time": "02:20 PM – 02:30 PM",
+      "title": "Quiz 2: Workshop Quiz",
+      "type": "Interactive Activity",
+      "speaker": "Workshop Team & Tech",
+      "location": "Workshop Room",
+      "description": "8-question practical, service, and console-based Kahoot quiz held in the workshop room. Top 3 win goodies and Builder Passport points."
+    },
+    {
+      "time": "02:30 PM – 02:45 PM",
+      "title": "Regroup in Hall & Rapid Fire Round",
       "type": "Interactive Activity",
       "speaker": "Host Team",
-      "description": "Lightning trivia round on cloud concepts with special sponsor swag."
+      "location": "Auditorium",
+      "description": "All attendees regroup in the auditorium for a fast-paced one-line AWS trivia round with audience volunteers."
     },
     {
-      "time": "02:30 PM – 03:15 PM",
-      "title": "Panel Discussion: Women in Tech & Startup Journeys",
+      "time": "02:45 PM – 03:30 PM",
+      "title": "Panel Discussion: Women in Tech and Startups",
       "type": "Panel Discussion",
-      "speaker": "Women in Tech Leaders & Startup Founders",
-      "description": "Exploring diversity, startup scaling on AWS, overcoming hurdles, and founder stories."
+      "speaker": "Namitha Sharma (Lead) with Amit Kumar, Diksha Verma, Prabhakar Mishra & Dipali Kulshreshta",
+      "location": "Auditorium",
+      "description": "35-minute guided discussion with all five speakers on stage exploring women in tech, startup journeys, and cloud careers, plus 10-minute audience Q&A."
     },
     {
-      "time": "03:15 PM – 03:30 PM",
-      "title": "Game 2: Guess the Service",
+      "time": "03:30 PM – 03:40 PM",
+      "title": "Guess the AWS Service Flash Round",
       "type": "Interactive Activity",
-      "speaker": "Community Team",
-      "description": "Interactive architectural icon puzzle and trivia challenge."
+      "speaker": "Host Team",
+      "location": "Auditorium",
+      "description": "Clue-based lightning AWS service recognition challenge shown on screen with on-the-spot prizes."
     },
     {
-      "time": "03:30 PM – 04:15 PM",
-      "title": "Keynote 2: The Future of Cloud & Generative AI",
+      "time": "03:40 PM – 04:20 PM",
+      "title": "Keynote 2: Future in Cloud Computing",
       "type": "Keynote",
-      "speaker": "Senior AWS Professional",
-      "description": "Emerging enterprise cloud trends, foundation models, and modern builder skillsets."
+      "speaker": "Dipali Kulshreshta (Enterprise Cloud & AI Transformation Leader)",
+      "location": "Auditorium",
+      "description": "30-minute keynote address exploring enterprise cloud transformation, AI acceleration, and future engineering skillsets, followed by 10-minute Q&A."
     },
     {
-      "time": "04:15 PM – 05:00 PM",
-      "title": "Closing Ceremony, Prize Distribution & Swags",
+      "time": "04:20 PM – 05:00 PM",
+      "title": "Closing Ceremony, Prizes & Swag Distribution",
       "type": "Ceremony",
-      "speaker": "Organizing Committee & Faculty",
-      "description": "Distribution of certificates, awards for quiz winners, swags, and vote of thanks."
+      "speaker": "Faculty, Speakers & Organizing Team",
+      "location": "Auditorium",
+      "description": "Builder Passport leaderboard results and grand prizes, mementos for speakers and sponsor, digital certificate announcement, vote of thanks, group photo, and exit swag desk."
     }
   ],
   "speakers": [
     {
-      "role": "Keynote Speaker",
-      "name": "AWS Hero / Community Builder",
-      "affiliation": "AWS Community Leader",
-      "topic": "Keynote 1: Cloud Career Pathways & Certifications",
-      "status": "Industry Renowned"
+      "role": "Keynote Speaker & Panelist",
+      "name": "Amit Kumar",
+      "affiliation": "Senior Solutions Architect, AWS",
+      "topic": "Keynote 1: Cloud Career Pathways (10:25 AM – 11:05 AM) • Panelist",
+      "status": "KEYNOTE SPEAKER",
+      "image": "/speakers/amit-kumar.webp",
+      "poster": "/speakers/amit-kumar-poster.webp",
+      "linkedin": "https://www.linkedin.com/in/amitkyvmw"
     },
     {
-      "role": "Security Speaker",
-      "name": "Cloud Security Expert",
-      "affiliation": "Enterprise Security Practitioner",
-      "topic": "Technical Session 2: Cloud Security — IAM & KMS Best Practices",
-      "status": "Industry Leader"
+      "role": "Technical Speaker & Panelist",
+      "name": "Diksha Verma",
+      "affiliation": "AWS Certified Solutions Architect Associate",
+      "topic": "Generative AI on AWS: Bedrock and SageMaker (11:30 AM – 12:20 PM) • Panelist",
+      "status": "AI & CLOUD",
+      "image": "/speakers/diksha-verma.webp",
+      "poster": "/speakers/diksha-verma-poster.webp",
+      "linkedin": "https://www.linkedin.com/in/dikshaverma01428"
     },
     {
-      "role": "Hands-on Lead",
-      "name": "AWS Educator / Practitioner",
-      "affiliation": "AWS Certified Specialist",
-      "topic": "Hands-On Demo: Serverless Data with DynamoDB + Lambda",
-      "status": "Technical Specialist"
+      "role": "Workshop Lead & Panelist",
+      "name": "Prabhakar Mishra",
+      "affiliation": "Director - Architecture Stream @ Wipro",
+      "topic": "Hands-On Workshop (01:20 PM – 02:20 PM) • Panelist",
+      "status": "WORKSHOP LEAD",
+      "image": "/speakers/prabhakar-mishra.webp",
+      "poster": "/speakers/prabhakar-mishra-poster.webp",
+      "linkedin": "https://www.linkedin.com/in/prabhakarmishraji"
     },
     {
-      "role": "Panelists",
-      "name": "Startup Founders & Tech Leaders",
-      "affiliation": "Women in Tech & Emerging Startups",
-      "topic": "Panel Discussion: Diversity & Startup Journeys",
-      "status": "Featured Panel"
+      "role": "Panel Discussion Lead",
+      "name": "Namitha Sharma",
+      "affiliation": "Enterprise Digital Transformation Leader",
+      "topic": "Panel Discussion: Women in Tech and Startups (02:45 PM – 03:30 PM)",
+      "status": "PANEL LEAD",
+      "image": "/speakers/namitha-sharma.webp",
+      "poster": "/speakers/namitha-sharma-poster.webp",
+      "linkedin": "https://www.linkedin.com/in/namitha-sharma-5189b310"
     },
     {
-      "role": "Keynote Speaker",
-      "name": "Senior AWS Professional",
-      "affiliation": "Industry Leader",
-      "topic": "Keynote 2: Future of Cloud, AI & Builder Ecosystems",
-      "status": "Keynote Dignitary"
+      "role": "Keynote Speaker & Panelist",
+      "name": "Dipali Kulshreshta",
+      "affiliation": "Enterprise Cloud & AI Transformation Leader",
+      "topic": "Keynote 2: Future in Cloud Computing (03:40 PM – 04:20 PM) • Panelist",
+      "status": "KEYNOTE SPEAKER",
+      "image": "/speakers/dipali-kulshrestha.webp",
+      "poster": "/speakers/dipali-kulshrestha-poster.webp",
+      "linkedin": "https://www.linkedin.com/in/dipalik"
     }
   ],
   "journey": [
@@ -211,23 +254,23 @@
     },
     {
       "step": 3,
-      "title": "Check In at GCET Auditorium",
-      "description": "Arrive by 9:30 AM at Campus 1 GCET Auditorium and present your pass QR code for verification."
+      "title": "Check In at D Block Auditorium",
+      "description": "Arrive by 9:30 AM at D Block Auditorium, GCET Campus 1 and present your pass QR code and College ID for verification."
     },
     {
       "step": 4,
       "title": "Build, Compete & Earn Swags",
-      "description": "Participate in keynotes, technical tracks, Kahoot quizzes, and collect your certificates & swag."
+      "description": "Join keynotes, GenAI & workshop tracks, score points in your Builder Passport, and collect your swag kit at the exit desk."
     }
   ],
   "faqs": [
     {
       "question": "What is the registration fee for AWS Student Community Day 2026?",
-      "answer": "The registration fee is ₹45 per participant. This covers your event entry, attendee kit, session access, and verification credentials."
+      "answer": "The registration fee is ₹45 per participant. This covers your event entry, Builder Passport, attendee swag kit, session access, and verification credentials."
     },
     {
       "question": "Who is eligible to attend?",
-      "answer": "All college students from any branch or year who are interested in cloud computing, serverless architectures, and building technology can attend."
+      "answer": "All college students from any branch or year who are interested in cloud computing, Generative AI, and building technology can attend."
     },
     {
       "question": "How will I receive my event entry pass?",
@@ -239,11 +282,11 @@
     },
     {
       "question": "Will participants receive a certificate?",
-      "answer": "Yes, verified participants who attend the full-day summit will receive an official digital Certificate of Participation."
+      "answer": "Yes, verified participants who attend the full-day summit will receive an official digital Certificate of Participation emailed within 48 hours."
     }
   ],
   "venue": {
-    "name": "GCET Auditorium, Campus 1",
+    "name": "D Block Auditorium, GCET Campus 1",
     "institution": "Galgotias College of Engineering & Technology",
     "address": "1, Knowledge Park II, Greater Noida, Uttar Pradesh 201306",
     "coordinates": "28.457185904700307, 77.49845600782581",
@@ -253,7 +296,7 @@
   "finalCTA": {
     "badge": "200 Seats Capacity • Registration Live",
     "heading": "Secure Your Seat for AWS Student Community Day 2026",
-    "subheading": "Join us on 21st November 2026 at the GCET Auditorium for North India's flagship student cloud summit.",
+    "subheading": "Join us on 21st November 2026 at the D Block Auditorium, GCET Campus 1 for North India's flagship student cloud summit.",
     "fee": "Entry Fee: ₹45 per participant",
     "buttonText": "Register Now"
   }

@@ -1,103 +1,138 @@
-import { Clock, User, Tag } from "lucide-react";
+import { Clock, MapPin, User } from "lucide-react";
 import data from "@/content/community-day.json";
 
-const TYPE_STYLES: Record<string, { bg: string; text: string; border: string }> = {
-  Keynote: {
-    bg: "bg-amber-400/10",
-    text: "text-amber-300",
-    border: "border-amber-400/30",
-  },
-  "Technical Session": {
-    bg: "bg-purple-500/10",
-    text: "text-purple-300",
-    border: "border-purple-500/30",
-  },
-  "Live Demo": {
-    bg: "bg-cyan-500/10",
-    text: "text-cyan-300",
-    border: "border-cyan-500/30",
-  },
-  "Interactive Activity": {
-    bg: "bg-emerald-500/10",
-    text: "text-emerald-300",
-    border: "border-emerald-500/30",
-  },
-  Networking: {
-    bg: "bg-blue-500/10",
-    text: "text-blue-300",
-    border: "border-blue-500/30",
-  },
-  "Panel Discussion": {
-    bg: "bg-pink-500/10",
-    text: "text-pink-300",
-    border: "border-pink-500/30",
-  },
-  Ceremony: {
-    bg: "bg-amber-400/15",
-    text: "text-amber-200",
-    border: "border-amber-400/40",
-  },
-};
+interface ScheduleItem {
+  time: string;
+  title: string;
+  type: string;
+  speaker: string;
+  location?: string;
+  description: string;
+}
+
+const FLAGSHIP_TYPES = new Set([
+  "Keynote",
+  "Technical Session",
+  "Workshop",
+  "Panel Discussion",
+]);
 
 export function Schedule() {
-  const { schedule } = data;
+  const { schedule } = data as { schedule: ScheduleItem[] };
 
   return (
-    <section id="schedule" className="py-16 sm:py-24 px-4 sm:px-6 max-w-5xl mx-auto scroll-mt-28">
-      <div className="text-center max-w-3xl mx-auto mb-14 space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-purple-500/30 bg-purple-950/40 text-purple-300 text-xs font-semibold">
-          <span>Official Event Agenda</span>
-        </div>
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+    <section
+      id="schedule"
+      className="py-16 sm:py-24 px-4 sm:px-6 max-w-6xl mx-auto scroll-mt-28"
+    >
+      <div className="mb-12 sm:mb-16 text-center max-w-2xl mx-auto">
+        <span className="font-mono-jb text-xs uppercase tracking-[0.2em] text-[#FBBF24]">
+          Official Event Agenda
+        </span>
+        <h2 className="mt-2 text-3xl sm:text-4xl font-bold text-white tracking-tight">
           Summit Schedule
         </h2>
-        <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
-          Full-day technical timeline running from 10:00 AM to 05:00 PM IST at the GCET Auditorium.
+        <p className="mt-3 text-sm sm:text-base text-[#9E92B0]">
+          A continuous timeline from 09:30 AM check-in through 05:00 PM IST at the D Block Auditorium, GCET Campus 1.
         </p>
       </div>
 
-      <div className="space-y-4">
+      <div className="relative space-y-6 sm:space-y-8 before:absolute before:bottom-4 before:left-[15px] before:top-4 before:w-px before:bg-gradient-to-b before:from-[#FBBF24] before:via-[#A855F7] before:to-[#4C2A66]/20 lg:before:left-1/2">
         {schedule.map((item, index) => {
-          const typeStyle = TYPE_STYLES[item.type] || {
-            bg: "bg-slate-800/40",
-            text: "text-slate-300",
-            border: "border-slate-700",
-          };
+          const isLeft = index % 2 === 0;
+          const isFlagship = FLAGSHIP_TYPES.has(item.type);
 
           return (
             <div
               key={`${item.time}-${index}`}
-              className="rounded-2xl border border-slate-800 bg-slate-900/50 p-5 sm:p-6 transition-all hover:border-purple-500/40 hover:shadow-[0_0_20px_rgba(168,85,247,0.1)] backdrop-blur-sm flex flex-col md:flex-row md:items-start justify-between gap-4"
+              className="relative grid grid-cols-[2rem_minmax(0,1fr)] gap-3 sm:gap-4 lg:grid-cols-[1fr_4rem_1fr] lg:gap-0"
             >
-              {/* Time Column */}
-              <div className="md:w-56 shrink-0 space-y-1.5">
-                <div className="inline-flex items-center gap-1.5 font-mono text-xs sm:text-sm font-bold text-amber-400">
-                  <Clock className="w-4 h-4 shrink-0" />
-                  <span>{item.time}</span>
-                </div>
-                <div className="block">
-                  <span
-                    className={`inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${typeStyle.bg} ${typeStyle.text} ${typeStyle.border}`}
-                  >
-                    <Tag className="w-3 h-3" />
-                    <span>{item.type}</span>
+              {/* Timeline Spine Node */}
+              <div className="z-10 col-start-1 row-start-1 flex items-center justify-center lg:col-start-2 lg:row-start-1">
+                {isFlagship ? (
+                  <span className="relative flex size-8 items-center justify-center rounded-full border-2 border-[#FBBF24] bg-[#090511] shadow-[0_0_18px_rgba(251,191,36,0.55)]">
+                    <span className="size-2 rounded-full bg-[#FBBF24]" />
                   </span>
-                </div>
+                ) : (
+                  <span className="relative flex size-7 items-center justify-center rounded-full border border-[#A855F7]/70 bg-[#090511] shadow-[0_0_12px_rgba(168,85,247,0.3)]">
+                    <span className="size-1.5 rounded-full bg-[#C4A5FD]" />
+                  </span>
+                )}
               </div>
 
-              {/* Content Column */}
-              <div className="flex-1 space-y-2">
-                <h3 className="text-base sm:text-lg font-bold text-white leading-snug">
+              {/* Timeline Card */}
+              <article
+                className={`group relative col-start-2 row-start-1 overflow-hidden rounded-[1.5rem] sm:rounded-[1.75rem] border bg-[#100B18]/95 p-5 sm:p-7 shadow-[0_16px_55px_rgba(0,0,0,0.28)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_55px_rgba(168,85,247,0.15)] ${
+                  isFlagship
+                    ? "border-[#FBBF24]/50 shadow-[0_0_30px_rgba(251,191,36,0.06)] hover:border-[#FBBF24]/80"
+                    : "border-[#4C2A66]/50 hover:border-[#A855F7]/60"
+                } ${isLeft ? "lg:col-start-1 lg:text-right" : "lg:col-start-3"} lg:row-start-1`}
+              >
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -right-16 -top-16 size-44 rounded-full bg-[#A855F7]/10 blur-3xl transition-colors group-hover:bg-[#FBBF24]/10"
+                />
+
+                {/* Metadata Pills */}
+                <div
+                  className={`relative flex flex-wrap items-center gap-2 ${
+                    isLeft ? "lg:justify-end" : ""
+                  }`}
+                >
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[#FBBF24]/25 bg-[#1B1130] px-3 py-1 font-mono-jb text-[10px] uppercase tracking-wide text-[#FBBF24]">
+                    <Clock className="size-3 shrink-0" aria-hidden="true" />
+                    <span>{item.time}</span>
+                  </span>
+
+                  {item.location && (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-[#4C2A66]/50 bg-[#150D24] px-3 py-1 font-mono-jb text-[10px] text-[#CFC5DC]">
+                      <MapPin
+                        className="size-3 shrink-0 text-[#FBBF24]"
+                        aria-hidden="true"
+                      />
+                      <span>{item.location}</span>
+                    </span>
+                  )}
+
+                  <span
+                    className={`rounded-full px-3 py-1 font-mono-jb text-[10px] uppercase tracking-wide border ${
+                      isFlagship
+                        ? "border-[#FBBF24]/30 bg-[#FBBF24]/10 text-[#FBBF24]"
+                        : "border-[#A855F7]/30 bg-[#150D24] text-[#E9D5FF]"
+                    }`}
+                  >
+                    {item.type}
+                  </span>
+                </div>
+
+                {/* Title */}
+                <h3
+                  className={`relative mt-4 text-lg sm:text-xl font-bold text-white leading-snug ${
+                    isLeft ? "lg:text-right" : ""
+                  }`}
+                >
                   {item.title}
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+
+                {/* Speaker Attribution */}
+                <p
+                  className={`relative mt-2 inline-flex items-center gap-1.5 font-mono-jb text-xs text-[#C4A5FD] ${
+                    isLeft ? "lg:flex-row-reverse" : ""
+                  }`}
+                >
+                  <User className="size-3.5 shrink-0 text-[#A855F7]" aria-hidden="true" />
+                  <span>{item.speaker}</span>
+                </p>
+
+                {/* Description */}
+                <p
+                  className={`relative mt-3 max-w-xl text-xs sm:text-sm leading-relaxed text-[#CFC5DC] ${
+                    isLeft ? "lg:ml-auto lg:text-right" : ""
+                  }`}
+                >
                   {item.description}
                 </p>
-                <div className="inline-flex items-center gap-1.5 text-xs text-slate-300 font-medium pt-1">
-                  <User className="w-3.5 h-3.5 text-purple-400" />
-                  <span>Speaker / Lead: {item.speaker}</span>
-                </div>
-              </div>
+              </article>
             </div>
           );
         })}
