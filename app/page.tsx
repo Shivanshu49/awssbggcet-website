@@ -58,6 +58,7 @@ interface ContributorItem {
   icon: string;
   image?: string;
   linkedin?: string;
+  github?: string;
 }
 
 /* ============================================================================
@@ -1018,51 +1019,54 @@ export default function FullySynchronizedPage() {
                     transition={{ type: 'spring', stiffness: 340, damping: 24, mass: 0.8 }}
                     style={{ transformPerspective: 1200 }}
                     onClick={(e) => e.stopPropagation()}
-                    className="relative w-[92vw] max-w-[360px] sm:max-w-md md:max-w-2xl lg:max-w-3xl max-h-[82dvh] sm:max-h-[88vh] overflow-y-auto overscroll-contain rounded-2xl sm:rounded-3xl border border-amber-400/50 bg-gradient-to-br from-[#171020] via-[#100b18] to-[#130c22] shadow-[0_36px_100px_rgba(0,0,0,0.7),0_0_48px_rgba(168,85,247,0.18)] text-white"
+                    className="relative w-[92vw] max-w-[360px] sm:max-w-md md:max-w-2xl lg:max-w-3xl max-h-[85dvh] overflow-hidden rounded-2xl sm:rounded-3xl border border-amber-400/50 bg-gradient-to-br from-[#171020] via-[#100b18] to-[#130c22] shadow-[0_36px_100px_rgba(0,0,0,0.7),0_0_48px_rgba(168,85,247,0.18)] text-white flex flex-col"
                   >
                     {/* Close Button */}
                     <button
                       type="button"
                       onClick={() => setSelectedContributor(null)}
-                      className="absolute top-3.5 right-3.5 sm:top-5 sm:right-5 w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-amber-400/40 bg-slate-950/85 hover:bg-[#1b1130] hover:border-amber-400 text-white flex items-center justify-center transition-all cursor-pointer z-20 focus-visible:outline-2 focus-visible:outline-amber-400 shadow-lg"
+                      className="absolute top-3.5 right-3.5 sm:top-5 sm:right-5 w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-amber-400/40 bg-slate-950/85 hover:bg-[#1b1130] hover:border-amber-400 text-white flex items-center justify-center transition-all cursor-pointer z-30 focus-visible:outline-2 focus-visible:outline-amber-400 shadow-lg"
                       aria-label="Close profile"
                     >
                       <X className="w-5 h-5" />
                     </button>
 
-                    <div className="grid grid-cols-1 md:grid-cols-12 items-center">
-                      {/* Left Column: Portrait & Badge */}
-                      <div className="md:col-span-5 flex flex-col items-center justify-center p-6 sm:p-8 bg-[#090511]/40 border-b md:border-b-0 md:border-r border-[#4C2A66]/40 text-center">
-                        <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-full border-2 border-amber-400/70 overflow-hidden shadow-[0_0_35px_rgba(251,191,36,0.2),0_0_60px_rgba(168,85,247,0.15)] flex items-center justify-center bg-[#090511] shrink-0">
+                    <div className="grid grid-cols-1 md:grid-cols-2 items-stretch flex-1 overflow-y-auto overscroll-contain">
+                      {/* Left Half: Picture & Builder Identity (Clean 50% split, full-height) */}
+                      <div className="flex flex-col items-center justify-center p-6 sm:p-8 md:p-10 bg-[#090511]/60 border-b md:border-b-0 md:border-r border-[#4C2A66]/40 text-center relative overflow-hidden h-full">
+                        {/* Subtle ambient glow behind avatar */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-purple-500/10 via-transparent to-amber-500/5 pointer-events-none" />
+
+                        <div className="relative w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-full border-2 border-amber-400/80 overflow-hidden shadow-[0_0_35px_rgba(251,191,36,0.25),0_0_70px_rgba(168,85,247,0.2)] flex items-center justify-center bg-[#090511] shrink-0">
                           {selectedContributor.image ? (
                             <Image
                               src={selectedContributor.image}
                               alt={selectedContributor.name}
                               fill
-                              sizes="128px"
+                              sizes="(max-width: 768px) 144px, 160px"
                               className="object-cover"
                               priority
                             />
                           ) : (
                             (() => {
                               const IconComp = CONTRIBUTOR_ICONS[selectedContributor.icon] || Code2;
-                              return <IconComp className="w-12 h-12 text-amber-400" />;
+                              return <IconComp className="w-14 h-14 text-amber-400" />;
                             })()
                           )}
                         </div>
 
-                        <span className="font-mono-jb text-[10px] uppercase tracking-[0.2em] text-[#C084FC] mt-4 block">
+                        <span className="font-mono-jb text-[10px] sm:text-xs uppercase tracking-[0.2em] text-[#C084FC] mt-5 block">
                           Website Builder
                         </span>
-                        <p className="mt-1 text-xs sm:text-sm font-mono text-[#FBBF24]">
+                        <p className="mt-1 text-xs sm:text-sm font-mono text-[#FBBF24] font-medium">
                           {selectedContributor.role}
                         </p>
                       </div>
 
-                      {/* Right Column: Details & Connect */}
-                      <div className="md:col-span-7 p-6 sm:p-8 text-left space-y-4">
+                      {/* Right Half: Details & Social Links (Clean 50% split, full-height) */}
+                      <div className="flex flex-col justify-center p-6 sm:p-8 md:p-10 text-left space-y-4 sm:space-y-5 h-full">
                         <div>
-                          <span className="font-mono-jb text-[10px] uppercase tracking-[0.18em] text-purple-400 block mb-1">
+                          <span className="font-mono-jb text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-purple-400 block mb-1">
                             AWS Student Builder Group GCET
                           </span>
                           <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
@@ -1080,9 +1084,9 @@ export default function FullySynchronizedPage() {
                           </p>
                         </div>
 
-                        {/* LinkedIn Profile */}
-                        {selectedContributor.linkedin ? (
-                          <div className="pt-1">
+                        {/* Profile Links (LinkedIn & GitHub) */}
+                        <div className="flex flex-wrap items-center gap-3 pt-1">
+                          {selectedContributor.linkedin && (
                             <a
                               href={selectedContributor.linkedin}
                               target="_blank"
@@ -1092,15 +1096,25 @@ export default function FullySynchronizedPage() {
                               <svg className="w-4 h-4 fill-[#0a66c2]" viewBox="0 0 24 24">
                                 <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                               </svg>
-                              <span>Connect on LinkedIn</span>
+                              <span>LinkedIn</span>
                               <ExternalLink className="w-3.5 h-3.5 opacity-70" />
                             </a>
-                          </div>
-                        ) : (
-                          <p className="text-[11px] text-slate-400 font-mono italic">
-                            LinkedIn profile will be linked shortly.
-                          </p>
-                        )}
+                          )}
+                          {selectedContributor.github && (
+                            <a
+                              href={selectedContributor.github}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-purple-500/40 bg-[#130C22] hover:bg-[#1B1130] hover:border-amber-400 text-white hover:text-white text-xs sm:text-sm font-medium transition-all hover:scale-105 shadow-md"
+                            >
+                              <svg className="w-4 h-4 fill-white text-white shrink-0" viewBox="0 0 24 24">
+                                <path fill="#ffffff" fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+                              </svg>
+                              <span>GitHub</span>
+                              <ExternalLink className="w-3.5 h-3.5 opacity-70" />
+                            </a>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </motion.article>
