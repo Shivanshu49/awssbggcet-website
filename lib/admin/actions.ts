@@ -19,6 +19,7 @@ import {
   confirmByUtr,
   confirmRow,
   countQrUnsent,
+  lookUpCheckin,
   markQrEmailed,
   Refused,
   restoreRow,
@@ -222,4 +223,11 @@ export async function checkInAttendee(scanned: unknown): Promise<CheckInResult> 
   const admin = await requireAdmin();
   const code = typeof scanned === 'string' ? checkinCodeFromScan(scanned) : null;
   return code ? checkIn(db, code, admin) : { kind: 'unknown' };
+}
+
+// Read-only, for the details card before Check in. Null means it isn't a pass for this event.
+export async function lookUpAttendee(scanned: unknown) {
+  await requireAdmin();
+  const code = typeof scanned === 'string' ? checkinCodeFromScan(scanned) : null;
+  return code ? lookUpCheckin(db, code) : null;
 }

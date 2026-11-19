@@ -30,6 +30,12 @@ export function toCsv(rows: (string | null)[][]) {
   return rows.map((row) => row.map(csvCell).join(',')).join('\r\n');
 }
 
+// The check-in desk ignores a QR it saw, or closed a card for, in the last 3 seconds. Each sighting
+// restarts the clock, so a pass held in front of the camera fires once.
+export const SAME_QR_MS = 3000;
+export const isRepeatScan = (last: { code: string; at: number } | null, code: string, now: number) =>
+  last?.code === code && now - last.at < SAME_QR_MS;
+
 // Every standalone 12-digit number, so raw statement rows paste as they are. Duplicates dropped.
 export function parseUtrList(text: string) {
   return [...new Set(text.match(/\b\d{12}\b/g) ?? [])];

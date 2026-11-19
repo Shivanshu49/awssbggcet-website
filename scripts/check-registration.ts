@@ -6,7 +6,7 @@ import { existsSync } from 'node:fs';
 import { ZXING_WASM_VERSION } from 'barcode-detector/ponyfill';
 
 import { cronAuthorized } from '../lib/admin/cron-auth';
-import { escapeLike, parseAdminEmails, parseUtrList, toCsv } from '../lib/admin/rules';
+import { escapeLike, isRepeatScan, parseAdminEmails, parseUtrList, SAME_QR_MS, toCsv } from '../lib/admin/rules';
 import { dbCredentials, dbSsl } from '../lib/db/ssl';
 import { eventPage, qrReleased } from '../lib/registration/content';
 import {
@@ -277,6 +277,12 @@ assert.deepEqual(
   'not 12 digits, or glued to letters or digits',
 );
 assert.deepEqual(parseUtrList(' \n , '), []);
+
+// The desk's duplicate-scan guard.
+assert.equal(isRepeatScan(null, 'A', 0), false, 'the first scan fires');
+assert.equal(isRepeatScan({ code: 'A', at: 0 }, 'A', SAME_QR_MS - 1), true, 'the same QR inside 3 s is ignored');
+assert.equal(isRepeatScan({ code: 'A', at: 0 }, 'A', SAME_QR_MS), false, 'the same QR after 3 s fires again');
+assert.equal(isRepeatScan({ code: 'A', at: 0 }, 'B', 1), false, 'another QR fires at once');
 
 assert.equal(cronAuthorized('Bearer s3cret', 's3cret'), true);
 assert.equal(cronAuthorized('Bearer wrong', 's3cret'), false);
