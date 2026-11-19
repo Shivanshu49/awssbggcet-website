@@ -367,3 +367,35 @@ export async function checkIn(database: Db, code: string, admin: string): Promis
     ? { kind: 'already', name, college, ticketNo, at: checkedInAt, by: checkedInBy }
     : { kind: 'not_admitted', name, college, ticketNo, status };
 }
+
+export type CheckInDetails = Attendee & {
+  branch: string | null;
+  yearOfStudy: Registration['yearOfStudy'];
+  builderId: string | null;
+  phoneLast4: string;
+  status: Registration['status'];
+  checkedInAt: Date | null;
+  checkedInBy: string | null;
+};
+
+// Read-only: what the desk shows before the volunteer taps Check in. Never the email, and only
+// the phone's last 4 digits leave the server.
+export async function lookUpCheckin(database: Db, code: string): Promise<CheckInDetails | null> {
+  const [row] = await database
+    .select({
+      ...ATTENDEE,
+      branch: registrations.branch,
+      yearOfStudy: registrations.yearOfStudy,
+      builderId: registrations.builderId,
+      phone: registrations.phone,
+      status: registrations.status,
+      checkedInAt: registrations.checkedInAt,
+      checkedInBy: registrations.checkedInBy,
+    })
+    .from(registrations)
+    .where(eq(registrations.checkinCode, code))
+    .limit(1);
+  if (!row) return null;
+  const { phone, ...details } = row;
+  return { ...details, phoneLast4: phone.slice(-4) };
+}

@@ -15,6 +15,7 @@ import { db } from '@/lib/db';
 import { events, registrations, registrationStatus, type Registration } from '@/lib/db/schema';
 import { EVENT_SLUG, eventPage, qrReleased } from '@/lib/registration/content';
 import { formatDeadline, seatDeadline } from '@/lib/registration/format';
+import { countQrUnsent } from '@/lib/registration/seats';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60; // Send QR passes works in batches inside this limit.
@@ -78,7 +79,7 @@ export default async function AdminScdPage({
     );
   }
 
-  const [statusCounts, mealCounts, rows] = await Promise.all([
+  const [statusCounts, mealCounts, rows, qrOwed] = await Promise.all([
     db
       .select({ status: registrations.status, n: count() })
       .from(registrations)
@@ -100,6 +101,7 @@ export default async function AdminScdPage({
       .where(and(...filters))
       .orderBy(desc(registrations.createdAt))
       .limit(ROW_LIMIT + 1),
+    countQrUnsent(db, event.id),
   ]);
   const countOf = (value: Registration['status']) => statusCounts.find((row) => row.status === value)?.n ?? 0;
 
@@ -115,7 +117,7 @@ export default async function AdminScdPage({
         </form>
       </div>
 
-      <section aria-label="Counts" className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+      <section aria-label="Counts" className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
         <Stat
           label={event.capacity === null ? 'Seats taken (no limit set)' : `Seats taken of ${event.capacity}`}
           value={event.seatsTaken}
@@ -123,6 +125,7 @@ export default async function AdminScdPage({
         {SHOWN_STATUSES.map((value) => (
           <Stat key={value} label={STATUS_LABELS[value]} value={countOf(value)} />
         ))}
+        <Stat label="QR emails: sent / owed, of passes issued" value={`${countOf('approved') - qrOwed} / ${qrOwed}`} />
       </section>
 
       {eventPage.registration.collectMeal && (
