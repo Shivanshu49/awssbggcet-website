@@ -19,6 +19,7 @@ import {
   confirmByUtr,
   confirmRow,
   countQrUnsent,
+  lookUpCheckin,
   EVENT_FULL,
   EVENT_FULL_REFUND,
   Refused,
@@ -405,7 +406,18 @@ async function main() {
 
   // Check-in: two volunteers scan one QR, and exactly one succeeds.
   const gateEvent = await newEvent(null);
-  await person(gateEvent, 'approved', { checkinCode: 'gate-approved' });
+  await person(gateEvent, 'approved', { checkinCode: 'gate-approved', branch: 'CSE', builderId: 'gate.builder' });
+  // The desk's lookup first: read-only, no email, and only the phone's last 4 digits.
+  const before = await lookUpCheckin(db, 'gate-approved');
+  assert.ok(before && before.status === 'approved' && before.checkedInAt === null, 'ready to check in');
+  assert.equal(before.phoneLast4, '5210');
+  assert.deepEqual(
+    Object.keys(before).sort(),
+    ['branch', 'builderId', 'checkedInAt', 'checkedInBy', 'college', 'name', 'phoneLast4', 'status', 'ticketNo', 'yearOfStudy'],
+    'no email or full phone',
+  );
+  assert.equal((await lookUpCheckin(db, 'gate-approved'))?.checkedInAt, null, 'looking twice checks nobody in');
+  assert.equal(await lookUpCheckin(db, 'gate-nobody'), null);
   const scans = await Promise.all([
     checkIn(db, 'gate-approved', 'one@example.test'),
     checkIn(db, 'gate-approved', 'two@example.test'),
@@ -414,6 +426,8 @@ async function main() {
   const winner = scans[0].kind === 'ok' ? 'one@example.test' : 'two@example.test';
   const later = await checkIn(db, 'gate-approved', 'three@example.test');
   assert.ok(later.kind === 'already' && later.by === winner && later.at instanceof Date, 'keeps the first volunteer and time');
+  const after = await lookUpCheckin(db, 'gate-approved');
+  assert.ok(after?.checkedInAt instanceof Date && after.checkedInBy === winner, 'the lookup shows who checked them in');
   for (const status of ['pending', 'payment_submitted', 'waitlisted', 'rejected', 'cancelled'] as const) {
     await person(gateEvent, status, { checkinCode: `gate-${status}` });
     const refused = await checkIn(db, `gate-${status}`, 'one@example.test');
