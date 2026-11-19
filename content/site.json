@@ -15,5 +15,36 @@
     "eventsHosted": 1,
     "handsOnLabs": 1,
     "certifiedMembers": 0
-  }
+  },
+  "contributors": [
+    {
+      "name": "Shivanshu",
+      "role": "Lead Architect & Full-Stack Engineer",
+      "contribution": "Core platform architecture, database & registration engine, pass ticketing system, and deployment pipeline.",
+      "icon": "Code2",
+      "linkedin": ""
+    },
+    {
+      "name": "Ambuj Rai",
+      "role": "Content Lead & Frontend Developer",
+      "contribution": "Site content & media architecture, Resources hub, /login guidance portal, and SCD speaker & lineup integration.",
+      "icon": "Layers",
+      "image": "/team/ambuj-rai.webp",
+      "linkedin": "https://www.linkedin.com/in/ambuj-rai-530a38359"
+    },
+    {
+      "name": "Aryan Anand",
+      "role": "Frontend & Education Resources Engineer",
+      "contribution": "Education & learning resources hub, AWS Student Community Day microsite design, and interactive UI engineering.",
+      "icon": "Layout",
+      "linkedin": ""
+    },
+    {
+      "name": "Manasvi",
+      "role": "Frontend & Mobile UI Engineer",
+      "contribution": "Mobile responsiveness, header & hero layout polish, and event showcase UI components.",
+      "icon": "Smartphone",
+      "linkedin": ""
+    }
+  ]
 }

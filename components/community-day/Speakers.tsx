@@ -21,19 +21,27 @@ export function Speakers() {
   const { speakers } = data as { speakers: SpeakerItem[] };
   const [selectedSpeaker, setSelectedSpeaker] = useState<SpeakerItem | null>(null);
 
-  // Close modal on Escape key press
+  // Lock background scroll and touch action, and handle Escape key
   useEffect(() => {
+    if (!selectedSpeaker) return;
+
+    const originalOverflow = document.body.style.overflow;
+    const originalTouchAction = document.body.style.touchAction;
+
+    document.body.style.overflow = "hidden";
+    document.body.style.touchAction = "none";
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setSelectedSpeaker(null);
       }
     };
-    if (selectedSpeaker) {
-      document.body.style.overflow = "hidden";
-      window.addEventListener("keydown", handleKeyDown);
-    }
+
+    window.addEventListener("keydown", handleKeyDown);
+
     return () => {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = originalOverflow;
+      document.body.style.touchAction = originalTouchAction;
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [selectedSpeaker]);
@@ -157,7 +165,7 @@ export function Speakers() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 md:p-6"
+            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 md:p-6 overscroll-contain"
             onClick={() => setSelectedSpeaker(null)}
             role="dialog"
             aria-modal="true"
@@ -170,23 +178,23 @@ export function Speakers() {
               transition={{ type: "spring", stiffness: 340, damping: 24, mass: 0.8 }}
               style={{ transformPerspective: 1200 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-3xl rounded-2xl sm:rounded-3xl border border-amber-400/50 bg-gradient-to-br from-[#171020] via-[#100b18] to-[#130c22] p-5 sm:p-7 md:p-8 shadow-[0_36px_100px_rgba(0,0,0,0.7),0_0_48px_rgba(168,85,247,0.18)] max-h-[90vh] overflow-y-auto text-white"
+              className="relative w-[90vw] max-w-[360px] sm:max-w-md md:max-w-3xl max-h-[82dvh] sm:max-h-[88vh] overflow-y-auto overscroll-contain rounded-2xl sm:rounded-3xl border border-amber-400/50 bg-gradient-to-br from-[#171020] via-[#100b18] to-[#130c22] p-4 sm:p-7 md:p-8 shadow-[0_36px_100px_rgba(0,0,0,0.7),0_0_48px_rgba(168,85,247,0.18)] text-white"
             >
               {/* Close Button */}
               <button
                 type="button"
                 onClick={() => setSelectedSpeaker(null)}
-                className="absolute top-3.5 right-3.5 sm:top-5 sm:right-5 w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-white/15 bg-slate-900/80 hover:bg-[#1b1130] hover:border-amber-400/60 hover:text-amber-400 text-slate-300 flex items-center justify-center transition-all cursor-pointer z-20 focus-visible:outline-2 focus-visible:outline-amber-400"
+                className="absolute top-3 right-3 sm:top-5 sm:right-5 w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-amber-400/40 bg-slate-950/85 hover:bg-[#1b1130] hover:border-amber-400 text-white flex items-center justify-center transition-all cursor-pointer z-20 focus-visible:outline-2 focus-visible:outline-amber-400 shadow-lg"
                 aria-label="Close profile"
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-center">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-6 md:gap-8 items-center">
                 {/* Full Poster Column */}
                 <div className="md:col-span-5 flex justify-center">
                   {selectedSpeaker.poster ? (
-                    <div className="relative w-full max-w-[240px] sm:max-w-[280px] md:max-w-none aspect-[3/4] rounded-2xl overflow-hidden border-2 border-purple-500/40 bg-purple-950/30 shadow-[0_0_30px_rgba(168,85,247,0.2)]">
+                    <div className="relative w-full max-w-[190px] sm:max-w-[240px] md:max-w-none aspect-[3/4] max-h-[42dvh] sm:max-h-[50dvh] md:max-h-none rounded-2xl overflow-hidden border-2 border-purple-500/40 bg-purple-950/30 shadow-[0_0_30px_rgba(168,85,247,0.2)] mx-auto">
                       <Image
                         src={selectedSpeaker.poster}
                         alt={`${selectedSpeaker.name} Community Day Official Poster`}
@@ -197,14 +205,14 @@ export function Speakers() {
                       />
                     </div>
                   ) : (
-                    <div className="w-full max-w-[240px] sm:max-w-[280px] aspect-[3/4] rounded-2xl border-2 border-dashed border-purple-500/40 bg-purple-950/20 flex flex-col items-center justify-center p-6 text-center space-y-3">
-                      <div className="w-16 h-16 rounded-full bg-purple-500/20 border border-purple-400/40 flex items-center justify-center text-purple-300">
-                        <Layers className="w-8 h-8" />
+                    <div className="w-full max-w-[190px] sm:max-w-[240px] md:max-w-none aspect-[3/4] max-h-[42dvh] sm:max-h-[50dvh] md:max-h-none rounded-2xl border-2 border-dashed border-purple-500/40 bg-purple-950/20 flex flex-col items-center justify-center p-4 sm:p-6 text-center space-y-2 sm:space-y-3 mx-auto">
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-purple-500/20 border border-purple-400/40 flex items-center justify-center text-purple-300">
+                        <Layers className="w-6 h-6 sm:w-8 sm:h-8" />
                       </div>
-                      <p className="text-sm text-slate-200 font-bold">
+                      <p className="text-xs sm:text-sm text-slate-200 font-bold">
                         Hands-On Technical Workshop
                       </p>
-                      <p className="text-xs text-slate-400">
+                      <p className="text-[11px] sm:text-xs text-slate-400">
                         Speaker details, prerequisites, and hands-on track lab requirements will be revealed shortly.
                       </p>
                     </div>
@@ -212,7 +220,7 @@ export function Speakers() {
                 </div>
 
                 {/* Details Column */}
-                <div className="md:col-span-7 space-y-5 text-left">
+                <div className="md:col-span-7 space-y-4 sm:space-y-5 text-left">
                   <div>
                     <span className="text-[10px] font-mono tracking-widest uppercase text-purple-400 block mb-1">
                       AWS Student Community Day 2026
@@ -228,33 +236,33 @@ export function Speakers() {
                       </span>
                     </div>
 
-                    <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                    <h3 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight">
                       {selectedSpeaker.name}
                     </h3>
 
-                    <p className="text-sm sm:text-base text-amber-300 font-medium mt-1">
+                    <p className="text-xs sm:text-sm md:text-base text-amber-300 font-medium mt-1">
                       {selectedSpeaker.affiliation}
                     </p>
                   </div>
 
                   {/* Confirmed Session Topic */}
-                  <div className="p-4 rounded-2xl bg-slate-950/80 border border-purple-500/30 space-y-1.5">
+                  <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-950/80 border border-purple-500/30 space-y-1 sm:space-y-1.5">
                     <span className="text-[10px] font-bold text-purple-400 uppercase tracking-widest font-mono block">
                       Confirmed Session Topic
                     </span>
-                    <p className="text-sm sm:text-base text-white font-semibold leading-snug">
+                    <p className="text-xs sm:text-base text-white font-semibold leading-snug">
                       {selectedSpeaker.topic}
                     </p>
                   </div>
 
                   {/* Social Profile Link */}
                   {selectedSpeaker.linkedin ? (
-                    <div className="pt-2">
+                    <div className="pt-1 sm:pt-2">
                       <a
                         href={selectedSpeaker.linkedin}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-purple-500/40 bg-[#130c22]/90 hover:bg-[#1b1130] hover:border-amber-400/70 text-amber-300 hover:text-white font-medium text-xs sm:text-sm transition-all hover:scale-105 shadow-md"
+                        className="inline-flex items-center gap-2 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-full border border-purple-500/40 bg-[#130c22]/90 hover:bg-[#1b1130] hover:border-amber-400/70 text-amber-300 hover:text-white font-medium text-xs sm:text-sm transition-all hover:scale-105 shadow-md"
                       >
                         <svg className="w-4 h-4 fill-[#0a66c2]" viewBox="0 0 24 24">
                           <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
