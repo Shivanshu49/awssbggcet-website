@@ -7,6 +7,7 @@ import type { z } from 'zod';
 
 import { register } from '@/lib/registration/actions';
 import { eventPage } from '@/lib/registration/content';
+import { HOLD_PERIOD } from '@/lib/registration/format';
 import {
   MEAL_OPTIONS,
   YEAR_OPTIONS,
@@ -283,7 +284,7 @@ export function RegistrationForm() {
               value={values.builderId}
               onChange={(e) => update('builderId', e.target.value)}
               error={errors.builderId}
-              hint="Don't have one yet? Add it on your pass page within 48 hours of getting a seat — your pass can't be issued without it."
+              hint={`Don't have one yet? Add it on your pass page within ${HOLD_PERIOD} of getting a seat — your pass can't be issued without it.`}
             />
             <div className="flex justify-end border-t border-[#4C2A66]/40 pt-6">
               <button type="submit" className={PRIMARY_BUTTON}>

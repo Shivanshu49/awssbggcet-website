@@ -6,7 +6,7 @@ import { SITE_URL } from '@/lib/constants';
 import { formatEventDate, getEventBySlug } from '@/lib/events';
 
 import { EVENT_SLUG, eventPage } from './content';
-import { formatDeadline, hoursLeft, reminderLine, seatDeadline, SEAT_RULE } from './format';
+import { formatDeadline, HOLD_PERIOD, holdNoticeLine, minutesLeft, reminderLine, seatDeadline, SEAT_RULE } from './format';
 import { checkinQrPng } from './qr';
 
 const event = getEventBySlug(EVENT_SLUG)!;
@@ -72,7 +72,7 @@ export function sendRegistrationReceived(to: string, name: string, passCode: str
       `We've received your registration for ${event.title}.`,
       ...(seatHeldAt
         ? [SEAT_RULE, ...deadlineLine(seatHeldAt)]
-        : ["The event is full right now, so you're on the waitlist. If a seat opens, we'll email you, and you'll have 48 hours to add your Builder ID and pay."]),
+        : [`The event is full right now, so you're on the waitlist. If a seat opens, we'll email you, and you'll have ${HOLD_PERIOD} to add your Builder ID and pay.`]),
       "Your pass page shows your status. Bookmark it: it's your pass. If you haven't added your AWS Builder ID yet, add it there, because your pass can't be issued without it.",
     ],
     passCode,
@@ -125,7 +125,7 @@ export function sendSeatReleased({ email, name, passCode }: Contact) {
     `Your seat was released: ${event.title}`,
     [
       `Hi ${name},`,
-      "We didn't receive your payment details within 48 hours, so your seat has gone to the waitlist.",
+      `We didn't receive your payment details within ${HOLD_PERIOD}, so your seat has gone to the waitlist.`,
       `Want your seat back, or already paid? Email ${site.email}.`,
     ],
     passCode,
@@ -133,8 +133,19 @@ export function sendSeatReleased({ email, name, passCode }: Contact) {
 }
 
 export function sendDeadlineReminder({ email, name, passCode, seatHeldAt, builderId }: Contact & { builderId: string | null }) {
-  const line = reminderLine(seatHeldAt ? hoursLeft(seatHeldAt) : 1, Boolean(builderId), FEE);
+  const line = reminderLine(seatHeldAt ? minutesLeft(seatHeldAt) : 1, Boolean(builderId), FEE);
   return send(email, line, [`Hi ${name},`, `${line}.`, ...deadlineLine(seatHeldAt)], passCode);
+}
+
+// ponytail: one-off for the 48-hour to 1-hour change. Delete with its button after the event.
+export function sendHoldNotice({ email, name, passCode, seatHeldAt, builderId }: Contact & { builderId: string | null }) {
+  const deadline = seatHeldAt ? formatDeadline(seatDeadline(seatHeldAt)) : 'your deadline';
+  return send(
+    email,
+    `New deadline: your seat is held until ${deadline}`,
+    [`Hi ${name},`, holdNoticeLine(deadline, Boolean(builderId), FEE)],
+    passCode,
+  );
 }
 
 export function sendBuilderIdReminder({ email, name, passCode, seatHeldAt }: Contact) {

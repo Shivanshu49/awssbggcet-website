@@ -1,11 +1,11 @@
 name: Release SCD seats
 
-# Hourly: releases unpaid seats past 48 hours and sends the 24-hour reminder. See
+# Every 10 minutes: releases unpaid seats past registration.holdHours and sends the 20-minute reminder. See
 # docs/scd-registration-plan.md section 7. GitHub only runs schedules from the default branch,
 # so this does nothing until it's merged, and nothing after that until CRON_SECRET is set.
 on:
   schedule:
-    - cron: '17 * * * *'
+    - cron: '*/10 * * * *'
   workflow_dispatch:
 
 permissions: {}

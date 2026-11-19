@@ -9,12 +9,13 @@ import { z } from 'zod';
 import { db } from '@/lib/db';
 import { events } from '@/lib/db/schema';
 import { EVENT_SLUG, eventPage, qrReleased } from '@/lib/registration/content';
-import { sendBuilderIdReminder, sendPaymentConfirmed, sendQrPass, sendSeatOpened } from '@/lib/registration/email';
+import { sendBuilderIdReminder, sendHoldNotice, sendPaymentConfirmed, sendQrPass, sendSeatOpened } from '@/lib/registration/email';
 import { formatDeadline } from '@/lib/registration/format';
 import {
   cancelRow,
   checkIn,
   claimBuilderIdReminders,
+  claimHoldNotices,
   confirmByUtr,
   confirmRow,
   countQrUnsent,
@@ -168,6 +169,23 @@ export async function sendBuilderIdReminders(): Promise<ActionResult & { sent?: 
     return { sent: rows.length };
   } catch (err) {
     console.error('[admin] reminder failed:', (err as { code?: string }).code ?? 'unknown');
+    return { error: GENERIC_ERROR };
+  }
+}
+
+// ponytail: one-off for the 48-hour to 1-hour change; delete with its button after the event.
+export async function notifyPendingOfDeadline(): Promise<ActionResult & { sent?: number }> {
+  await requireAdmin();
+  try {
+    const [event] = await db.select({ id: events.id }).from(events).where(eq(events.slug, EVENT_SLUG)).limit(1);
+    if (!event) return { error: GENERIC_ERROR };
+    const rows = await claimHoldNotices(db, event.id);
+    after(async () => {
+      for (const row of rows) await sendHoldNotice(row);
+    });
+    return { sent: rows.length };
+  } catch (err) {
+    console.error('[admin] hold notice failed:', (err as { code?: string }).code ?? 'unknown');
     return { error: GENERIC_ERROR };
   }
 }

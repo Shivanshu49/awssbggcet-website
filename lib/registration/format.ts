@@ -1,6 +1,6 @@
 import type { Registration } from '@/lib/db/schema';
 
-import type { JourneyItem } from './content';
+import { eventPage, type JourneyItem } from './content';
 
 // The link may get forwarded, so contact details are never shown in full.
 export function maskEmail(email: string) {
@@ -21,8 +21,10 @@ export function initials(name: string) {
   return (words[0][0] + (words.length > 1 ? words[words.length - 1][0] : '')).toUpperCase();
 }
 
-export const SEAT_HOLD_HOURS = 48;
-export const SEAT_RULE = 'Add your Builder ID and pay within 48 hours, or the seat goes to the waitlist.';
+export const SEAT_HOLD_HOURS = eventPage.registration.holdHours;
+export const hoursText = (hours: number) => `${hours} hour${hours === 1 ? '' : 's'}`;
+export const HOLD_PERIOD = hoursText(SEAT_HOLD_HOURS);
+export const SEAT_RULE = `Add your Builder ID and pay within ${HOLD_PERIOD}, or the seat goes to the waitlist.`;
 
 export function seatDeadline(seatHeldAt: Date) {
   return new Date(seatHeldAt.getTime() + SEAT_HOLD_HOURS * 3_600_000);
@@ -38,13 +40,17 @@ export function formatDeadline(deadline: Date) {
   return `${deadlineFormat.format(deadline)} IST`;
 }
 
-// Rounded up, so a job running late never says "0h".
-export function hoursLeft(seatHeldAt: Date, now = new Date()) {
-  return Math.max(1, Math.ceil((seatDeadline(seatHeldAt).getTime() - now.getTime()) / 3_600_000));
+// Rounded up, so a job running late never says "0 min".
+export function minutesLeft(seatHeldAt: Date, now = new Date()) {
+  return Math.max(1, Math.ceil((seatDeadline(seatHeldAt).getTime() - now.getTime()) / 60_000));
 }
 
-export function reminderLine(hours: number, hasBuilderId: boolean, fee: number) {
-  return `Your seat expires in ${hours}h: ${hasBuilderId ? 'pay' : 'add your Builder ID and pay'} ₹${fee}`;
+export function reminderLine(minutes: number, hasBuilderId: boolean, fee: number) {
+  return `Your seat expires in ${minutes} min: ${hasBuilderId ? 'pay' : 'add your Builder ID and pay'} ₹${fee}`;
+}
+
+export function holdNoticeLine(deadline: string, hasBuilderId: boolean, fee: number) {
+  return `Your seat is held until ${deadline}. ${hasBuilderId ? 'Pay' : 'Add your Builder ID and pay'} ₹${fee} to keep it.`;
 }
 
 export type StepState = 'done' | 'current' | 'upcoming';

@@ -26,6 +26,7 @@ import {
   maskUtr,
   passSteps,
   seatDeadline,
+  HOLD_PERIOD,
   SEAT_RULE,
   type JourneyState,
 } from '@/lib/registration/format';
@@ -188,7 +189,7 @@ function QrBlock({
     <section className={CARD}>
       <p className="text-sm leading-relaxed text-[#CFC5DC]">
         {reg.status === 'waitlisted'
-          ? "You're on the waitlist. If a seat opens, you'll have 48 hours to add your Builder ID and pay. Questions? Email "
+          ? `You're on the waitlist. If a seat opens, you'll have ${HOLD_PERIOD} to add your Builder ID and pay. Questions? Email `
           : 'This registration is cancelled. Want your seat back, or already paid? Email '}
         <a href={`mailto:${site.email}`} className="text-[#FBBF24] underline-offset-2 hover:underline">
           {site.email}
