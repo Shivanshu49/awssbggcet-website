@@ -15,5 +15,43 @@
     "eventsHosted": 1,
     "handsOnLabs": 1,
     "certifiedMembers": 0
-  }
+  },
+  "contributors": [
+    {
+      "name": "Shivanshu Dixit",
+      "role": "Lead Architect & Full-Stack Engineer",
+      "contribution": "Core platform architecture, database & registration engine, pass ticketing system, and deployment pipeline.",
+      "icon": "Code2",
+      "image": "/team/shivanshu-dixit.webp",
+      "linkedin": "https://www.linkedin.com/in/shivanshu049/",
+      "github": "https://github.com/Shivanshu49"
+    },
+    {
+      "name": "Ambuj Rai",
+      "role": "Content Lead & Frontend Developer",
+      "contribution": "Site content & media architecture, Resources hub, /login guidance portal, and SCD speaker & lineup integration.",
+      "icon": "Layers",
+      "image": "/team/ambuj-rai.webp",
+      "linkedin": "https://www.linkedin.com/in/ambuj-rai-530a38359",
+      "github": "https://github.com/yoyoambujrai"
+    },
+    {
+      "name": "Aryan Anand",
+      "role": "Frontend & Education Resources Engineer",
+      "contribution": "Education & learning resources hub, AWS Student Community Day microsite design, and interactive UI engineering.",
+      "icon": "Layout",
+      "image": "/team/aryan-anand.webp",
+      "linkedin": "https://www.linkedin.com/in/aryan-anand-1837082a0/",
+      "github": "https://github.com/AryanAnand-25raj"
+    },
+    {
+      "name": "Manasvi Bhati",
+      "role": "Frontend & Mobile UI Engineer",
+      "contribution": "Mobile responsiveness, header & hero layout polish, and event showcase UI components.",
+      "icon": "Smartphone",
+      "image": "/team/manasvi-bhati.webp",
+      "linkedin": "https://www.linkedin.com/in/manasvi-bhati-b269893a9",
+      "github": "https://github.com/BLACKPANTHER-771"
+    }
+  ]
 }
