@@ -34,3 +34,6 @@ export async function POST(request: Request) {
   });
   return json({ released: released.length, promoted: promoted.length, reminded: reminded.length });
 }
+
+// Vercel Cron (vercel.json, every 10 minutes) calls GET; the manual GitHub workflow calls POST.
+export const GET = POST;
