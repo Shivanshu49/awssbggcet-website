@@ -3,7 +3,8 @@
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Calendar, UserPlus, Sparkles, BookOpen, ExternalLink, ArrowRight, Clock, MapPin } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Calendar, UserPlus, Sparkles, BookOpen, ExternalLink, ArrowRight, Clock, MapPin, Code2, Layers, Layout, Smartphone, X } from 'lucide-react';
 import site from '@/content/site.json';
 import team from '@/content/team.json';
 import events from '@/content/events.json';
@@ -42,6 +43,22 @@ const SOCIAL_LINKS: {
   { platform: 'github', label: 'GitHub', href: site.socials.github },
   { platform: 'discord', label: 'Discord', href: site.socials.discord },
 ];
+
+const CONTRIBUTOR_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  Code2,
+  Layers,
+  Layout,
+  Smartphone,
+};
+
+interface ContributorItem {
+  name: string;
+  role: string;
+  contribution: string;
+  icon: string;
+  image?: string;
+  linkedin?: string;
+}
 
 /* ============================================================================
    WEBGL2 INTERACTIVE CURSOR GRID (HOME HERO)
@@ -518,6 +535,32 @@ type TimelineEvent = {
 
 export default function FullySynchronizedPage() {
   const strandsCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [selectedContributor, setSelectedContributor] = React.useState<ContributorItem | null>(null);
+
+  // Lock background scroll and touch action when contributor modal banner is open
+  useEffect(() => {
+    if (!selectedContributor) return;
+
+    const originalOverflow = document.body.style.overflow;
+    const originalTouchAction = document.body.style.touchAction;
+
+    document.body.style.overflow = 'hidden';
+    document.body.style.touchAction = 'none';
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedContributor(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.body.style.touchAction = originalTouchAction;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedContributor]);
   const todayInIndia = new Intl.DateTimeFormat('en-CA', {
     timeZone: 'Asia/Kolkata',
     year: 'numeric',
@@ -880,6 +923,191 @@ export default function FullySynchronizedPage() {
               ))}
             </div>
           </div>
+
+          {/* Website Engineering & Contributors */}
+          <section aria-labelledby="contributors-heading" className="border-t border-[#4C2A66]/35 pt-12 mt-14">
+            <div className="mb-10 max-w-2xl">
+              <span className="font-mono-jb text-xs uppercase tracking-[0.2em] text-[#FBBF24]">
+                BUILT BY STUDENTS, FOR STUDENTS
+              </span>
+              <h3 id="contributors-heading" className="mt-2 text-2xl sm:text-3xl font-bold text-white">
+                Website Engineering &amp; Contributors
+              </h3>
+              <p className="mt-2 text-sm sm:text-base leading-relaxed text-[#9E92B0]">
+                Designed, architected, and shipped by the student developers and content engineers of AWS Builder Center GCET.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {(site.contributors as ContributorItem[] || []).map((contributor) => {
+                const IconComponent = CONTRIBUTOR_ICONS[contributor.icon] || Code2;
+                return (
+                  <article
+                    key={contributor.name}
+                    onClick={() => setSelectedContributor(contributor)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedContributor(contributor);
+                      }
+                    }}
+                    aria-label={`View ${contributor.name}'s contributor profile`}
+                    className="group relative rounded-2xl border border-[#4C2A66]/50 bg-[#130C22] p-6 sm:p-7 hover:border-amber-400/60 hover:shadow-[0_12px_36px_rgba(168,85,247,0.16),0_0_24px_rgba(251,191,36,0.1)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col items-center text-center cursor-pointer min-h-[300px]"
+                  >
+                    {/* Centered Circular Portrait / Icon */}
+                    <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-purple-500/40 bg-[#090511] overflow-hidden flex items-center justify-center shadow-[0_0_24px_rgba(168,85,247,0.16)] group-hover:border-amber-400 group-hover:shadow-[0_0_30px_rgba(251,191,36,0.22)] transition-all duration-300 shrink-0">
+                      {contributor.image ? (
+                        <Image
+                          src={contributor.image}
+                          alt={contributor.name}
+                          fill
+                          sizes="96px"
+                          className="object-cover"
+                        />
+                      ) : (
+                        <IconComponent className="w-8 h-8 text-amber-400 group-hover:scale-110 transition-transform duration-300" />
+                      )}
+                    </div>
+
+                    {/* Member Details */}
+                    <span className="font-mono-jb text-[10px] uppercase tracking-[0.18em] text-[#C084FC] mt-4 block">
+                      Builder
+                    </span>
+                    <h4 className="mt-1 text-lg font-bold text-white group-hover:text-amber-300 transition-colors">
+                      {contributor.name}
+                    </h4>
+                    <p className="mt-1 text-xs font-mono text-[#FBBF24] leading-relaxed">
+                      {contributor.role}
+                    </p>
+
+                    {/* Brief Contribution Summary */}
+                    <p className="mt-3 text-xs text-[#CFC5DC] leading-relaxed line-clamp-2 px-1">
+                      {contributor.contribution}
+                    </p>
+
+                    {/* Inspection Hint */}
+                    <div className="mt-auto pt-4 flex items-center gap-1.5 text-[11px] font-mono-jb text-[#9E92B0] group-hover:text-amber-300 transition-colors">
+                      <span>View contributions</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+
+            {/* Contributor Profile Banner Modal */}
+            <AnimatePresence>
+              {selectedContributor && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 md:p-6 overscroll-contain"
+                  onClick={() => setSelectedContributor(null)}
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label={`${selectedContributor.name} Contributor Profile`}
+                >
+                  <motion.article
+                    initial={{ opacity: 0, scale: 0.8, y: 35, rotateX: -8 }}
+                    animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
+                    exit={{ opacity: 0, scale: 0.85, y: 20 }}
+                    transition={{ type: 'spring', stiffness: 340, damping: 24, mass: 0.8 }}
+                    style={{ transformPerspective: 1200 }}
+                    onClick={(e) => e.stopPropagation()}
+                    className="relative w-[92vw] max-w-[360px] sm:max-w-md md:max-w-2xl lg:max-w-3xl max-h-[82dvh] sm:max-h-[88vh] overflow-y-auto overscroll-contain rounded-2xl sm:rounded-3xl border border-amber-400/50 bg-gradient-to-br from-[#171020] via-[#100b18] to-[#130c22] shadow-[0_36px_100px_rgba(0,0,0,0.7),0_0_48px_rgba(168,85,247,0.18)] text-white"
+                  >
+                    {/* Close Button */}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedContributor(null)}
+                      className="absolute top-3.5 right-3.5 sm:top-5 sm:right-5 w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-amber-400/40 bg-slate-950/85 hover:bg-[#1b1130] hover:border-amber-400 text-white flex items-center justify-center transition-all cursor-pointer z-20 focus-visible:outline-2 focus-visible:outline-amber-400 shadow-lg"
+                      aria-label="Close profile"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+
+                    <div className="grid grid-cols-1 md:grid-cols-12 items-center">
+                      {/* Left Column: Portrait & Badge */}
+                      <div className="md:col-span-5 flex flex-col items-center justify-center p-6 sm:p-8 bg-[#090511]/40 border-b md:border-b-0 md:border-r border-[#4C2A66]/40 text-center">
+                        <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-full border-2 border-amber-400/70 overflow-hidden shadow-[0_0_35px_rgba(251,191,36,0.2),0_0_60px_rgba(168,85,247,0.15)] flex items-center justify-center bg-[#090511] shrink-0">
+                          {selectedContributor.image ? (
+                            <Image
+                              src={selectedContributor.image}
+                              alt={selectedContributor.name}
+                              fill
+                              sizes="128px"
+                              className="object-cover"
+                              priority
+                            />
+                          ) : (
+                            (() => {
+                              const IconComp = CONTRIBUTOR_ICONS[selectedContributor.icon] || Code2;
+                              return <IconComp className="w-12 h-12 text-amber-400" />;
+                            })()
+                          )}
+                        </div>
+
+                        <span className="font-mono-jb text-[10px] uppercase tracking-[0.2em] text-[#C084FC] mt-4 block">
+                          Website Builder
+                        </span>
+                        <p className="mt-1 text-xs sm:text-sm font-mono text-[#FBBF24]">
+                          {selectedContributor.role}
+                        </p>
+                      </div>
+
+                      {/* Right Column: Details & Connect */}
+                      <div className="md:col-span-7 p-6 sm:p-8 text-left space-y-4">
+                        <div>
+                          <span className="font-mono-jb text-[10px] uppercase tracking-[0.18em] text-purple-400 block mb-1">
+                            AWS Student Builder Group GCET
+                          </span>
+                          <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                            {selectedContributor.name}
+                          </h3>
+                        </div>
+
+                        {/* Engineering Contribution */}
+                        <div className="p-4 rounded-2xl bg-slate-950/80 border border-purple-500/30 space-y-1.5">
+                          <span className="text-[10px] font-bold text-amber-400/90 uppercase tracking-widest font-mono block">
+                            Platform Engineering Contribution
+                          </span>
+                          <p className="text-xs sm:text-sm text-[#D8CEE6] leading-relaxed">
+                            {selectedContributor.contribution}
+                          </p>
+                        </div>
+
+                        {/* LinkedIn Profile */}
+                        {selectedContributor.linkedin ? (
+                          <div className="pt-1">
+                            <a
+                              href={selectedContributor.linkedin}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-purple-500/40 bg-[#130C22] hover:bg-[#1B1130] hover:border-amber-400 text-amber-300 hover:text-white text-xs sm:text-sm font-medium transition-all hover:scale-105 shadow-md"
+                            >
+                              <svg className="w-4 h-4 fill-[#0a66c2]" viewBox="0 0 24 24">
+                                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                              </svg>
+                              <span>Connect on LinkedIn</span>
+                              <ExternalLink className="w-3.5 h-3.5 opacity-70" />
+                            </a>
+                          </div>
+                        ) : (
+                          <p className="text-[11px] text-slate-400 font-mono italic">
+                            LinkedIn profile will be linked shortly.
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </motion.article>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </section>
         </section>
       </div>
 
