@@ -46,10 +46,10 @@ export function Journey() {
               {item.step === 1 && (
                 <div className="pt-6">
                   <Link
-                    href="/community-day/register"
+                    href="/pass"
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 group-hover:translate-x-1 transition-all"
                   >
-                    <span>Register Now (₹45)</span>
+                    <span>Find my pass</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
