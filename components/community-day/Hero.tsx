@@ -63,7 +63,7 @@ export function Hero() {
         {/* Pricing Notice & Action CTAs */}
         <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
-            href="/community-day/register"
+            href="/pass"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-bold px-8 py-3.5 text-sm uppercase tracking-wider transition-all duration-200 shadow-[0_0_25px_rgba(251,191,36,0.4)] hover:shadow-[0_0_35px_rgba(251,191,36,0.7)] hover:scale-105 active:scale-95 group cursor-pointer"
           >
             <span>{hero.ctaRegister}</span>

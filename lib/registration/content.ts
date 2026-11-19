@@ -12,6 +12,7 @@ export type JourneyItem = {
 type EventPage = {
   registration: {
     open: boolean;
+    closedMessage: string; // shown on /community-day/register while open is false
     capacity: number; // 0 = not set yet: the seed script writes NULL
     fee: number; // whole rupees; the only place the amount is stored
     holdHours: number; // how long a seat is held for the Builder ID and payment; bump consentVersion if it changes

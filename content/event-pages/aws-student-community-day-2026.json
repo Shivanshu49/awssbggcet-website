@@ -1,6 +1,7 @@
 {
   "registration": {
-    "open": true,
+    "open": false,
+    "closedMessage": "Registration closed — all seats are filled. See you on 21 Nov!",
     "capacity": 200,
     "fee": 45,
     "holdHours": 1,

@@ -130,7 +130,7 @@ export const RolledLetterBanner: React.FC<RolledLetterBannerProps> = ({
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${dates}`;
   }, []);
 
-  const registrationUrl = '/community-day/register';
+  const passUrl = '/pass';
 
   return (
     <AnimatePresence>
@@ -318,10 +318,10 @@ export const RolledLetterBanner: React.FC<RolledLetterBannerProps> = ({
 
                   {/* 100% COMPLETE POSTER: Exact Aspect Ratio (1024/576) */}
                   <Link
-                    href={registrationUrl}
+                    href={passUrl}
                     onClick={onClose}
                     className="group/poster relative w-full aspect-[1024/576] block cursor-pointer"
-                    title="Click to Open Community Day Registration Page"
+                    title="Find your Community Day pass"
                   >
                     <Image
                       src="/events/aws-community-day-banner.webp"
@@ -335,7 +335,7 @@ export const RolledLetterBanner: React.FC<RolledLetterBannerProps> = ({
                 </motion.div>
 
                 {/* =========================================================================
-                    3. DETAILS PANEL & BUTTONS — Prominent "REGISTER NOW" CTA
+                    3. DETAILS PANEL & BUTTONS — Prominent "FIND MY PASS" CTA
                     ========================================================================= */}
                 <motion.div
                   inert={!isInteractive} // These links navigate: no invisible tap targets while unrolling.
@@ -362,7 +362,7 @@ export const RolledLetterBanner: React.FC<RolledLetterBannerProps> = ({
                     </div>
                   </div>
 
-                  {/* Actions: Add to Calendar, Event Details & Register Now (own row on phones) */}
+                  {/* Actions: Add to Calendar, Event Details & Find my pass (own row on phones) */}
                   <div className="flex flex-wrap items-center gap-2.5 self-end md:self-auto w-full md:w-auto">
                     <a
                       href={calendarUrl}
@@ -384,11 +384,11 @@ export const RolledLetterBanner: React.FC<RolledLetterBannerProps> = ({
                     </Link>
 
                     <Link
-                      href={registrationUrl}
+                      href={passUrl}
                       onClick={onClose}
                       className="order-first md:order-none basis-full md:basis-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black text-xs font-extrabold uppercase tracking-wider shadow-[0_0_25px_rgba(251,191,36,0.7)] hover:scale-105 active:scale-95 transition-all cursor-pointer font-mono"
                     >
-                      <span>Register Now</span>
+                      <span>Find my pass</span>
                       <ArrowRight className="w-4 h-4" />
                     </Link>
                   </div>

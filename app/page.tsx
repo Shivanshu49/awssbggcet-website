@@ -490,7 +490,7 @@ function CursorGrid({
 const TICKER_ITEMS: { label: string; href?: string }[] = [
   { label: 'AWS Student Community Day 2026 – Nov 21', href: '/community-day' },
   { label: 'Galgotias College of Engineering & Technology, Greater Noida' },
-  { label: 'Registration opens soon' },
+  { label: 'Registration closed — all seats filled' },
 ];
 
 const EVENT_CARDS = [
@@ -787,10 +787,10 @@ export default function FullySynchronizedPage() {
               </p>
               <div className="mt-8 sm:mt-10 flex w-full max-w-xs sm:max-w-none flex-col items-center gap-3 sm:gap-5">
                 <Link
-                  href="/community-day/register"
+                  href="/pass"
                   className="w-full sm:w-auto text-center px-7 sm:px-9 py-3.5 sm:py-4 rounded-full bg-[#FBBF24] text-[#0B0714] font-bold text-xs sm:text-sm uppercase shadow-[0_0_30px_rgba(251,191,36,0.45)] transition-all hover:bg-amber-300"
                 >
-                  Register for Community Day · 21 Nov
+                  Find my pass · 21 Nov
                 </Link>
                 <div className="flex w-full sm:w-auto flex-col sm:flex-row sm:flex-wrap items-center justify-center gap-3">
                   <Link

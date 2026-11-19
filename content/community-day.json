@@ -9,7 +9,7 @@
     "venue": "D Block Auditorium, GCET Campus 1",
     "capacity": "200 Seats Only",
     "fee": "₹45 per participant",
-    "ctaRegister": "Register for Community Day",
+    "ctaRegister": "Find my pass",
     "ctaExplore": "Explore Schedule"
   },
   "infoCards": [
@@ -294,10 +294,10 @@
     "mapLink": "https://www.google.com/maps/dir/?api=1&destination=28.457185904700307,77.49845600782581"
   },
   "finalCTA": {
-    "badge": "200 Seats Capacity • Registration Live",
-    "heading": "Secure Your Seat for AWS Student Community Day 2026",
+    "badge": "Registration closed • All 200 seats filled",
+    "heading": "See You at AWS Student Community Day 2026",
     "subheading": "Join us on 21st November 2026 at the D Block Auditorium, GCET Campus 1 for North India's flagship student cloud summit.",
     "fee": "Entry Fee: ₹45 per participant",
-    "buttonText": "Register Now"
+    "buttonText": "Find my pass"
   }
 }
