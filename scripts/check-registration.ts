@@ -11,14 +11,18 @@ import { dbCredentials, dbSsl } from '../lib/db/ssl';
 import { eventPage, qrReleased } from '../lib/registration/content';
 import {
   formatDeadline,
-  hoursLeft,
+  holdNoticeLine,
+  hoursText,
   interestsEditable,
   journeyStates,
   maskEmail,
   maskPhone,
   maskUtr,
+  minutesLeft,
   passSteps,
   reminderLine,
+  SEAT_HOLD_HOURS,
+  SEAT_RULE,
   seatDeadline,
 } from '../lib/registration/format';
 import {
@@ -136,19 +140,28 @@ for (const payerName of ['', 'A', 'A'.repeat(121)]) {
   assert.equal(paymentSchema.safeParse({ ...payment, payerName }).success, false, `payer ${payerName}`);
 }
 
-// 48 hours from noon IST on 7 Nov, shown in IST whatever the server's time zone.
-const deadline = seatDeadline(new Date('2026-11-07T12:00:00+05:30'));
-assert.equal(deadline.toISOString(), new Date('2026-11-09T12:00:00+05:30').toISOString());
-assert.match(formatDeadline(deadline), /^9 Nov 2026, 12:00 pm IST$/i);
+// The hold comes from the content file, and the deadline shows in IST whatever the server's time zone.
+assert.equal(SEAT_HOLD_HOURS, eventPage.registration.holdHours);
+const heldAt = new Date('2026-11-07T12:00:00+05:30');
+assert.equal(seatDeadline(heldAt).getTime() - heldAt.getTime(), SEAT_HOLD_HOURS * 3_600_000);
+assert.match(formatDeadline(new Date('2026-11-09T12:00:00+05:30')), /^9 Nov 2026, 12:00 pm IST$/i);
+assert.equal(hoursText(1), '1 hour');
+assert.equal(hoursText(48), '48 hours');
+assert.ok(SEAT_RULE.includes(`within ${hoursText(SEAT_HOLD_HOURS)},`), SEAT_RULE);
 
-const heldAt = new Date('2026-11-07T00:00:00Z');
-const after_ = (hours: number) => new Date(heldAt.getTime() + hours * 3_600_000);
-assert.equal(hoursLeft(heldAt, after_(24)), 24);
-assert.equal(hoursLeft(heldAt, after_(24.5)), 24, 'rounds up');
-assert.equal(hoursLeft(heldAt, after_(47.9)), 1);
-assert.equal(hoursLeft(heldAt, after_(60)), 1, 'never says 0h');
-assert.equal(reminderLine(24, true, 45), 'Your seat expires in 24h: pay ₹45');
-assert.equal(reminderLine(24, false, 45), 'Your seat expires in 24h: add your Builder ID and pay ₹45');
+const holdMinutes = SEAT_HOLD_HOURS * 60;
+const after_ = (minutes: number) => new Date(heldAt.getTime() + minutes * 60_000);
+assert.equal(minutesLeft(heldAt, after_(holdMinutes - 20)), 20);
+assert.equal(minutesLeft(heldAt, after_(holdMinutes - 19.5)), 20, 'rounds up');
+assert.equal(minutesLeft(heldAt, after_(holdMinutes - 0.1)), 1);
+assert.equal(minutesLeft(heldAt, after_(holdMinutes + 30)), 1, 'never says 0 min');
+assert.equal(reminderLine(20, true, 45), 'Your seat expires in 20 min: pay ₹45');
+assert.equal(reminderLine(20, false, 45), 'Your seat expires in 20 min: add your Builder ID and pay ₹45');
+assert.equal(
+  holdNoticeLine('19 Nov 2026, 3:00 pm IST', false, 45),
+  'Your seat is held until 19 Nov 2026, 3:00 pm IST. Add your Builder ID and pay ₹45 to keep it.',
+);
+assert.equal(holdNoticeLine('19 Nov 2026, 3:00 pm IST', true, 45), 'Your seat is held until 19 Nov 2026, 3:00 pm IST. Pay ₹45 to keep it.');
 
 const journey = [
   { phase: 'before', step: 'registered', title: '' },

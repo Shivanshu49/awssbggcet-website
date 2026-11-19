@@ -4,6 +4,7 @@ import Link from 'next/link';
 
 import { BuilderIdReminderButton } from '@/components/admin/BuilderIdReminderButton';
 import { BulkConfirmForm } from '@/components/admin/BulkConfirmForm';
+import { NotifyPendingButton } from '@/components/admin/NotifyPendingButton';
 import { RowActions } from '@/components/admin/RowActions';
 import { SendQrPassesButton } from '@/components/admin/SendQrPassesButton';
 import { CARD, FIELD_INPUT, SECONDARY_BUTTON, SMALL_SECONDARY_BUTTON, fieldBorder } from '@/components/registration/field-styles';
@@ -166,6 +167,7 @@ export default async function AdminScdPage({
         </form>
         <div className="flex flex-wrap items-center gap-2">
           <BuilderIdReminderButton />
+          <NotifyPendingButton />
           <SendQrPassesButton
             released={qrReleased()}
             opensAt={formatDeadline(new Date(eventPage.registration.qrReleaseAt))}

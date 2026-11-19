@@ -6,7 +6,7 @@ import { db } from '@/lib/db';
 import { events } from '@/lib/db/schema';
 import { EVENT_SLUG } from '@/lib/registration/content';
 import { sendDeadlineReminder, sendSeatOpened, sendSeatReleased } from '@/lib/registration/email';
-import { runHourlyJob } from '@/lib/registration/seats';
+import { runReleaseJob } from '@/lib/registration/seats';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
   // Once the event has started, nobody should lose a seat or get a deadline email.
   if (event.startsAt <= new Date()) return json({ skipped: 'event has started' });
 
-  const { released, promoted, reminded } = await runHourlyJob(db, event.id);
+  const { released, promoted, reminded } = await runReleaseJob(db, event.id);
   // One at a time, so a burst stays within the SMTP provider's rate limit.
   after(async () => {
     for (const row of released) await sendSeatReleased(row);

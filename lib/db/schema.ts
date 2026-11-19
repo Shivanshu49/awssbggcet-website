@@ -133,8 +133,8 @@ export const registrations = pgTable(
     utr: text("utr"), // exactly 12 digits; from the Pay box
     payerName: text("payer_name"), // payer's UPI name, for the manual check
     utrSubmittedAt: timestamp("utr_submitted_at", { withTimezone: true }),
-    seatHeldAt: timestamp("seat_held_at", { withTimezone: true }), // when the seat was gained; starts the 48-hour clock
-    deadlineRemindedAt: timestamp("deadline_reminded_at", { withTimezone: true }), // sends the 24-hour reminder once per seat hold
+    seatHeldAt: timestamp("seat_held_at", { withTimezone: true }), // when the seat was gained; starts the holdHours clock
+    deadlineRemindedAt: timestamp("deadline_reminded_at", { withTimezone: true }), // sends one deadline email per seat hold: the 20-minute reminder or the hold notice
     qrEmailedAt: timestamp("qr_emailed_at", { withTimezone: true }), // set after the QR email is accepted; null = still to send
     createdAt: createdAt(),
     updatedAt: timestamp("updated_at", { withTimezone: true })

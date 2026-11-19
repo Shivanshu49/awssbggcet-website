@@ -1,4 +1,4 @@
-import { and, asc, count, eq, inArray, isNotNull, isNull, lt, lte, notInArray, or, sql } from 'drizzle-orm';
+import { and, asc, count, eq, gt, inArray, isNotNull, isNull, lt, lte, notInArray, or, sql } from 'drizzle-orm';
 
 import type { db } from '@/lib/db'; // Type only, so scripts can import this module outside Next.js.
 import { events, registrations, type Registration } from '@/lib/db/schema';
@@ -14,7 +14,7 @@ export const STALE = 'This row changed. Reload the page and try again.';
 export const EVENT_FULL = 'Event full.';
 export const EVENT_FULL_REFUND = 'Event full, so no seat can be restored. This payment qualifies for a refund.';
 
-const REMINDER_AFTER_HOURS = 24;
+const REMINDER_MINUTES_LEFT = 20;
 
 const CONTACT = {
   id: registrations.id,
@@ -167,7 +167,7 @@ export async function confirmByUtr(tx: Tx, eventId: string, utrs: string[], admi
   };
 }
 
-// Needs status = pending, as the 48-hour release does, so exactly one of them wins.
+// Needs status = pending, as the seat release does, so exactly one of them wins.
 export async function submitUtr(
   database: Db,
   { passCode, utr, payerName }: { passCode: string; utr: string; payerName: string },
@@ -186,7 +186,8 @@ export async function submitUtr(
   return rows.length > 0;
 }
 
-const pastHours = (hours: number) => sql`now() - make_interval(hours => ${hours})`;
+// Seconds, so a fractional holdHours works too.
+const pastHours = (hours: number) => sql`now() - make_interval(secs => ${hours * 3600})`;
 
 // Cancelled, not waitlisted: the queue is ordered by created_at, so they'd go straight back to the front.
 async function releaseExpired(database: Db, eventId: string) {
@@ -239,7 +240,8 @@ async function fillFreeSeats(database: Db, eventId: string) {
   }
 }
 
-// The UPDATE claims each row before anything is sent, so overlapping runs can't send twice.
+// Once per seat hold, with 20 minutes or less left. The UPDATE claims each row before anything is
+// sent, so overlapping runs can't send twice.
 function claimDeadlineReminders(database: Db, eventId: string) {
   return database
     .update(registrations)
@@ -248,19 +250,37 @@ function claimDeadlineReminders(database: Db, eventId: string) {
       and(
         eq(registrations.eventId, eventId),
         eq(registrations.status, 'pending'),
-        lte(registrations.seatHeldAt, pastHours(REMINDER_AFTER_HOURS)),
+        lte(registrations.seatHeldAt, pastHours(SEAT_HOLD_HOURS - REMINDER_MINUTES_LEFT / 60)),
         isNull(registrations.deadlineRemindedAt),
       ),
     )
     .returning({ ...CONTACT, builderId: registrations.builderId });
 }
 
-// Releases run first, so nobody being released also gets a reminder.
-export async function runHourlyJob(database: Db, eventId: string) {
+// Every 10 minutes. Releases run first, so nobody being released also gets a reminder.
+export async function runReleaseJob(database: Db, eventId: string) {
   const { released, promoted } = await releaseExpired(database, eventId);
   const filled = await fillFreeSeats(database, eventId);
   const reminded = await claimDeadlineReminders(database, eventId);
   return { released, promoted: [...promoted, ...filled], reminded };
+}
+
+// ponytail: one-off for the 48-hour to 1-hour change; delete with its button after the event.
+// It's this hold's deadline email, so a second click or the 20-minute reminder sends nothing more.
+// Only seats still in time, so a click before the one-off SQL can't announce a deadline already past.
+export function claimHoldNotices(database: Db, eventId: string) {
+  return database
+    .update(registrations)
+    .set({ deadlineRemindedAt: sql`now()` })
+    .where(
+      and(
+        eq(registrations.eventId, eventId),
+        eq(registrations.status, 'pending'),
+        isNull(registrations.deadlineRemindedAt),
+        gt(registrations.seatHeldAt, pastHours(SEAT_HOLD_HOURS)),
+      ),
+    )
+    .returning({ ...CONTACT, builderId: registrations.builderId });
 }
 
 // Skips anyone reminded in the last 24 hours. The UPDATE claims each row before anything is sent.
